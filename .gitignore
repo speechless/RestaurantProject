@@ -13,6 +13,8 @@ target/
 *.iml
 *.ipr
 
+*.xml
+
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -38,3 +40,4 @@ build/
 ### Mac OS ###
 .DS_Store
 .idea/workspace.xml
+
