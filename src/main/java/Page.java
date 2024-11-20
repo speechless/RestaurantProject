@@ -1,5 +1,5 @@
 public class Page {
-    public static void main(String[] args) {
+    public void main() {
         System.out.println("AAAAH !!");
     }
 }
