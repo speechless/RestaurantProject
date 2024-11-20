@@ -13,6 +13,8 @@ target/
 *.iml
 *.ipr
 
+*.xml
+
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -38,3 +40,5 @@ build/
 ### Mac OS ###
 .DS_Store
 .idea/inspectionProfiles/Project_Default.xml
+.idea/workspace.xml
+
