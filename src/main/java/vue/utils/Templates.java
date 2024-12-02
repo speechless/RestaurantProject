@@ -10,7 +10,7 @@ import java.net.URL;
 public class Templates {
     private static final Color MAIN_COLOR = new Color(236, 236, 236);
 
-    public static Color getPrimaryColor(){
+    public static Color getPrimaryColor() {
         return MAIN_COLOR;
     }
 
@@ -22,7 +22,7 @@ public class Templates {
 
             // Redimensionner l'image
             Image image = icon.getImage();
-            Image resizedImage = image.getScaledInstance(50,50, Image.SCALE_SMOOTH);
+            Image resizedImage = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
 
             // Retourner l'ImageIcon redimensionnée
             return new ImageIcon(resizedImage);
@@ -54,7 +54,7 @@ public class Templates {
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 10)); // Marges
         topBar.add(logoLabel, gbc);
 
-        setupAdminButton(topBar,gbc);
+        setupAdminButton(topBar, gbc);
 
         // Ajout d'un espace flexible entre les éléments
         gbc.gridx = 1; // Cellule intermédiaire
@@ -66,7 +66,7 @@ public class Templates {
         return topBar;
     }
 
-    private static void setupAdminButton(JPanel topBar,GridBagConstraints gbc){
+    private static void setupAdminButton(JPanel topBar, GridBagConstraints gbc) {
         // Bouton Admin à droite
         gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 1; // Deuxième colonne
@@ -87,14 +87,21 @@ public class Templates {
 
         button.addActionListener(e -> PageManager.getInstance().showPage(new MenuPage()));
         button.addMouseListener(new MouseAdapter() {
-            @Override public void mousePressed(MouseEvent e) {button.setForeground(new Color(20, 20, 20));}
-            @Override public void mouseReleased(MouseEvent e) {button.setForeground(new Color(32, 32, 246));}
+            @Override
+            public void mousePressed(MouseEvent e) {
+                button.setForeground(new Color(20, 20, 20));
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                button.setForeground(new Color(32, 32, 246));
+            }
         });
 
         topBar.add(buttonWrapper, gbc);
     }
 
-    public static JScrollPane setupScrollPane(JList<CommandListItem> list){
+    public static JScrollPane setupScrollPane(JList<CommandListItem> list) {
         list.setCellRenderer(new CommandListItemRenderer());
 
         // Ajouter la liste dans un JScrollPane
@@ -107,8 +114,15 @@ public class Templates {
                 this.trackColor = new Color(230, 230, 230); // Couleur de l'arrière-plan
             }
 
-            @Override protected JButton createDecreaseButton(int orientation) {return createZeroButton();}
-            @Override protected JButton createIncreaseButton(int orientation) {return createZeroButton();}
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
 
             private JButton createZeroButton() {
                 JButton button = new JButton();
@@ -119,7 +133,7 @@ public class Templates {
             }
         });
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200))); // Bordure de la liste
-        return  scrollPane;
+        return scrollPane;
 
     }
 
@@ -168,7 +182,7 @@ public class Templates {
     }
 
 
-    public static JButton setupClassicButton(String text,Runnable action){
+    public static JButton setupClassicButton(String text, Runnable action) {
         JButton button = new JButton(text);
         button.addActionListener(e -> action.run());
         button.setBackground(Color.white);
@@ -190,7 +204,7 @@ public class Templates {
                 () -> PageManager.getInstance().showPage(new MainPage()));
 
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
+        topButton.setMargin(new Insets(5, 0, 5, 0)); // Supprime les marges internes
         topButton.setPreferredSize(new Dimension(150, 30));
 
         borderPanel.add(topButton, BorderLayout.WEST);
@@ -206,4 +220,33 @@ public class Templates {
 
         return borderPanel;
     }
+
+    public static JButton setupSingleToggleButton(String text, Runnable actionOn, Runnable actionOff) {
+        JButton button = new JButton(text);
+        button.setBackground(Color.WHITE);
+        button.setFont(new Font("Arial", Font.PLAIN, 14));
+        button.setContentAreaFilled(false);
+        button.setOpaque(true);
+        button.setFocusPainted(false);
+        button.setRolloverEnabled(false);
+
+        // Utilisation d'une variable pour suivre l'état du bouton
+        boolean[] isActive = {false};
+
+        button.addActionListener(e -> {
+            isActive[0] = !isActive[0];  // Inverse l'état du bouton
+            if (isActive[0]) {
+                button.setBackground(Color.GREEN);  // Bouton activé
+                actionOn.run();
+            } else {
+                button.setBackground(Color.WHITE);  // Bouton désactivé
+                actionOff.run();
+            }
+        });
+
+        return button;
+    }
+
+
+
 }
