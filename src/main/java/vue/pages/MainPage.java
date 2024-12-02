@@ -143,7 +143,7 @@ public class MainPage implements PageContent {
         scrollPane2.setPreferredSize(new Dimension(300, preferredHeight));
 
         JButton viewMoreButton = Templates.setupClassicButton("Voir Plus",
-                ()-> PageManager.getInstance().showPage(new MenuPage()));
+                ()-> PageManager.getInstance().showPage(new PreviousCommandsPage()));
 
         // Ajout des composants
         bottomSection.add(bottomTitle, BorderLayout.NORTH);

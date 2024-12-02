@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dd13270e-648a-4665-92d2-228d5cf7c10c" name="Changes" comment="Test project" />
+    <list default="true" id="dd13270e-648a-4665-92d2-228d5cf7c10c" name="Changes" comment="Interface graphique des pages de bases finies sans lien avec les données">
+      <change afterPath="$PROJECT_DIR$/src/main/java/vue/pages/PreviousCommandsPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/vue/pages/admin/AdminMainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vue/pages/MainPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vue/pages/MainPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/vue/utils/Templates.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/vue/utils/Templates.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -67,6 +73,7 @@
     "Application.Page.executor": "Run",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "dev",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/Alexis/Cours/LE3/S5/Informatique/Java/RestaurantProject/src/img",
     "node.js.detected.package.eslint": "true",
@@ -198,6 +205,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Init project" />
     <MESSAGE value="Test project" />
-    <option name="LAST_COMMIT_MESSAGE" value="Test project" />
+    <MESSAGE value="Interface graphique des pages de bases finies sans lien avec les données" />
+    <option name="LAST_COMMIT_MESSAGE" value="Interface graphique des pages de bases finies sans lien avec les données" />
   </component>
 </project>
