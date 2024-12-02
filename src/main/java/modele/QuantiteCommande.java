@@ -21,11 +21,13 @@ public class QuantiteCommande {
     public QuantiteCommande() {}
 
     public QuantiteCommande(Commande commandeSource, Commandable produit) {
+        this.commandeSource = commandeSource;
         this.produit = produit;
         this.quantite = 0;
     }
 
     public QuantiteCommande(Commande commandeSource, Commandable produit, int quantite) {
+        this.commandeSource = commandeSource;
         this.produit = produit;
         this.quantite = quantite;
     }
