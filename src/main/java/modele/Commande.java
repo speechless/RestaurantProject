@@ -110,12 +110,12 @@ public class Commande {
         return ticket;
     }
 
-    public Facture creerFacture(String nomClient, String prenomClient, Adresse adresseClient, int numeroTVAClient) {
+    public Facture creerFacture(String nomClient, String prenomClient, String telephoneClient, String mailClient, int numeroTVAClient) {
         if (!finalise) {
             finaliserCommande();
         }
 
-        Facture facture = new Facture(this, nomClient, prenomClient, adresseClient, numeroTVAClient);
+        Facture facture = new Facture(this, nomClient, prenomClient, telephoneClient, mailClient, numeroTVAClient);
         this.listeRecus.add(facture);
         return facture;
     }

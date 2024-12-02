@@ -47,7 +47,7 @@ public class TestCommande {
             com2.ajoutCommande(item2);
             com2.creerTicket();
 
-            System.out.println(com1.creerFacture("Vanderbauwede", "Thomas", new Adresse("Lens", 11101, "rue ok", 27), 445887453).genererTexte());
+            System.out.println(com1.creerFacture("Vanderbauwede", "Thomas", "0102030405", "ok@mail.fr", 445887453).genererTexte());
             em.persist(com2);
             em.persist(com1);
 

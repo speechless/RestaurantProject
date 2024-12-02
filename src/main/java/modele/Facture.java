@@ -1,11 +1,7 @@
 package modele;
 
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Entity
 public class Facture extends Recu {
@@ -14,23 +10,24 @@ public class Facture extends Recu {
     private int numFacture;
     private String nomClient;
     private String prenomClient;
-    @Embedded
-    private Adresse adresseClient;
+    private String telephoneClient;
+    private String mailClient;
     private int numeroTVAClient;
     private final String conditions = "Aucune condition";
 
-    public Facture(Commande commandeSource, String nomClient, String prenomClient, Adresse adresseClient) {
+    public Facture(Commande commandeSource, String nomClient, String prenomClient, String telephoneClient, String mailClient) {
         super(commandeSource);
         this.numFacture = CompteurManager.getNextNumFacture();
 
         this.nomClient = nomClient;
         this.prenomClient = prenomClient;
-        this.adresseClient = adresseClient;
+        this.telephoneClient = telephoneClient;
+        this.mailClient = mailClient;
         this.numeroTVAClient = 0;
     }
 
-    public Facture(Commande commandeSource, String nomClient, String prenomClient, Adresse adresseClient, int numeroTVAClient) {
-        this(commandeSource, nomClient, prenomClient, adresseClient);
+    public Facture(Commande commandeSource, String nomClient, String prenomClient, String telephoneClient, String mailClient, int numeroTVAClient) {
+        this(commandeSource, nomClient, prenomClient, telephoneClient, mailClient);
         this.numeroTVAClient = numeroTVAClient;
     }
 
@@ -45,7 +42,8 @@ public class Facture extends Recu {
         affichageTicket.append(nomRestaurant + "\n");
         affichageTicket.append("Facture n°" + numFacture + "\n");
         affichageTicket.append("Client : " + nomClient.toUpperCase() + " " + prenomClient + "\n");
-        affichageTicket.append("Adresse" + adresseClient + "\n");
+        affichageTicket.append("Téléphone : " + telephoneClient + "\n");
+        affichageTicket.append("Mail : " + mailClient + "\n");
         affichageTicket.append("Numéro TVA client : " + numeroTVAClient + "\n");
         affichageTicket.append("Produits commandés :\n");
 
