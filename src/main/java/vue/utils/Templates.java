@@ -1,5 +1,7 @@
 package vue.utils;
+
 import vue.pages.*;
+import vue.pages.admin.AdminMainPage;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
@@ -32,7 +34,7 @@ public class Templates {
         }
     }
 
-    public static JPanel createTopBar() {
+    public static JPanel createTopBar(boolean admin) {
         // Création de la barre supérieure
         JPanel topBar = new JPanel(new GridBagLayout());
         topBar.setBackground(Color.white);
@@ -53,8 +55,14 @@ public class Templates {
         logoLabel.setFont(new Font("Arial", Font.BOLD, 16));
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 10)); // Marges
         topBar.add(logoLabel, gbc);
+        if(admin){
+            setupTopBarButton(topBar, gbc,"Admin page",
+                    () -> PageManager.getInstance().showPage(new AdminMainPage()));
+        }else{
+            setupTopBarButton(topBar, gbc,"Main page",
+                    () -> PageManager.getInstance().showPage(new MainPage()));
+        }
 
-        setupAdminButton(topBar, gbc);
 
         // Ajout d'un espace flexible entre les éléments
         gbc.gridx = 1; // Cellule intermédiaire
@@ -66,7 +74,7 @@ public class Templates {
         return topBar;
     }
 
-    private static void setupAdminButton(JPanel topBar, GridBagConstraints gbc) {
+    private static void setupTopBarButton(JPanel topBar, GridBagConstraints gbc, String text, Runnable action) {
         // Bouton Admin à droite
         gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 1; // Deuxième colonne
@@ -75,7 +83,7 @@ public class Templates {
         buttonWrapper.setOpaque(false);
         buttonWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 30)); // Marges
 
-        JButton button = new JButton("Page admin");
+        JButton button = new JButton(text);
         Color secondaryColor = new Color(32, 32, 246);
         button.setForeground(secondaryColor);
         button.setOpaque(false);
@@ -85,7 +93,7 @@ public class Templates {
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         buttonWrapper.add(button);
 
-        button.addActionListener(e -> PageManager.getInstance().showPage(new MenuPage()));
+        button.addActionListener(e -> action.run());
         button.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

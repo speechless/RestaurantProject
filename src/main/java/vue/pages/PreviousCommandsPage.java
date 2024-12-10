@@ -46,10 +46,10 @@ public class PreviousCommandsPage implements PageContent {
         JButton type2Button = Templates.setupSingleToggleButton("Type2",
                 ()-> System.out.println("Type2 activé"),
                 ()-> System.out.println("Type2 désactivé"));
-        JButton type3Button = Templates.setupSingleToggleButton("Type2",
+        JButton type3Button = Templates.setupSingleToggleButton("Type3",
                 ()-> System.out.println("Type3 activé"),
                 ()-> System.out.println("Type3 désactivé"));
-        JButton type4Button = Templates.setupSingleToggleButton("Type3",
+        JButton type4Button = Templates.setupSingleToggleButton("Type4",
                 ()-> System.out.println("Type4 activé"),
                 ()-> System.out.println("Type4 désactivé"));
 

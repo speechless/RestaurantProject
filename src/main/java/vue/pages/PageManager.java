@@ -7,7 +7,7 @@ import java.awt.*;
 
 public class PageManager {
     private static PageManager instance;
-    private JFrame frame;
+    private final JFrame frame;
 
     private PageManager() {
         frame = new JFrame("Restaurant App");
@@ -28,12 +28,17 @@ public class PageManager {
 
     public void showPage(PageContent page) {
         frame.getContentPane().removeAll();
+        String className =  page.getClass().getName();
 
         frame.getContentPane().setLayout(new BorderLayout());
 
-        frame.getContentPane().add(Templates.createTopBar(), BorderLayout.NORTH);
-        frame.getContentPane().add(page.getContentPanel(), BorderLayout.CENTER);
+        if(className.startsWith("vue.pages.admin.")) {
+            frame.getContentPane().add(Templates.createTopBar(false), BorderLayout.NORTH);
+        }else{
+            frame.getContentPane().add(Templates.createTopBar(true), BorderLayout.NORTH);
+        }
 
+        frame.getContentPane().add(page.getContentPanel(), BorderLayout.CENTER);
 
         frame.revalidate();
         frame.repaint();
