@@ -61,6 +61,22 @@ public class Commande {
         this.numTable = numTable;
     }
 
+    public List<Recu> getListeRecus() {
+        return listeRecus;
+    }
+
+    public int getNumTable() {
+        return numTable;
+    }
+
+    public String getDateDebut() {
+        return dateDebut;
+    }
+
+    public boolean isFinalise() {
+        return finalise;
+    }
+
     public void ajoutCommande(Commandable commandable) {
         //boolean flag = false;
 
@@ -211,19 +227,27 @@ public class Commande {
     }*/
     @Override
     public String toString() {
-        return "Commande{" +
-                "id=" + id +
-                ", compositionCommande=" + compositionCommande +
-                ", listeRecus=" + listeRecus +
-                ", numTable=" + numTable +
+        String compCmd = "[";
+        for (QuantiteCommande c : compositionCommande) {
+            compCmd+=c.getProduit();
+            compCmd+=";";
+        }
+        compCmd+=numTable;
+        compCmd+=";";
+        compCmd+=dateDebut;
+        compCmd+=";";
+        compCmd+=totalTTC;
+        return compCmd;
+        /*return compCmd +
+                "numTable=" + numTable +
                 ", dateDebut=" + dateDebut +
                 ", montantTVA5_5=" + montantTVA5_5 +
                 ", montantTVA10=" + montantTVA10 +
                 ", montantTVA20=" + montantTVA20 +
                 ", totalHT=" + totalHT +
-                ", totalTTC=" + totalTTC +
+                ", totalTTC=" + totalTTC;
                 //", hashcode=" + hashcode +
-                ", finalise=" + finalise +
-                '}';
-    }
+                //", finalise=" + finalise
+
+    */}
 }

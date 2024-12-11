@@ -26,12 +26,12 @@ public class RequeteRestaurant {
         return commandables;
     }
 
-    public List<Commande> getCommandes() {
+    public List<Commande> getCommandesCourantes() {
         EntityManager em = emf.createEntityManager();
-        String strQuery = "SELECT c FROM Commande c ORDER BY c.dateDebut";
+        String strQuery = "SELECT c FROM Commande c WHERE finalise = false ORDER BY c.dateDebut";
         Query query = em.createQuery(strQuery);
         List<Commande> commandes = query.getResultList();
-        System.out.println(commandes.get(0).toString());
+        //System.out.println(commandes.get(0).toString());
         return commandes;
     }
 
@@ -72,9 +72,31 @@ public class RequeteRestaurant {
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
         //System.out.println(rr.getCommandables());
-        //System.out.println(rr.getCommandesTerminees());
+        List<Commande> x = rr.getCommandesTerminees();
+        List<Commande> y = rr.getCommandesCourantes();
+
+        for(Commande e : x){
+            System.out.println(e.getNumTable());
+            System.out.println(e.getTotalTTC());
+            System.out.println(e.getDateDebut());
+            for(QuantiteCommande i : e.getCompositionCommande()){
+                Commandable j = i.getProduit();
+
+                if(j instanceof Menu){
+                    System.out.println("*"+j.getNom());
+                    for(Item k : rr.getItemsFromMenu(j.getId())){
+                        System.out.println("    "+k.getNom());
+                    }
+                }
+                else{
+                    System.out.println("-"+j.getNom());
+                }
+
+            }
+
+        }
         //System.out.println(rr.getVentesParCategorie());
-        List<Item> li = rr.getItemsFromMenu(2);
-        System.out.println(li);
+        //List<Item> li = rr.getItemsFromMenu(2);
+        //System.out.println(li);
     }
 }

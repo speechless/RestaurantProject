@@ -42,6 +42,14 @@ public abstract class Commandable extends Observable {
         this.nom = nom;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public boolean isVisibiliteCarte() {
+        return visibiliteCarte;
+    }
+
     public boolean getVisibiliteCarte() {
         return visibiliteCarte;
     }
