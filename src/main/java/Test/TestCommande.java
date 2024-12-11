@@ -4,7 +4,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
-import modele.Adresse;
 import modele.Commande;
 import modele.Item;
 import modele.Menu;
@@ -23,14 +22,14 @@ public class TestCommande {
             Item item2 = new Item(3, 0.2, "Coca", "Boisson", true);
             Item item3 = new Item(2, 0.1, "Café", "Autre", true);
 
-            System.out.println(menu1);
+            //System.out.println(menu1);
 
             menu1.ajouterItem(item1);
-            System.out.println(menu1);
+            //System.out.println(menu1);
 
             menu1.ajouterItem(item2);
             menu1.ajouterItem(item3);
-            System.out.println(menu1);
+            //System.out.println(menu1);
 
             Commande com1 = new Commande(10);
             com1.ajoutCommande(menu1);
@@ -40,18 +39,19 @@ public class TestCommande {
 
             com1.finaliserCommande();
 
-            System.out.println(com1.creerTicket().genererTexte());
+            //System.out.println(com1.creerTicket().genererTexte());
             com1.creerTicket();
 
             Commande com2 = new Commande(7);
             com2.ajoutCommande(item2);
-            com2.creerTicket();
-
-            System.out.println(com1.creerFacture("Vanderbauwede", "Thomas", "0102030405", "ok@mail.fr", 445887453).genererTexte());
+            //com2.creerTicket();
+            //System.out.println(com1.creerFacture("Vanderbauwede", "Thomas", "0102030405", "ok@mail.fr", 445887453).genererTexte());
             em.persist(com2);
             em.persist(com1);
 
             et.commit();
+
+
         }
 //        catch (Exception ex) {
 //            System.out.println("exception : " + ex);

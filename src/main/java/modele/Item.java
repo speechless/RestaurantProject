@@ -31,6 +31,7 @@ public class Item extends Commandable {
 
     @Override
     public String toString() {
-        return this.getNom();
+        return getNom()+":"+getCategorie()+":"+getVisibiliteCarte()
+                +":"+getPrixHT()+ ":"+getTauxTVA();
     }
 }

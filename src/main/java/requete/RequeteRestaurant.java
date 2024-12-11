@@ -31,8 +31,29 @@ public class RequeteRestaurant {
         String strQuery = "SELECT c FROM Commande c ORDER BY c.dateDebut";
         Query query = em.createQuery(strQuery);
         List<Commande> commandes = query.getResultList();
+        System.out.println(commandes.get(0).toString());
         return commandes;
     }
+
+    public List<Commande> getCommandesTerminees() {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut";
+        Query query = em.createQuery(strQuery);
+        List<Commande> commandes = query.getResultList();
+        return commandes;
+    }
+
+    public List<Item> getItemsFromMenu(int menuId){
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT i FROM Menu m " +
+                "JOIN m.listeItems i WHERE m.id = :menuId";
+        Query query = em.createQuery(strQuery);
+        query.setParameter("menuId", menuId);
+        List<Item> commandes = query.getResultList();
+        return commandes;
+
+    }
+
 
 //    public List<QuantiteCommande> getVentesParCategorie() {
 //        EntityManager em = emf.createEntityManager();
@@ -50,8 +71,10 @@ public class RequeteRestaurant {
 
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
-        System.out.println(rr.getCommandables());
-        System.out.println(rr.getCommandes());
+        //System.out.println(rr.getCommandables());
+        //System.out.println(rr.getCommandesTerminees());
         //System.out.println(rr.getVentesParCategorie());
+        List<Item> li = rr.getItemsFromMenu(2);
+        System.out.println(li);
     }
 }
