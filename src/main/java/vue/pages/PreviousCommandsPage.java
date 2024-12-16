@@ -1,5 +1,6 @@
 package vue.pages;
 
+import requete.RequeteRestaurant;
 import vue.utils.CommandListItem;
 import vue.utils.Templates;
 
@@ -12,6 +13,7 @@ public class PreviousCommandsPage implements PageContent {
     public JPanel getContentPanel() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        RequeteRestaurant rq = new RequeteRestaurant();
 
         JPanel borderPanel = Templates.returnMenuButton(gbc);
 
@@ -100,8 +102,8 @@ public class PreviousCommandsPage implements PageContent {
         JPanel leftMenuSection = new JPanel(new BorderLayout());
         leftMenuSection.setBorder(new EmptyBorder(0, 20, 10, 10)); // Marges autour de la section
         // Liste
-        JList<CommandListItem> l = CommandListItem.createList(null);
-        JScrollPane sp = Templates.setupScrollPane(l);
+        JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesTerminees());
+        JScrollPane sp = Templates.setupScrollPane(list1);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 
         // Ajouter la section au mainPanel

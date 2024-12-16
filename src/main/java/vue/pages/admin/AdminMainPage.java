@@ -102,7 +102,7 @@ public class AdminMainPage implements PageContent {
         analyticsTitle.setFont(new Font("Arial", Font.BOLD, 16));
         analyticsTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
         analytics.add(analyticsTitle, BorderLayout.NORTH); // Ajouter dans la position NORTH
-        JButton SellsHistory = Templates.setupClassicButton("Modifier la carte",
+        JButton SellsHistory = Templates.setupClassicButton("Statistiques générales du restaurant",
                 () -> {
                     System.out.println("Page de la modification de carte");
                 });

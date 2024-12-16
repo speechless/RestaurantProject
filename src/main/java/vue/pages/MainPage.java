@@ -41,9 +41,6 @@ public class MainPage implements PageContent {
         gbcLeft.fill = GridBagConstraints.HORIZONTAL;
         leftSection.add(createNewCommandButton, gbcLeft);
 
-        // Listes commandes en cours (gauche)
-        DefaultListModel<CommandListItem> listModel = new DefaultListModel<>();
-
         //Remplir liste
         //listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
         JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesCourantes());
