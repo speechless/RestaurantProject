@@ -1,4 +1,5 @@
 package vue.pages;
+import requete.RequeteRestaurant;
 import vue.utils.*;
 import vue.pages.*;
 
@@ -14,6 +15,7 @@ public class MenuPage implements PageContent {
         // Panneau principal avec GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
+        RequeteRestaurant rr = new RequeteRestaurant();
 
         // Panneau secondaire avec BorderLayout
         JPanel borderPanel = new JPanel(new BorderLayout());
@@ -50,7 +52,7 @@ public class MenuPage implements PageContent {
         leftMenuSection.add(st, BorderLayout.NORTH);
 
         // Liste
-        JList<MenuListItem> l = MenuListItem.createList();
+        JList<MenuListItem> l = rr.parseListCommandables();
         JScrollPane sp = Templates.setupMenuScrollPane(l);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 

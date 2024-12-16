@@ -100,7 +100,7 @@ public class PreviousCommandsPage implements PageContent {
         JPanel leftMenuSection = new JPanel(new BorderLayout());
         leftMenuSection.setBorder(new EmptyBorder(0, 20, 10, 10)); // Marges autour de la section
         // Liste
-        JList<CommandListItem> l = CommandListItem.createList();
+        JList<CommandListItem> l = CommandListItem.createList(null);
         JScrollPane sp = Templates.setupScrollPane(l);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 

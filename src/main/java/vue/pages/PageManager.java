@@ -14,7 +14,7 @@ public class PageManager {
         Templates t = new Templates();
         frame.setIconImage(t.loadImage("img/Whiteboard.png").getImage());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setMinimumSize(new Dimension(800, 600));
+        frame.setMinimumSize(new Dimension(1200, 800));
         frame.setMaximumSize(new Dimension(1920, 1080));
         frame.setLayout(new BorderLayout());
     }

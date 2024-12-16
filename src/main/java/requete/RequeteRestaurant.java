@@ -5,8 +5,11 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import modele.*;
+import vue.utils.MenuListItem;
+import vue.utils.Templates;
 
 import javax.lang.model.element.QualifiedNameable;
+import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
 
@@ -26,18 +29,60 @@ public class RequeteRestaurant {
         return commandables;
     }
 
+    public JList<MenuListItem> parseListCommandables(){
+        List<Commandable> items = getCommandables();
+        DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
+        Templates t = new Templates();
+
+        for(Commandable i : items){
+            if(i instanceof Menu){
+                listModel.addElement(new MenuListItem(
+                        i.getNom(),
+                        t.loadImage("img/Whiteboard.png"),
+                        i.getPrixHT(),
+                        i.getPrixHT() * (1+i.getTauxTVA()),
+                        i.isVisibiliteCarte(),false));
+                for(Item k : getItemsFromMenu(i.getId())){
+                    listModel.addElement(new MenuListItem(
+                            " * "+i.getNom()+"---"+k.getNom(),
+                            t.loadImage(""),
+                            0,
+                            0,
+                            false,true));
+                }
+            }
+            else{
+                listModel.addElement(new MenuListItem(i.getNom(),
+                        t.loadImage(""),
+                        i.getPrixHT(),
+                        i.getPrixHT() * (1+i.getTauxTVA()),
+                        i.isVisibiliteCarte(),false));
+            }
+        }
+        JList<MenuListItem> list = new JList<>(listModel);
+        return list;
+    }
+
     public List<Commande> getCommandesCourantes() {
         EntityManager em = emf.createEntityManager();
-        String strQuery = "SELECT c FROM Commande c WHERE finalise = false ORDER BY c.dateDebut";
+        String strQuery = "SELECT c FROM Commande c WHERE " +
+                "finalise = false ORDER BY c.dateDebut ASC";
         Query query = em.createQuery(strQuery);
         List<Commande> commandes = query.getResultList();
-        //System.out.println(commandes.get(0).toString());
         return commandes;
     }
 
     public List<Commande> getCommandesTerminees() {
         EntityManager em = emf.createEntityManager();
         String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut";
+        Query query = em.createQuery(strQuery);
+        List<Commande> commandes = query.getResultList();
+        return commandes;
+    }
+
+    public List<Commande> getCommandesTermineesMain() {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut DESC limit 3";
         Query query = em.createQuery(strQuery);
         List<Commande> commandes = query.getResultList();
         return commandes;
@@ -72,9 +117,9 @@ public class RequeteRestaurant {
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
         //System.out.println(rr.getCommandables());
-        List<Commande> x = rr.getCommandesTerminees();
+        List<Commandable> x = rr.getCommandables();
         List<Commande> y = rr.getCommandesCourantes();
-
+/*
         for(Commande e : x){
             System.out.println(e.getNumTable());
             System.out.println(e.getTotalTTC());
@@ -92,9 +137,9 @@ public class RequeteRestaurant {
                     System.out.println("-"+j.getNom());
                 }
 
-            }
+            }*/
 
-        }
+
         //System.out.println(rr.getVentesParCategorie());
         //List<Item> li = rr.getItemsFromMenu(2);
         //System.out.println(li);

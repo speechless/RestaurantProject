@@ -1,4 +1,5 @@
 package vue.pages;
+import requete.RequeteRestaurant;
 import vue.utils.*;
 
 import javax.swing.*;
@@ -12,30 +13,45 @@ public class MainPage implements PageContent {
         // Création d'un panneau principal
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-
+        RequeteRestaurant rq = new RequeteRestaurant();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
         //Listes commandes en cours (gauche)
 
         // Ajout de la section avec la liste
-        JPanel leftSection = new JPanel(new BorderLayout());
+        JPanel leftSection = new JPanel(new GridBagLayout());
         leftSection.setBorder(new EmptyBorder(20, 20, 20, 10)); // Marges autour de la section
+        GridBagConstraints gbcLeft = new GridBagConstraints();
 
         // Titre de la section
         JLabel sectionTitle = new JLabel("Liste des commandes en cours", JLabel.CENTER);
         sectionTitle.setFont(new Font("Arial", Font.BOLD, 16));
         sectionTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
-        leftSection.add(sectionTitle, BorderLayout.NORTH);
+        gbcLeft.gridx = 0;
+        gbcLeft.gridy = 0;
+        gbcLeft.weightx = 1.0;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+        leftSection.add(sectionTitle, gbcLeft);
+
+        JButton createNewCommandButton = Templates.setupClassicButton("Nouvelle commande",
+                () -> PageManager.getInstance().showPage(new RoomPage()));
+        createNewCommandButton.setPreferredSize(new Dimension(0, 50)); // Hauteur fixe de 50px
+        gbcLeft.gridy = 1;
+        gbcLeft.weightx = 1.0;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+        leftSection.add(createNewCommandButton, gbcLeft);
 
         // Listes commandes en cours (gauche)
         DefaultListModel<CommandListItem> listModel = new DefaultListModel<>();
 
         //Remplir liste
-        listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
-
-        JList<CommandListItem> list = new JList<>(listModel);
-        JScrollPane scrollPane = Templates.setupScrollPane(list);
-        leftSection.add(scrollPane, BorderLayout.CENTER);
+        //listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
+        JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesCourantes());
+        JScrollPane scrollPane = Templates.setupScrollPane(list1);
+        gbcLeft.gridy = 2;
+        gbcLeft.weighty = 1.0; // Prend tout l'espace vertical restant
+        gbcLeft.fill = GridBagConstraints.BOTH; // Remplit horizontalement et verticalement
+        leftSection.add(scrollPane, gbcLeft);
 
         // Section gauche
         gbc.gridx = 0;
@@ -118,29 +134,33 @@ public class MainPage implements PageContent {
 
 // Partie 3 : Spacer
         gbc2.gridy = 2;
-        gbc2.weighty = 0.3;
+        gbc2.weighty = 0.1;
         JPanel spacerY = new JPanel();
         spacerY.setOpaque(false); // Rendre le panneau transparent
         rightSection.add(spacerY, gbc2);
 
 // Partie 4 : Commandes récentes
         gbc2.gridy = 3;
-        gbc2.weighty = 0.3; // 30% de hauteur
+        gbc2.weighty = 0.5; // 30% de hauteur
         JPanel bottomSection = new JPanel(new BorderLayout());
         bottomSection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel bottomTitle = new JLabel("Commandes terminées");
 
-        JList<CommandListItem> list2 =  CommandListItem.createList();
-        list2.setFixedCellHeight(40);
-        list2.setVisibleRowCount(6);
+        //import depuis la BDD
+
+        JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain());
+
+
+        list2.setFixedCellHeight(100);
+        list2.setVisibleRowCount(4);
 
         JScrollPane scrollPane2 = Templates.setupScrollPane(list2);
-        scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        /*scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+        scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);*/
 
         int preferredHeight = list2.getFixedCellHeight() * list2.getVisibleRowCount();
-        scrollPane2.setPreferredSize(new Dimension(300, preferredHeight));
+        scrollPane2.setPreferredSize(new Dimension(100, preferredHeight));
 
         JButton viewMoreButton = Templates.setupClassicButton("Voir Plus",
                 ()-> PageManager.getInstance().showPage(new PreviousCommandsPage()));
