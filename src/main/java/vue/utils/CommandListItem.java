@@ -11,11 +11,13 @@ public class CommandListItem {
         private String date;
         private String prixTTC;
         private String numTable;
+        private int id;
 
-        public CommandListItem(String date, String prixTTC, String numTable) {
+        public CommandListItem(String date, String prixTTC, String numTable, int id) {
             this.date = date;
             this.prixTTC = prixTTC;
             this.numTable = numTable;
+            this.id = id;
         }
 
         public String getDate() {
@@ -28,13 +30,18 @@ public class CommandListItem {
 
         public String getNumTable() {return numTable;}
 
+    public int getId() {
+        return id;
+    }
+
     public static JList<CommandListItem> createList(List<Commande> lc){
         DefaultListModel<CommandListItem> listModel = new DefaultListModel<>();
         for(Commande c : lc){
             listModel.addElement(new CommandListItem(
                     c.getDateDebut(),
                     "Prix TTC: "+c.getTotalTTC(),
-                    "Numéro de table: "+c.getNumTable()));
+                    "Numéro de table: "+c.getNumTable(),
+                    c.getId()));
         }
 
         JList<CommandListItem> list = new JList<>(listModel);

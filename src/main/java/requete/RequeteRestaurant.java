@@ -1,9 +1,6 @@
 package requete;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
+import jakarta.persistence.*;
 import modele.*;
 import vue.utils.MenuListItem;
 import vue.utils.Templates;
@@ -12,13 +9,23 @@ import javax.lang.model.element.QualifiedNameable;
 import javax.swing.*;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public class RequeteRestaurant {
+    private static RequeteRestaurant instance;
 
     private EntityManagerFactory emf;
 
-    public RequeteRestaurant() {
+
+    private RequeteRestaurant() {
         this.emf = Persistence.createEntityManagerFactory("RestaurantPU");
+    }
+
+    public static RequeteRestaurant getInstance() {
+        if (instance == null) {
+            instance = new RequeteRestaurant();
+        }
+        return instance;
     }
 
     public List<Commandable> getCommandables() {
@@ -99,6 +106,15 @@ public class RequeteRestaurant {
 
     }
 
+    public Commande getCommande(int id) {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT c FROM Commande c WHERE c.id = :id";
+        Query query = em.createQuery(strQuery);
+        query.setParameter("id", id);
+
+        Commande commande = (Commande) query.getSingleResult();
+        return commande;
+    }
 
 //    public List<QuantiteCommande> getVentesParCategorie() {
 //        EntityManager em = emf.createEntityManager();
@@ -113,6 +129,28 @@ public class RequeteRestaurant {
 //        }
 //        return commandes;
 //    }
+
+    public void saveCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        //try {
+            et.begin();
+em.merge(commande);
+            System.out.println("persist");
+            et.commit();
+        //}
+        /*catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }*/
+    }
 
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();

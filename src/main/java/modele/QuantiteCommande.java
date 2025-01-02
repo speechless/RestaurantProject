@@ -47,4 +47,9 @@ public class QuantiteCommande {
     public void subtract() {
         this.quantite--;
     }
+
+    @Override
+    public String toString() {
+        return produit.getNom() + " x" + quantite;
+    }
 }

@@ -5,6 +5,8 @@ import vue.utils.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class MainPage implements PageContent {
 
@@ -13,7 +15,7 @@ public class MainPage implements PageContent {
         // Création d'un panneau principal
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        RequeteRestaurant rq = new RequeteRestaurant();
+        RequeteRestaurant rq = RequeteRestaurant.getInstance();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
         //Listes commandes en cours (gauche)
@@ -33,8 +35,11 @@ public class MainPage implements PageContent {
         gbcLeft.fill = GridBagConstraints.HORIZONTAL;
         leftSection.add(sectionTitle, gbcLeft);
 
+        //JButton createNewCommandButton = Templates.setupClassicButton("Nouvelle commande",
+        //        () -> PageManager.getInstance().showPage(new RoomPage()));
         JButton createNewCommandButton = Templates.setupClassicButton("Nouvelle commande",
-                () -> PageManager.getInstance().showPage(new RoomPage()));
+                () -> PageManager.getInstance().showPage(new CommandPage()));
+
         createNewCommandButton.setPreferredSize(new Dimension(0, 50)); // Hauteur fixe de 50px
         gbcLeft.gridy = 1;
         gbcLeft.weightx = 1.0;
@@ -44,6 +49,24 @@ public class MainPage implements PageContent {
         //Remplir liste
         //listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
         JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesCourantes());
+        list1.addMouseListener(new MouseListener() {
+           @Override
+           public void mouseClicked(MouseEvent e) {
+               if (e.getClickCount() == 2) {
+                   PageManager.getInstance().showPage(new CommandPage(list1.getSelectedValue().getId()));
+               }
+           }
+
+           @Override
+           public void mousePressed(MouseEvent e) {}
+           @Override
+           public void mouseReleased(MouseEvent e) {}
+           @Override
+           public void mouseEntered(MouseEvent e) {}
+           @Override
+           public void mouseExited(MouseEvent e) {}
+       });
+
         JScrollPane scrollPane = Templates.setupScrollPane(list1);
         gbcLeft.gridy = 2;
         gbcLeft.weighty = 1.0; // Prend tout l'espace vertical restant
