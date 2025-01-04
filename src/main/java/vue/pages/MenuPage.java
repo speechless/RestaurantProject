@@ -14,7 +14,7 @@ public class MenuPage implements PageContent {
         // Panneau principal avec GridBagLayout
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        RequeteRestaurant rr = new RequeteRestaurant();
+        RequeteRestaurant rr = RequeteRestaurant.getInstance();
 
         // Panneau secondaire avec BorderLayout
         JPanel borderPanel = new JPanel(new BorderLayout());

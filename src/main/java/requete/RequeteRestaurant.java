@@ -1,23 +1,29 @@
 package requete;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
-
+import jakarta.persistence.*;
 import modele.*;
-import vue.utils.Commons;
 import vue.utils.MenuListItem;
+import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.List;
 
+
 public class RequeteRestaurant {
+    private static RequeteRestaurant instance;
 
-    private final EntityManagerFactory emf;
+    private EntityManagerFactory emf;
 
-    public RequeteRestaurant() {
+
+    private RequeteRestaurant() {
         this.emf = Persistence.createEntityManagerFactory("RestaurantPU");
+    }
+
+    public static RequeteRestaurant getInstance() {
+        if (instance == null) {
+            instance = new RequeteRestaurant();
+        }
+        return instance;
     }
 
     public List<Commandable> getCommandables() {
@@ -29,9 +35,9 @@ public class RequeteRestaurant {
     }
 
     public JList<MenuListItem> parseListCommandables(){
+        Commons commons = new Commons();
         List<Commandable> items = getCommandables();
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
-        Commons commons = new Commons();
 
         for(Commandable i : items){
             if(i instanceof Menu){
@@ -98,6 +104,15 @@ public class RequeteRestaurant {
 
     }
 
+    public Commande getCommande(int id) {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT c FROM Commande c WHERE c.id = :id";
+        Query query = em.createQuery(strQuery);
+        query.setParameter("id", id);
+
+        Commande commande = (Commande) query.getSingleResult();
+        return commande;
+    }
 
 //    public List<QuantiteCommande> getVentesParCategorie() {
 //        EntityManager em = emf.createEntityManager();
@@ -113,4 +128,56 @@ public class RequeteRestaurant {
 //        return commandes;
 //    }
 
+    public void saveCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        //try {
+            et.begin();
+em.merge(commande);
+            System.out.println("persist");
+            et.commit();
+        //}
+        /*catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }*/
+    }
+
+    public static void main(String[] args) {
+        RequeteRestaurant rr = new RequeteRestaurant();
+        //System.out.println(rr.getCommandables());
+        List<Commandable> x = rr.getCommandables();
+        List<Commande> y = rr.getCommandesCourantes();
+/*
+        for(Commande e : x){
+            System.out.println(e.getNumTable());
+            System.out.println(e.getTotalTTC());
+            System.out.println(e.getDateDebut());
+            for(QuantiteCommande i : e.getCompositionCommande()){
+                Commandable j = i.getProduit();
+
+                if(j instanceof Menu){
+                    System.out.println("*"+j.getNom());
+                    for(Item k : rr.getItemsFromMenu(j.getId())){
+                        System.out.println("    "+k.getNom());
+                    }
+                }
+                else{
+                    System.out.println("-"+j.getNom());
+                }
+
+            }*/
+
+
+        //System.out.println(rr.getVentesParCategorie());
+        //List<Item> li = rr.getItemsFromMenu(2);
+        //System.out.println(li);
+    }
 }

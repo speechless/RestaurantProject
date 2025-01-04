@@ -14,7 +14,7 @@ public class PreviousCommandsPage implements PageContent {
     public JPanel getContentPanel() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        RequeteRestaurant rr = new RequeteRestaurant();
+        RequeteRestaurant rr = RequeteRestaurant.getInstance();
 
         JPanel borderPanel = ButtonTemplates.returnMenuButton(gbc);
 
