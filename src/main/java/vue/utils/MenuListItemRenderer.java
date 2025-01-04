@@ -4,11 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MenuListItemRenderer extends JPanel implements ListCellRenderer<MenuListItem> {
-    private JLabel imageLabel;
-    private JLabel titleLabel;
-    private JPanel textPanel;
-    private JLabel priceLabel;
-    private JLabel visibilityLabel;
+    private final JLabel  imageLabel;
+    private final JLabel titleLabel;
+    private final JPanel textPanel;
+    private final JLabel priceLabel;
+    private final JLabel visibilityLabel;
 
 
     public MenuListItemRenderer() {

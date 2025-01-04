@@ -4,19 +4,17 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
+
 import modele.*;
 import vue.utils.Commons;
 import vue.utils.MenuListItem;
-import vue.utils.Templates;
 
-import javax.lang.model.element.QualifiedNameable;
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.List;
 
 public class RequeteRestaurant {
 
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public RequeteRestaurant() {
         this.emf = Persistence.createEntityManagerFactory("RestaurantPU");

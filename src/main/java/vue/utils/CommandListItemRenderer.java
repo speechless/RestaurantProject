@@ -5,7 +5,7 @@ import java.awt.*;
 
 
 public class CommandListItemRenderer extends JPanel implements ListCellRenderer<CommandListItem>{
-        private JLabel Label;
+        private final JLabel Label;
 
         public CommandListItemRenderer() {
             setLayout(new BorderLayout(0,10));

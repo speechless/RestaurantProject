@@ -1,7 +1,6 @@
 package vue.pages;
 import requete.RequeteRestaurant;
 import vue.utils.*;
-import vue.pages.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
