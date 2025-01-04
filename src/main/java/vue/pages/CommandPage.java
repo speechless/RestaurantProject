@@ -2,7 +2,7 @@ package vue.pages;
 
 import modele.Commande;
 import requete.RequeteRestaurant;
-import vue.utils.Templates;
+import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
 import vue.utils.order.OrderMenuListPanel;
 
@@ -10,11 +10,11 @@ import javax.swing.*;
 import java.awt.*;
 
 public class CommandPage implements PageContent {
-    private RequeteRestaurant rq = RequeteRestaurant.getInstance();
-    private Commande commande;
+    private final RequeteRestaurant rq = RequeteRestaurant.getInstance();
+    private final Commande commande;
 
-    private OrderContentPanel orderContentPanel;
-    private OrderMenuListPanel orderMenuListPanel;
+    private final OrderContentPanel orderContentPanel;
+    private final OrderMenuListPanel orderMenuListPanel;
 
     public CommandPage() {
         this.commande = new Commande();
@@ -40,7 +40,7 @@ public class CommandPage implements PageContent {
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Bouton retour accueil
-        JButton topButton = Templates.setupClassicButton("Retour page d'accueil",
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'accueil",
                 () -> PageManager.getInstance().showPage(new MainPage()));
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
