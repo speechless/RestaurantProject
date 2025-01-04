@@ -1,6 +1,7 @@
 package vue.pages;
 
 import requete.RequeteRestaurant;
+import vue.utils.ButtonTemplates;
 import vue.utils.CommandListItem;
 import vue.utils.Templates;
 
@@ -13,9 +14,9 @@ public class PreviousCommandsPage implements PageContent {
     public JPanel getContentPanel() {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        RequeteRestaurant rq = new RequeteRestaurant();
+        RequeteRestaurant rr = new RequeteRestaurant();
 
-        JPanel borderPanel = Templates.returnMenuButton(gbc);
+        JPanel borderPanel = ButtonTemplates.returnMenuButton(gbc);
 
         mainPanel.add(borderPanel, gbc);
 
@@ -41,21 +42,21 @@ public class PreviousCommandsPage implements PageContent {
         // Boutons pour les types de filtrage
         JPanel typeButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 
-        JButton type1Button = Templates.setupSingleToggleButton("Type1",
+        JButton type1Button = ButtonTemplates.setupSingleToggleButton("Type1",
                 ()-> System.out.println("Type1 activé"),
                 ()-> System.out.println("Type1 désactivé"));
 
-        JButton type2Button = Templates.setupSingleToggleButton("Type2",
+        JButton type2Button = ButtonTemplates.setupSingleToggleButton("Type2",
                 ()-> System.out.println("Type2 activé"),
                 ()-> System.out.println("Type2 désactivé"));
-        JButton type3Button = Templates.setupSingleToggleButton("Type3",
+        JButton type3Button = ButtonTemplates.setupSingleToggleButton("Type3",
                 ()-> System.out.println("Type3 activé"),
                 ()-> System.out.println("Type3 désactivé"));
-        JButton type4Button = Templates.setupSingleToggleButton("Type4",
+        JButton type4Button = ButtonTemplates.setupSingleToggleButton("Type4",
                 ()-> System.out.println("Type4 activé"),
                 ()-> System.out.println("Type4 désactivé"));
 
-        JButton type5Button = Templates.setupSingleToggleButton("Type5",
+        JButton type5Button = ButtonTemplates.setupSingleToggleButton("Type5",
                 ()-> System.out.println("Type5 activé"),
                 ()-> System.out.println("Type5 désactivé"));
 
@@ -102,8 +103,8 @@ public class PreviousCommandsPage implements PageContent {
         JPanel leftMenuSection = new JPanel(new BorderLayout());
         leftMenuSection.setBorder(new EmptyBorder(0, 20, 10, 10)); // Marges autour de la section
         // Liste
-        JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesTerminees());
-        JScrollPane sp = Templates.setupScrollPane(list1);
+        JList<CommandListItem> list1 =  CommandListItem.createList(rr.getCommandesTerminees());
+        JScrollPane sp = Templates.setupCommandeScrollPane(list1);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 
         // Ajouter la section au mainPanel

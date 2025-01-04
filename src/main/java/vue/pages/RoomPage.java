@@ -1,6 +1,6 @@
 package vue.pages;
 
-import vue.utils.Templates;
+import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,8 +18,9 @@ public class RoomPage implements PageContent {
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Titre de la section
-        JButton topButton = Templates.setupClassicButton("Retour page d'accueil",
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'accueil",
                 () -> PageManager.getInstance().showPage(new MainPage()));
+
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         topButton.setPreferredSize(new Dimension(150, 30));

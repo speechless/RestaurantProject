@@ -21,7 +21,7 @@ public class MenuPage implements PageContent {
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Titre de la section
-        JButton topButton = Templates.setupClassicButton("Retour page d'accueil",
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'accueil",
                 () -> PageManager.getInstance().showPage(new MainPage()));
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes

@@ -6,6 +6,7 @@ import java.awt.*;
 public class MenuListItemRenderer extends JPanel implements ListCellRenderer<MenuListItem> {
     private JLabel imageLabel;
     private JLabel titleLabel;
+    private JPanel textPanel;
     private JLabel priceLabel;
     private JLabel visibilityLabel;
 
@@ -13,22 +14,27 @@ public class MenuListItemRenderer extends JPanel implements ListCellRenderer<Men
     public MenuListItemRenderer() {
         setLayout(new BorderLayout(10, 0)); // Espacement horizontal entre les composants
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5)); // Marges internes
+        setBackground(Color.white);
         setOpaque(true);
 
         // Composants
         imageLabel = new JLabel();
         imageLabel.setPreferredSize(new Dimension(50, 50)); // Limiter la taille de l'image
 
-        JPanel textPanel = new JPanel(new GridLayout(3, 1)); // Titre, description et prix
+        textPanel = new JPanel(new GridLayout(3, 1)); // Titre, description et prix
         titleLabel = new JLabel();
         titleLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        titleLabel.setOpaque(true);
 
 
         priceLabel = new JLabel();
         priceLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+        priceLabel.setOpaque(true);
 
         textPanel.add(titleLabel);
         textPanel.add(priceLabel);
+        textPanel.setOpaque(true);
+        textPanel.setBackground(Color.red);
 
         visibilityLabel = new JLabel();
         visibilityLabel.setPreferredSize(new Dimension(15, 15)); // Petit carré pour la visibilité
@@ -42,27 +48,29 @@ public class MenuListItemRenderer extends JPanel implements ListCellRenderer<Men
     @Override
     public Component getListCellRendererComponent(JList<? extends MenuListItem> list, MenuListItem value, int index,
                                                   boolean isSelected, boolean cellHasFocus) {
-        Color blocked = new Color(240,240,240);
+
+
         // Configuration des valeurs
         imageLabel.setIcon(value.getImage());
         titleLabel.setText(value.getTitle());
         priceLabel.setText(String.format("HT: %.2f € | TTC: %.2f €", value.getPriceHT(), value.getPriceTTC()));
         visibilityLabel.setBackground(value.isVisible() ? Color.GREEN : Color.GRAY);
 
-        // Couleurs de sélection
-        if (isSelected) {
-            if(value.isItemInMenu()){
-                setBackground(blocked);
-            }else{
-                setBackground(Color.orange);
-            }
-        } else {
-            if(value.isItemInMenu()){
-                setBackground(blocked);
-            }else{
-                setBackground(Color.white);
-            }
+
+        if(isSelected){
+            textPanel.setBackground(Commons.getSecondaryColor());
+            priceLabel.setBackground(Commons.getSecondaryColor());
+            titleLabel.setBackground(Commons.getSecondaryColor());
         }
+        else{
+            textPanel.setBackground(value.isItemInMenu() ? Commons.getPrimaryColor() : Color.white);
+            priceLabel.setBackground(value.isItemInMenu() ? Commons.getPrimaryColor() : Color.white);
+            titleLabel.setBackground(value.isItemInMenu() ? Commons.getPrimaryColor() : Color.white);
+        }
+
+
+
+
 
         return this;
     }

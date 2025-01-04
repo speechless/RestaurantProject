@@ -10,30 +10,13 @@ import java.awt.event.MouseEvent;
 import java.net.URL;
 
 public class Templates {
-    private static final Color MAIN_COLOR = new Color(236, 236, 236);
-
-    public static Color getPrimaryColor() {
-        return MAIN_COLOR;
-    }
-
-    public ImageIcon loadImage(String path) {
-        URL imageUrl = getClass().getClassLoader().getResource(path);
-
-        if (imageUrl != null) {
-            ImageIcon icon = new ImageIcon(imageUrl);
-
-            // Redimensionner l'image
-            Image image = icon.getImage();
-            Image resizedImage = image.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
-
-            // Retourner l'ImageIcon redimensionnée
-            return new ImageIcon(resizedImage);
-        } else {
-            System.err.println("Icône non trouvée : " + path);
-            return null;
-        }
-    }
-
+    /**
+     * Créer la barre supérieure de la page
+     *
+     * @param admin Si le bouton sur la page renvoie vers la page admin
+     *              ou la page d'accueil
+     * @return JPanel - La barre en haut de la page
+     */
     public static JPanel createTopBar(boolean admin) {
         // Création de la barre supérieure
         JPanel topBar = new JPanel(new GridBagLayout());
@@ -47,14 +30,15 @@ public class Templates {
         gbc.weighty = 1.0; // Centrage vertical
         gbc.gridy = 0; // Ligne unique
 
-        // Logo à gauche
-        gbc.anchor = GridBagConstraints.WEST;
+        gbc.anchor = GridBagConstraints.WEST; // Logo à gauche
         gbc.gridx = 0;
-        gbc.weightx = 0.1;
+        gbc.weightx = 0.1; //largeur de 10% de la page
         JLabel logoLabel = new JLabel("LOGO");
         logoLabel.setFont(new Font("Arial", Font.BOLD, 16));
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 10)); // Marges
         topBar.add(logoLabel, gbc);
+
+        //Bouton à droite
         if(admin){
             setupTopBarButton(topBar, gbc,"Admin page",
                     () -> PageManager.getInstance().showPage(new AdminMainPage()));
@@ -74,25 +58,37 @@ public class Templates {
         return topBar;
     }
 
+    /**
+     * Fonction pour positioner le bouton dans la TopBar
+     * (à ne utiliser que la fonction createTopBar)
+     *
+     * @param topBar Barre contenante
+     * @param gbc Gestionnaire de grille de la barre
+     * @param text Texte dans le bouton
+     * @param action Action à faire à l'activation du bouton
+     */
     private static void setupTopBarButton(JPanel topBar, GridBagConstraints gbc, String text, Runnable action) {
         // Bouton Admin à droite
         gbc.anchor = GridBagConstraints.EAST;
         gbc.gridx = 1; // Deuxième colonne
         gbc.weightx = 0.9; // Poids plus élevé pour pousser le bouton à droite
+
+        //Création d'un contenant à au bouton pour gérer l'affichage
         JPanel buttonWrapper = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-        buttonWrapper.setOpaque(false);
+        buttonWrapper.setOpaque(false); //Pas de fond dans le contenant
         buttonWrapper.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 30)); // Marges
 
         JButton button = new JButton(text);
         Color secondaryColor = new Color(32, 32, 246);
         button.setForeground(secondaryColor);
         button.setOpaque(false);
-        button.setContentAreaFilled(false);
+        button.setContentAreaFilled(false); //Ne remplie pas tout l'espace disponible
         button.setBorderPainted(false);
         button.setFocusPainted(false);
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         buttonWrapper.add(button);
 
+        //Effectuer les actions
         button.addActionListener(e -> action.run());
         button.addMouseListener(new MouseAdapter() {
             @Override
@@ -105,16 +101,39 @@ public class Templates {
                 button.setForeground(new Color(32, 32, 246));
             }
         });
-
+        //Ajout à la barre
         topBar.add(buttonWrapper, gbc);
     }
 
-    public static JScrollPane setupScrollPane(JList<CommandListItem> list) {
+    /**
+     * Créer un menu déroulant avec une liste de commandes donnée
+     *
+     * @param list Liste de commande (type: JList<CommandListItem>)
+     *
+     * @return JScrollPane - Menu déroulant avec les commandes affichées
+     */
+    public static JScrollPane setupCommandeScrollPane(JList<CommandListItem> list) {
+        final long[] lastClickTime = {0}; // Temps du dernier clic
         list.setCellRenderer(new CommandListItemRenderer());
 
         // Ajouter la liste dans un JScrollPane
         JScrollPane scrollPane = new JScrollPane(list);
         // Personnalisation de la barre de défilement
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastClickTime[0] <= Commons.DOUBLE_CLICK_INTERVAL) {
+                    int index = list.locationToIndex(e.getPoint());
+                    if (index != -1) { // Si un élément est sélectionné
+                        CommandListItem selectedItem = list.getModel().getElementAt(index);
+                        JOptionPane.showMessageDialog(list, "Double-clic rapide sur : " + selectedItem.toString());
+                    }
+                }
+                lastClickTime[0] = currentTime; // Mettre à jour le temps du dernier clic
+            }
+        });
+
         scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
             @Override
             protected void configureScrollBarColors() {
@@ -122,6 +141,7 @@ public class Templates {
                 this.trackColor = new Color(230, 230, 230); // Couleur de l'arrière-plan
             }
 
+            //Changer les affichages par défaut des boutons de déroulement
             @Override
             protected JButton createDecreaseButton(int orientation) {
                 return createZeroButton();
@@ -145,6 +165,14 @@ public class Templates {
 
     }
 
+
+    /**
+     * Créer un menu déroulant avec une liste de menus donnée
+     *
+     * @param list Liste de menus (type: JList<MenuListItem>)
+     *
+     * @return JScrollPane - Menu déroulant avec les commandes affichées
+     */
     public static JScrollPane setupMenuScrollPane(JList<MenuListItem> list) {
         // Définir un renderer pour afficher les MenuListItem
         list.setCellRenderer(new MenuListItemRenderer());
@@ -154,6 +182,8 @@ public class Templates {
 
         // Personnalisation de la barre de défilement
         scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+
+            //Changer les affichages par défaut des boutons de déroulement
             @Override
             protected void configureScrollBarColors() {
                 this.thumbColor = new Color(107, 107, 107); // Couleur de la barre
@@ -188,73 +218,4 @@ public class Templates {
 
         return scrollPane;
     }
-
-
-    public static JButton setupClassicButton(String text, Runnable action) {
-        JButton button = new JButton(text);
-        button.addActionListener(e -> action.run());
-        button.setBackground(Color.white);
-        button.setForeground(Color.BLACK);
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
-        button.setFocusPainted(false);
-        button.setRolloverEnabled(false);
-        return button;
-    }
-
-    public static JPanel returnMenuButton(GridBagConstraints gbc) {
-        // Panneau secondaire avec BorderLayout
-        JPanel borderPanel = new JPanel(new BorderLayout());
-
-        // Titre de la section
-        JButton topButton = Templates.setupClassicButton("Retour page d'accueil",
-                () -> PageManager.getInstance().showPage(new MainPage()));
-
-        topButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        topButton.setMargin(new Insets(5, 0, 5, 0)); // Supprime les marges internes
-        topButton.setPreferredSize(new Dimension(150, 30));
-
-        borderPanel.add(topButton, BorderLayout.WEST);
-
-        // Ajouter borderPanel au mainPanel avec GridBagConstraints
-        gbc.gridx = 0; // Colonne
-        gbc.gridy = 0; // Ligne
-        gbc.gridwidth = 2; // Étend sur deux colonnes
-        gbc.weightx = 1.0; // S'étend horizontalement
-        gbc.weighty = 0.0; // Pas de poids vertical
-        gbc.fill = GridBagConstraints.HORIZONTAL; // Remplir horizontalement
-        gbc.insets = new Insets(5, 5, 5, 5); // Marges autour
-
-        return borderPanel;
-    }
-
-    public static JButton setupSingleToggleButton(String text, Runnable actionOn, Runnable actionOff) {
-        JButton button = new JButton(text);
-        button.setBackground(Color.WHITE);
-        button.setFont(new Font("Arial", Font.PLAIN, 14));
-        button.setContentAreaFilled(false);
-        button.setOpaque(true);
-        button.setFocusPainted(false);
-        button.setRolloverEnabled(false);
-
-        // Utilisation d'une variable pour suivre l'état du bouton
-        boolean[] isActive = {false};
-
-        button.addActionListener(e -> {
-            isActive[0] = !isActive[0];  // Inverse l'état du bouton
-            if (isActive[0]) {
-                button.setBackground(Color.GREEN);  // Bouton activé
-                actionOn.run();
-            } else {
-                button.setBackground(Color.WHITE);  // Bouton désactivé
-                actionOff.run();
-            }
-        });
-
-        return button;
-    }
-
-
-
 }

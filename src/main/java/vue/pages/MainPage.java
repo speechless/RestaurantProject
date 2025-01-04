@@ -12,7 +12,7 @@ public class MainPage implements PageContent {
     public JPanel getContentPanel() {
         // Création d'un panneau principal
         JPanel mainPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagConstraints gbcMain = new GridBagConstraints();
         RequeteRestaurant rq = new RequeteRestaurant();
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,66 +27,67 @@ public class MainPage implements PageContent {
         JLabel sectionTitle = new JLabel("Liste des commandes en cours", JLabel.CENTER);
         sectionTitle.setFont(new Font("Arial", Font.BOLD, 16));
         sectionTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
-        gbcLeft.gridx = 0;
-        gbcLeft.gridy = 0;
+        gbcLeft.gridx = 0; //1ère ligne
+        gbcLeft.gridy = 0; //1ère colonne
         gbcLeft.weightx = 1.0;
-        gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL; //Prend toute la largueur
         leftSection.add(sectionTitle, gbcLeft);
 
-        JButton createNewCommandButton = Templates.setupClassicButton("Nouvelle commande",
+        JButton createNewCommandButton = ButtonTemplates.setupClassicButton("Nouvelle commande",
                 () -> PageManager.getInstance().showPage(new RoomPage()));
         createNewCommandButton.setPreferredSize(new Dimension(0, 50)); // Hauteur fixe de 50px
-        gbcLeft.gridy = 1;
+        gbcLeft.gridy = 1; //2ème colonne
         gbcLeft.weightx = 1.0;
-        gbcLeft.fill = GridBagConstraints.HORIZONTAL;
+        gbcLeft.fill = GridBagConstraints.HORIZONTAL; //Prend toute la largueur
         leftSection.add(createNewCommandButton, gbcLeft);
 
-        //Remplir liste
-        //listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
+        //Import BDD
         JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesCourantes());
-        JScrollPane scrollPane = Templates.setupScrollPane(list1);
-        gbcLeft.gridy = 2;
+        JScrollPane scrollPane = Templates.setupCommandeScrollPane(list1);
+
+        gbcLeft.gridy = 2; //3ème colonne
         gbcLeft.weighty = 1.0; // Prend tout l'espace vertical restant
         gbcLeft.fill = GridBagConstraints.BOTH; // Remplit horizontalement et verticalement
         leftSection.add(scrollPane, gbcLeft);
 
         // Section gauche
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.weightx = 0.3; // 30% de la largeur
-        gbc.weighty = 1.0; // Prendre tout l'espace vertical
-        gbc.fill = GridBagConstraints.BOTH;
+        gbcMain.gridx = 0; //1ère ligne de la page
+        gbcMain.gridy = 0; //1ère colonne de la page
+        gbcMain.weightx = 0.3; // 30% de la largeur
+        gbcMain.weighty = 1.0; // Prendre tout l'espace vertical
+        gbcMain.fill = GridBagConstraints.BOTH;
 
-        mainPanel.add(leftSection, gbc);
+        mainPanel.add(leftSection, gbcMain);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
 // Espace vide central
-        gbc.gridx = 1;
-        gbc.weightx = 0.3;
+        gbcMain.gridx = 1;  //2ème ligne de la page
+        gbcMain.weightx = 0.3; // 30% de la largeur
         JPanel spacerX = new JPanel();
         spacerX.setOpaque(false);
-        mainPanel.add(spacerX, gbc);
+        mainPanel.add(spacerX, gbcMain);
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Section droite
         JPanel rightSection = new JPanel();
-        gbc.gridx = 2;
-        gbc.weightx = 0.4;
-        mainPanel.add(rightSection, gbc);
+        gbcMain.gridx = 2; //3ème ligne de la page
+        gbcMain.weightx = 0.4; // 40% de la largeur
+        mainPanel.add(rightSection, gbcMain);
 
 
         // Diviser la section droite
         rightSection.setLayout(new GridBagLayout());
-        GridBagConstraints gbc2 = new GridBagConstraints();
-        gbc2.gridx = 0;
-        gbc2.fill = GridBagConstraints.BOTH;
-        gbc2.weightx = 1.0;
+        GridBagConstraints gbcRight = new GridBagConstraints();
+        gbcRight.gridx = 0; //1ère ligne de la section de droite
+        gbcRight.fill = GridBagConstraints.BOTH;
+        gbcRight.weightx = 1.0;
 
 // Partie 1 : Carte des menus
-        gbc2.gridy = 0;
-        gbc2.weighty = 0.2; // 20% de hauteur
+        gbcRight.gridy = 0; //1ère colonne
+        gbcRight.weighty = 0.2; // 20% de hauteur
         JPanel topSection = new JPanel(new BorderLayout());
         topSection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -97,7 +98,7 @@ public class MainPage implements PageContent {
         JPanel topButtonContainer = new JPanel(new GridBagLayout()); // Centrage parfait avec GridBagLayout
         topButtonContainer.setOpaque(false); // Transparence pour ne pas perturber le style
 
-        JButton topButton = Templates.setupClassicButton("Voir la carte",
+        JButton topButton = ButtonTemplates.setupClassicButton("Voir la carte",
                 () -> PageManager.getInstance().showPage(new MenuPage()));
 
         // Limiter la largeur du bouton
@@ -105,11 +106,11 @@ public class MainPage implements PageContent {
         topButtonContainer.add(topButton);
         topSection.add(topButtonContainer, BorderLayout.CENTER);
 
-        rightSection.add(topSection, gbc2);
+        rightSection.add(topSection, gbcRight);
 
 // Partie 2 : Plan de salle
-        gbc2.gridy = 1;
-        gbc2.weighty = 0.2; // 20% de hauteur
+        gbcRight.gridy = 1; //2ème ligne
+        gbcRight.weighty = 0.2; // 20% de hauteur
         JPanel middleSection = new JPanel(new BorderLayout());
         middleSection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -118,7 +119,7 @@ public class MainPage implements PageContent {
         midButtonContainer.setOpaque(false); // Transparence pour ne pas perturber le style
 
         JLabel middleTitle = new JLabel("Plan de salle");
-        JButton middleButton = Templates.setupClassicButton("Voir plan de salle",
+        JButton middleButton = ButtonTemplates.setupClassicButton("Voir plan de salle",
                 ()-> PageManager.getInstance().showPage(new RoomPage()));
         middleSection.add(middleTitle, BorderLayout.NORTH);
 
@@ -127,54 +128,54 @@ public class MainPage implements PageContent {
         midButtonContainer.add(middleButton);
         middleSection.add(midButtonContainer, BorderLayout.CENTER);
 
-        rightSection.add(middleSection, gbc2);
+        rightSection.add(middleSection, gbcRight);
 
 // Partie 3 : Spacer
-        gbc2.gridy = 2;
-        gbc2.weighty = 0.1;
+        gbcRight.gridy = 2; //3ème ligne
+        gbcRight.weighty = 0.1;
         JPanel spacerY = new JPanel();
         spacerY.setOpaque(false); // Rendre le panneau transparent
-        rightSection.add(spacerY, gbc2);
+        rightSection.add(spacerY, gbcRight);
 
 // Partie 4 : Commandes récentes
-        gbc2.gridy = 3;
-        gbc2.weighty = 0.5; // 30% de hauteur
+        gbcRight.gridy = 3; //4ème ligne
+        gbcRight.weighty = 0.5; // 30% de hauteur
         JPanel bottomSection = new JPanel(new BorderLayout());
         bottomSection.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         JLabel bottomTitle = new JLabel("Commandes terminées");
 
         //import depuis la BDD
-
         JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain());
 
-
+        //Diminuer la taille du ScrollPane
         list2.setFixedCellHeight(100);
         list2.setVisibleRowCount(4);
 
-        JScrollPane scrollPane2 = Templates.setupScrollPane(list2);
-        /*scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);*/
-
+        JScrollPane scrollPane2 = Templates.setupCommandeScrollPane(list2);
         int preferredHeight = list2.getFixedCellHeight() * list2.getVisibleRowCount();
         scrollPane2.setPreferredSize(new Dimension(100, preferredHeight));
 
-        JButton viewMoreButton = Templates.setupClassicButton("Voir Plus",
+        //Bouton Voir Plus
+        JButton viewMoreButton = ButtonTemplates.setupClassicButton("Voir Plus",
                 ()-> PageManager.getInstance().showPage(new PreviousCommandsPage()));
 
-        // Ajout des composants
+        // Ajout des composants de la section du bas
         bottomSection.add(bottomTitle, BorderLayout.NORTH);
         bottomSection.add(scrollPane2, BorderLayout.CENTER);
         bottomSection.add(viewMoreButton, BorderLayout.SOUTH);
-        rightSection.add(bottomSection, gbc2);
+
+        rightSection.add(bottomSection, gbcRight);
+
 //////////////////////////////////////////////////////////////////////////////////////////////////
-//Couleurs
-        mainPanel.setBackground(Templates.getPrimaryColor());
-        rightSection.setBackground(Templates.getPrimaryColor());
-        leftSection.setBackground(Templates.getPrimaryColor());
-        middleSection.setBackground(Templates.getPrimaryColor());
-        topSection.setBackground(Templates.getPrimaryColor());
-        bottomSection.setBackground(Templates.getPrimaryColor());
+
+        //Couleurs
+        mainPanel.setBackground(Commons.getPrimaryColor());
+        rightSection.setBackground(Commons.getPrimaryColor());
+        leftSection.setBackground(Commons.getPrimaryColor());
+        middleSection.setBackground(Commons.getPrimaryColor());
+        topSection.setBackground(Commons.getPrimaryColor());
+        bottomSection.setBackground(Commons.getPrimaryColor());
 
         return mainPanel;
     }

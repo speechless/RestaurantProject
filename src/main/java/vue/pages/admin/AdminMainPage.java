@@ -1,8 +1,7 @@
 package vue.pages.admin;
 
 import vue.pages.*;
-
-import vue.utils.Templates;
+import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -23,9 +22,9 @@ public class AdminMainPage implements PageContent {
         JPanel modifCarte = new JPanel(new GridLayout(2, 1, 5, 5)); // Utilise GridLayout pour uniformiser
         JLabel st = new JLabel("Gérer la carte du restaurant", JLabel.CENTER);
         st.setFont(new Font("Arial", Font.BOLD, 16));
-        st.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
-        modifCarte.add(st, BorderLayout.NORTH); // Ajouter dans la position NORTH
-        JButton modifCarteButton = Templates.setupClassicButton("Modifier la carte",
+        st.setBorder(new EmptyBorder(10, 0, 10, 0));
+        modifCarte.add(st, BorderLayout.NORTH);
+        JButton modifCarteButton = ButtonTemplates.setupClassicButton("Modifier la carte",
                 () -> {
                     System.out.println("Page de la modification de carte");
                 });
@@ -57,12 +56,12 @@ public class AdminMainPage implements PageContent {
         modifCartePlus.add(titleModifPlus, BorderLayout.NORTH);
 
         JPanel buttonsPanel = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
-        JButton modifMenusButton = Templates.setupClassicButton("Modifier les menus",
+        JButton modifMenusButton = ButtonTemplates.setupClassicButton("Modifier les menus",
                 () -> {
                     System.out.println("Page de la modification des menus");
                 });
         buttonsPanel.add(modifMenusButton);
-        JButton modifItemsButton = Templates.setupClassicButton("Modifier les items",
+        JButton modifItemsButton = ButtonTemplates.setupClassicButton("Modifier les items",
                 () -> {
                     System.out.println("Page de la modification des items");
                 });
@@ -102,7 +101,7 @@ public class AdminMainPage implements PageContent {
         analyticsTitle.setFont(new Font("Arial", Font.BOLD, 16));
         analyticsTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
         analytics.add(analyticsTitle, BorderLayout.NORTH); // Ajouter dans la position NORTH
-        JButton SellsHistory = Templates.setupClassicButton("Statistiques générales du restaurant",
+        JButton SellsHistory = ButtonTemplates.setupClassicButton("Statistiques générales du restaurant",
                 () -> {
                     System.out.println("Page de la modification de carte");
                 });
@@ -135,14 +134,14 @@ public class AdminMainPage implements PageContent {
         modifRestaurant.add(titleModifRestaurant, BorderLayout.NORTH);
 
         JPanel buttonsPanelRight = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
-        JButton roomModifButton = Templates.setupClassicButton("Modifier la salle",
+        JButton roomModifButton = ButtonTemplates.setupClassicButton("Modifier la salle",
                 () -> {
                     System.out.println("Page de la modification de la salle");
                 });
         buttonsPanelRight.add(roomModifButton);
-        JButton modifInfosRestaurant = Templates.setupClassicButton("Modifier les infos du restau",
+        JButton modifInfosRestaurant = ButtonTemplates.setupClassicButton("Modifier les infos du restaurant",
                 () -> {
-                    System.out.println("Page de la modification des infos du restau");
+                    System.out.println("Page de la modification des infos du restaurant");
                 });
         buttonsPanelRight.add(modifInfosRestaurant);
         modifRestaurant.add(buttonsPanelRight, BorderLayout.CENTER);
