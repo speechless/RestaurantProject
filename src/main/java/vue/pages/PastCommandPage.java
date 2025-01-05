@@ -4,31 +4,20 @@ import modele.Commande;
 import requete.RequeteRestaurant;
 import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
-import vue.utils.order.OrderMenuListPanel;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CommandPage implements PageContent {
+public class PastCommandPage implements PageContent {
     private final RequeteRestaurant rq = RequeteRestaurant.getInstance();
     private final Commande commande;
 
     private final OrderContentPanel orderContentPanel;
-    private final OrderMenuListPanel orderMenuListPanel;
 
-    public CommandPage() {
-        this.commande = new Commande();
-        this.rq.saveCommande(this.commande);
-
-        this.orderContentPanel = new OrderContentPanel(this.commande,false);
-        this.orderMenuListPanel = new OrderMenuListPanel(this.orderContentPanel);
-    }
-
-    public CommandPage(int id) {
+    public PastCommandPage(int id) {
         this.commande = this.rq.getCommande(id);
 
-        this.orderContentPanel = new OrderContentPanel(this.commande,false);
-        this.orderMenuListPanel = new OrderMenuListPanel(this.orderContentPanel);
+        this.orderContentPanel = new OrderContentPanel(this.commande,true);
     }
 
     @Override
@@ -64,12 +53,26 @@ public class CommandPage implements PageContent {
         gbc.fill = GridBagConstraints.BOTH; // Remplir complètement
         mainPanel.add(this.orderContentPanel, gbc);
 
+        JPanel settingsPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbcSettings = new GridBagConstraints();
+        gbcSettings.gridy = 0;
+        JButton ticketButton  = ButtonTemplates.setupClassicButton("Imprimer le ticket",
+                ()->System.out.println("Impression du ticket"));
+        gbcSettings.insets = new Insets(10, 10, 10, 10);
+        settingsPanel.add(ticketButton,gbcSettings);
+
+        gbcSettings.gridy = 1;
+        JButton billButton  = ButtonTemplates.setupClassicButton("Imprimer la facture",
+                ()->System.out.println("Impression de la facture"));
+        gbcSettings.insets = new Insets(10, 10, 10, 10);
+        settingsPanel.add(billButton,gbcSettings);
+
         gbc.gridx = 1;
         gbc.gridy = 1;
         gbc.weightx = 0.5; // 50% de l'espace horizontal
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
-        mainPanel.add(this.orderMenuListPanel, gbc);
+        mainPanel.add(settingsPanel, gbc);
 
         return mainPanel;
     }

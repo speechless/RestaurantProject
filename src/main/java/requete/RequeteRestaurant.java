@@ -34,34 +34,33 @@ public class RequeteRestaurant {
         return commandables;
     }
 
-    public JList<MenuListItem> parseListCommandables(){
+    public JList<MenuListItem> parseListCommandables() {
         Commons commons = new Commons();
         List<Commandable> items = getCommandables();
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
 
-        for(Commandable i : items){
-            if(i instanceof Menu){
+        for (Commandable i : items) {
+            if (i instanceof Menu) {
                 listModel.addElement(new MenuListItem(
                         i.getNom(),
                         commons.loadImage("img/Whiteboard.png"),
                         i.getPrixHT(),
-                        i.getPrixHT() * (1+i.getTauxTVA()),
-                        i.isVisibiliteCarte(),false));
-                for(Item k : getItemsFromMenu(i.getId())){
+                        i.getPrixHT() * (1 + i.getTauxTVA()),
+                        i.isVisibiliteCarte(), false));
+                for (Item k : getItemsFromMenu(i.getId())) {
                     listModel.addElement(new MenuListItem(
-                            " * "+i.getNom()+"---"+k.getNom(),
+                            " * " + i.getNom() + "---" + k.getNom(),
                             commons.loadImage(""),
                             0,
                             0,
-                            false,true));
+                            false, true));
                 }
-            }
-            else{
+            } else {
                 listModel.addElement(new MenuListItem(i.getNom(),
                         commons.loadImage(""),
                         i.getPrixHT(),
-                        i.getPrixHT() * (1+i.getTauxTVA()),
-                        i.isVisibiliteCarte(),false));
+                        i.getPrixHT() * (1 + i.getTauxTVA()),
+                        i.isVisibiliteCarte(), false));
             }
         }
         JList<MenuListItem> list = new JList<>(listModel);
@@ -93,7 +92,7 @@ public class RequeteRestaurant {
         return commandes;
     }
 
-    public List<Item> getItemsFromMenu(int menuId){
+    public List<Item> getItemsFromMenu(int menuId) {
         EntityManager em = emf.createEntityManager();
         String strQuery = "SELECT i FROM Menu m " +
                 "JOIN m.listeItems i WHERE m.id = :menuId";
@@ -133,10 +132,10 @@ public class RequeteRestaurant {
         EntityTransaction et = em.getTransaction();
 
         //try {
-            et.begin();
-em.merge(commande);
-            System.out.println("persist");
-            et.commit();
+        et.begin();
+        em.merge(commande);
+        System.out.println("persist");
+        et.commit();
         //}
         /*catch (Exception ex) {
             System.out.println("exception : " + ex);

@@ -4,6 +4,7 @@ import modele.Commandable;
 import modele.Commande;
 import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
+import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -15,13 +16,11 @@ public class OrderContentPanel extends JPanel {
     private DefaultListModel<QuantiteCommande> orderedItemsListModel;
     private RequeteRestaurant rq = RequeteRestaurant.getInstance();
 
-    public OrderContentPanel(Commande commande) {
+    public OrderContentPanel(Commande commande, boolean completed) {
         this.commande = commande;
 
         this.setLayout(new GridBagLayout());
         this.setBorder(new EmptyBorder(20, 20, 20, 10)); // Marges autour de la section
-
-        GridBagConstraints gbcOrderContentList = new GridBagConstraints();
 
         // Modèle de liste
         DefaultListModel<QuantiteCommande> model = new DefaultListModel<>();
@@ -31,44 +30,55 @@ public class OrderContentPanel extends JPanel {
         System.out.println(this.commande.getCompositionCommande());
         this.orderedItemsListModel = model;
 
+        GridBagConstraints gbcOrderContentList = new GridBagConstraints();
+        gbcOrderContentList.gridx = 0;
+        gbcOrderContentList.gridy = 0;
+        gbcOrderContentList.weightx = 1.0;
+        gbcOrderContentList.weighty = 1.0;
+        gbcOrderContentList.fill = GridBagConstraints.BOTH; // La liste remplit tout l'espace disponible
+        gbcOrderContentList.insets = new Insets(5, 5, 5, 5);
+
         // JList avec un renderer personnalisé
         JList<QuantiteCommande> orderList = new JList<>(model);
         orderList.setCellRenderer(new OrderedItemRenderer());
 
         JScrollPane sp = new JScrollPane(orderList);
 
-        gbcOrderContentList.gridx = 0;
-        gbcOrderContentList.gridy = 0;
+        // Largeur à 80% via un panneau intermédiaire
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(sp, BorderLayout.CENTER);
+        listPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.8), (int)(this.getHeight() * 0.8)));
         this.add(sp, gbcOrderContentList);
-
-        // Bouton de suppression
-        JButton removeButton = new JButton("Retirer de la commande");
-        removeButton.addActionListener(e -> {
-            QuantiteCommande elementSelectionne = orderList.getSelectedValue();
-            System.out.println("sélectionné :");
-            System.out.println(elementSelectionne);
-            if (elementSelectionne != null) {
-                System.out.println("retrait de la commande");
-                this.commande.retraitCommande(elementSelectionne.getProduit());
-                System.out.println("commande :");
-                System.out.println(this.commande.getCompositionCommande());
-                System.out.println("séletionné :");
+        if(!completed) {
+            // Bouton de suppression
+            JButton removeButton = ButtonTemplates.setupClassicButton("Retirer de la commande", () -> {
+                QuantiteCommande elementSelectionne = orderList.getSelectedValue();
+                System.out.println("sélectionné :");
                 System.out.println(elementSelectionne);
-                if (elementSelectionne.getQuantite() <= 0) {
-                    model.removeElement(elementSelectionne);
-                }
-                else {
-                    model.set(orderList.getSelectedIndex(), elementSelectionne);
-                }
+                if (elementSelectionne != null) {
+                    System.out.println("retrait de la commande");
+                    this.commande.retraitCommande(elementSelectionne.getProduit());
+                    System.out.println("commande :");
+                    System.out.println(this.commande.getCompositionCommande());
+                    System.out.println("séletionné :");
+                    System.out.println(elementSelectionne);
+                    if (elementSelectionne.getQuantite() <= 0) {
+                        model.removeElement(elementSelectionne);
+                    } else {
+                        model.set(orderList.getSelectedIndex(), elementSelectionne);
+                    }
 
-                System.out.println(this.commande.getCompositionCommande());
-                rq.saveCommande(this.commande);
-            }
-        });
+                    System.out.println(this.commande.getCompositionCommande());
+                    rq.saveCommande(this.commande);
+                }
+            });
 
-        gbcOrderContentList.gridx = 0;
-        gbcOrderContentList.gridy = 1;
-        this.add(removeButton, gbcOrderContentList);
+            removeButton.setPreferredSize(new Dimension(200, 30));
+
+            gbcOrderContentList.gridy = 1;
+            this.add(removeButton, gbcOrderContentList);
+        }
+
     }
 
     public void addProductToOrder(Commandable product) {

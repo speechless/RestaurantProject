@@ -170,6 +170,23 @@ public class MainPage implements PageContent {
         //import depuis la BDD
 
         JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain());
+        list2.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    PageManager.getInstance().showPage(new PastCommandPage(list2.getSelectedValue().getId()));
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
 
 
         list2.setFixedCellHeight(100);

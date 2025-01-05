@@ -112,26 +112,10 @@ public class Templates {
      * @return JScrollPane - Menu déroulant avec les commandes affichées
      */
     public static JScrollPane setupCommandeScrollPane(JList<CommandListItem> list) {
-        final long[] lastClickTime = {0}; // Temps du dernier clic
         list.setCellRenderer(new CommandListItemRenderer());
 
         // Ajouter la liste dans un JScrollPane
         JScrollPane scrollPane = new JScrollPane(list);
-        // Personnalisation de la barre de défilement
-        list.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                long currentTime = System.currentTimeMillis();
-                if (currentTime - lastClickTime[0] <= Commons.DOUBLE_CLICK_INTERVAL) {
-                    int index = list.locationToIndex(e.getPoint());
-                    if (index != -1) { // Si un élément est sélectionné
-                        CommandListItem selectedItem = list.getModel().getElementAt(index);
-                        JOptionPane.showMessageDialog(list, "Double-clic rapide sur : " + selectedItem.toString());
-                    }
-                }
-                lastClickTime[0] = currentTime; // Mettre à jour le temps du dernier clic
-            }
-        });
 
         scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
             @Override
