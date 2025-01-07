@@ -14,7 +14,6 @@ import java.io.FileOutputStream;
 import com.itextpdf.kernel.pdf.PdfDocument;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import vue.pages.PageManager;
-import vue.pages.PreviousCommandsPage;
 import vue.utils.ButtonTemplates;
 
 public class CreateBill implements PageContent {

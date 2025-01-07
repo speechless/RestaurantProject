@@ -1,9 +1,5 @@
 package vue.utils;
 
-import com.itextpdf.kernel.pdf.PdfWriter;
-import com.itextpdf.layout.Document;
-import com.itextpdf.layout.element.Paragraph;
-
 import vue.pages.*;
 import vue.pages.admin.AdminMainPage;
 import javax.swing.*;
@@ -11,7 +7,6 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.ByteArrayOutputStream;
 
 public class Templates {
     /**

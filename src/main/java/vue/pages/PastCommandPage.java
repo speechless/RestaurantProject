@@ -75,7 +75,6 @@ public class PastCommandPage implements PageContent {
         gbcSettings.gridy = 1;
 
         //Gestionnaire de facture
-        CreateBill billPage = new CreateBill(commande);
         JButton billButton  = ButtonTemplates.setupClassicButton("Imprimer la facture",
                 ()-> PageManager.getInstance().showPage(new CreateBill(commande)));
         gbcSettings.insets = new Insets(10, 10, 10, 10);
