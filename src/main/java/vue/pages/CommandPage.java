@@ -11,14 +11,14 @@ import java.awt.*;
 
 public class CommandPage implements PageContent {
     private final RequeteRestaurant rq = RequeteRestaurant.getInstance();
-    private final Commande commande;
+    private Commande commande;
 
     private final OrderContentPanel orderContentPanel;
     private final OrderMenuListPanel orderMenuListPanel;
 
     public CommandPage() {
         this.commande = new Commande();
-        this.rq.saveCommande(this.commande);
+        this.commande = this.rq.saveCommande(this.commande);
 
         this.orderContentPanel = new OrderContentPanel(this.commande,false);
         this.orderMenuListPanel = new OrderMenuListPanel(this.orderContentPanel);

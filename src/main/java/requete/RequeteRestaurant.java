@@ -127,26 +127,97 @@ public class RequeteRestaurant {
 //        return commandes;
 //    }
 
-    public void saveCommande(Commande commande) {
+    public QuantiteCommande creerQuantiteCommande(Commande commande, Commandable commandable) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
 
-        //try {
-        et.begin();
-        em.merge(commande);
-        System.out.println("persist");
-        et.commit();
-        //}
-        /*catch (Exception ex) {
-            System.out.println("exception : " + ex);
-            System.out.println("rollback");
-            et.rollback();
+        try {
+            et.begin();
+
+            QuantiteCommande quantiteCommande = new QuantiteCommande(commande, commandable, 1);
+            em.persist(quantiteCommande);
+
+            et.commit();
+            return quantiteCommande;
         }
         finally {
             if (em != null && em.isOpen()) {
                 em.close();
             }
+        }
+    }
+
+    public Commande retirerProduitCommande(Commande commande, Commandable produit) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.retraitCommande(produit);
+            commande = em.merge(commande);
+            //produit = em.merge(produit);
+
+            //System.out.println("persist");
+            et.commit();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commande;
+    }
+
+    public Commande ajouterProduitCommande(Commande commande, Commandable produit) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.ajoutCommande(produit);
+            //quantiteCommande = em.merge(quantiteCommande);
+//            if (quantiteCommande.getQuantite() == 1) {
+//                em.persist(quantiteCommande);
+//            }
+            commande = em.merge(commande);
+            //produit = em.merge(produit);
+
+
+            //System.out.println("persist");
+            et.commit();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commande;
+    }
+
+    public Commande saveCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande = em.merge(commande);
+            System.out.println("persist");
+            et.commit();
+        }
+        /*catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
         }*/
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commande;
     }
 
     public static void main(String[] args) {
