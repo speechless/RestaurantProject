@@ -49,6 +49,19 @@ public class QuantiteCommande {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        QuantiteCommande that = (QuantiteCommande) o;
+        return Objects.equals(commandeSource, that.commandeSource) && Objects.equals(produit, that.produit);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(commandeSource, produit);
+    }
+
+    @Override
     public String toString() {
         return produit.getNom() + " x" + quantite;
     }

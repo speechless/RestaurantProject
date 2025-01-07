@@ -197,61 +197,19 @@ public class Commande {
         return id;
     }
 
-    /*
-        public int getHashcode() {
-            return hashcode;
-        }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Commande commande = (Commande) o;
+        return numTable == commande.numTable && Objects.equals(dateDebut, commande.dateDebut);
+    }
 
-        @Override
-        public int hashCode() {
-            try {
-                // Concaténation des champs pour générer une chaîne unique
-                String concatenatedFields = id + ":" +
-                        compositionCommande + ":" +
-                        numTable + ":" +
-                        dateDebut + ":" +
-                        montantTVA5_5 + ":" +
-                        montantTVA10 + ":" +
-                        montantTVA20 + ":" +
-                        totalHT + ":" +
-                        totalTTC;
+    @Override
+    public int hashCode() {
+        return Objects.hash(numTable, dateDebut);
+    }
 
-                // Calcul du hachage SHA-256
-                MessageDigest digest = MessageDigest.getInstance("SHA-256");
-                byte[] hashBytes = digest.digest(concatenatedFields.getBytes(StandardCharsets.UTF_8));
-
-                // Limitation à un entier 32 bits en utilisant les premiers octets du hachage
-                int hashCode = ((hashBytes[0] & 0xFF) << 24) |
-                        ((hashBytes[1] & 0xFF) << 16) |
-                        ((hashBytes[2] & 0xFF) << 8) |
-                        (hashBytes[3] & 0xFF);
-
-                return hashCode & 0x7FFFFFFF;
-
-            } catch (NoSuchAlgorithmException e) {
-                throw new RuntimeException("SHA-256 n'est pas disponible sur ce système", e);
-            }
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj) return true;
-            if (obj == null || getClass() != obj.getClass()) return false;
-            Commande other = (Commande) obj;
-
-            // Comparaison des champs
-            return Objects.equals(id, other.id) &&
-                    Objects.equals(compositionCommande, other.compositionCommande) &&
-                    Objects.equals(listeRecus, other.listeRecus) &&
-                    Objects.equals(numTable, other.numTable) &&
-                    Objects.equals(dateDebut, other.dateDebut) &&
-                    Double.compare(other.montantTVA5_5, montantTVA5_5) == 0 &&
-                    Double.compare(other.montantTVA10, montantTVA10) == 0 &&
-                    Double.compare(other.montantTVA20, montantTVA20) == 0 &&
-                    Double.compare(other.totalHT, totalHT) == 0 &&
-                    Double.compare(other.totalTTC, totalTTC) == 0 &&
-                    Objects.equals(finalise, other.finalise);
-        }*/
     @Override
     public String toString() {
         String compCmd = "[";

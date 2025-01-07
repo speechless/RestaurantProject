@@ -13,6 +13,7 @@ import java.awt.*;
 public class OrderContentPanel extends JPanel {
 
     private Commande commande;
+    private JList<QuantiteCommande> orderList;
     private DefaultListModel<QuantiteCommande> orderedItemsListModel;
     private RequeteRestaurant rq = RequeteRestaurant.getInstance();
 
@@ -39,10 +40,10 @@ public class OrderContentPanel extends JPanel {
         gbcOrderContentList.insets = new Insets(5, 5, 5, 5);
 
         // JList avec un renderer personnalisé
-        JList<QuantiteCommande> orderList = new JList<>(model);
-        orderList.setCellRenderer(new OrderedItemRenderer());
+        this.orderList = new JList<>(model);
+        this.orderList.setCellRenderer(new OrderedItemRenderer());
 
-        JScrollPane sp = new JScrollPane(orderList);
+        JScrollPane sp = new JScrollPane(this.orderList);
 
         // Largeur à 80% via un panneau intermédiaire
         JPanel listPanel = new JPanel(new BorderLayout());
@@ -56,10 +57,7 @@ public class OrderContentPanel extends JPanel {
                 if (elementSelectionne != null) {
                     this.commande = rq.retirerProduitCommande(this.commande, elementSelectionne.getProduit());
 
-                    orderedItemsListModel.clear();
-                    for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
-                        orderedItemsListModel.addElement(quantiteCommande);
-                    }
+                    actualiserAffichage();
 
                     System.out.println(this.commande.getCompositionCommande());
                 }
@@ -75,36 +73,21 @@ public class OrderContentPanel extends JPanel {
 
     public void addProductToOrder(Commandable product) {
         if (product != null) {
-
-            for (int i = 0; i < orderedItemsListModel.getSize(); i++) {
-                QuantiteCommande q = orderedItemsListModel.get(i);
-                if (q.getProduit().equals(product)) {
-                    this.commande = rq.ajouterProduitCommande(this.commande, product);
-
-                    orderedItemsListModel.clear();
-                    for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
-                        orderedItemsListModel.addElement(quantiteCommande);
-                    }
-                    return;
-                }
-            }
-
-
-            // Lors de l'ajout dans la commande d'un item qui n'était pas présent, il y a un problème qui fait
-            // que quand on veut en rajouter un autre il y a duplication dans la bdd
-            // Le problème se règle quand on relance l'application
             this.commande = rq.ajouterProduitCommande(this.commande, product);
-
-            orderedItemsListModel.clear();
-            for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
-                orderedItemsListModel.addElement(quantiteCommande);
-            }
-
-
+            actualiserAffichage();
         }
     }
 
-    public DefaultListModel<QuantiteCommande> getOrderedItemsListModel() {
-        return this.orderedItemsListModel;
+    private void actualiserAffichage() {
+        QuantiteCommande quantiteSelectionnee = this.orderList.getSelectedValue();
+
+        orderedItemsListModel.clear();
+        for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
+            orderedItemsListModel.addElement(quantiteCommande);
+            if (quantiteCommande.equals(quantiteSelectionnee)) {
+                this.orderList.setSelectedValue(quantiteSelectionnee, true);
+            }
+        }
+
     }
 }
