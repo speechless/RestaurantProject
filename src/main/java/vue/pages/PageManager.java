@@ -27,6 +27,10 @@ public class PageManager {
         return instance;
     }
 
+    public JFrame getFrame(){
+        return frame;
+    }
+
     public void showPage(PageContent page) {
         frame.getContentPane().removeAll();
         String className =  page.getClass().getName();

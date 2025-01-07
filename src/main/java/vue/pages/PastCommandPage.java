@@ -2,11 +2,16 @@ package vue.pages;
 
 import modele.Commande;
 import requete.RequeteRestaurant;
+import vue.actions.CreateBill;
+import vue.actions.CreateTicket;
 import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
+
+
 
 public class PastCommandPage implements PageContent {
     private final RequeteRestaurant rq = RequeteRestaurant.getInstance();
@@ -57,13 +62,22 @@ public class PastCommandPage implements PageContent {
         GridBagConstraints gbcSettings = new GridBagConstraints();
         gbcSettings.gridy = 0;
         JButton ticketButton  = ButtonTemplates.setupClassicButton("Imprimer le ticket",
-                ()->System.out.println("Impression du ticket"));
+                ()-> {
+                    try {
+                        CreateTicket.printTicket(commande);
+                    } catch (IOException e) {
+                        JOptionPane.showMessageDialog(null,"Erreur\nImpossible d'imprimer ce ticket");
+                    }
+                });
         gbcSettings.insets = new Insets(10, 10, 10, 10);
         settingsPanel.add(ticketButton,gbcSettings);
 
         gbcSettings.gridy = 1;
+
+        //Gestionnaire de facture
+        CreateBill billPage = new CreateBill(commande);
         JButton billButton  = ButtonTemplates.setupClassicButton("Imprimer la facture",
-                ()->System.out.println("Impression de la facture"));
+                ()-> PageManager.getInstance().showPage(new CreateBill(commande)));
         gbcSettings.insets = new Insets(10, 10, 10, 10);
         settingsPanel.add(billButton,gbcSettings);
 

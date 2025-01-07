@@ -8,6 +8,8 @@ import vue.utils.Templates;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class PreviousCommandsPage implements PageContent {
     @Override
@@ -103,8 +105,27 @@ public class PreviousCommandsPage implements PageContent {
         JPanel leftMenuSection = new JPanel(new BorderLayout());
         leftMenuSection.setBorder(new EmptyBorder(0, 20, 10, 10)); // Marges autour de la section
         // Liste
-        JList<CommandListItem> list1 =  CommandListItem.createList(rr.getCommandesTerminees());
-        JScrollPane sp = Templates.setupCommandeScrollPane(list1);
+        JList<CommandListItem> listPastCommands =  CommandListItem.createList(rr.getCommandesTerminees());
+
+        listPastCommands.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    PageManager.getInstance().showPage(new PastCommandPage(listPastCommands.getSelectedValue().getId()));
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+
+        JScrollPane sp = Templates.setupCommandeScrollPane(listPastCommands);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 
         // Ajouter la section au mainPanel
