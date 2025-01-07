@@ -53,23 +53,15 @@ public class OrderContentPanel extends JPanel {
             // Bouton de suppression
             JButton removeButton = ButtonTemplates.setupClassicButton("Retirer de la commande", () -> {
                 QuantiteCommande elementSelectionne = orderList.getSelectedValue();
-                System.out.println("sélectionné :");
-                System.out.println(elementSelectionne);
                 if (elementSelectionne != null) {
-                    System.out.println("retrait de la commande");
-                    this.commande.retraitCommande(elementSelectionne.getProduit());
-                    System.out.println("commande :");
-                    System.out.println(this.commande.getCompositionCommande());
-                    System.out.println("séletionné :");
-                    System.out.println(elementSelectionne);
-                    if (elementSelectionne.getQuantite() <= 0) {
-                        model.removeElement(elementSelectionne);
-                    } else {
-                        model.set(orderList.getSelectedIndex(), elementSelectionne);
+                    this.commande = rq.retirerProduitCommande(this.commande, elementSelectionne.getProduit());
+
+                    orderedItemsListModel.clear();
+                    for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
+                        orderedItemsListModel.addElement(quantiteCommande);
                     }
 
                     System.out.println(this.commande.getCompositionCommande());
-                    rq.saveCommande(this.commande);
                 }
             });
 
@@ -82,28 +74,33 @@ public class OrderContentPanel extends JPanel {
     }
 
     public void addProductToOrder(Commandable product) {
-
         if (product != null) {
-            boolean found = false;
 
             for (int i = 0; i < orderedItemsListModel.getSize(); i++) {
                 QuantiteCommande q = orderedItemsListModel.get(i);
                 if (q.getProduit().equals(product)) {
-                    System.out.println("found");
-                    this.commande.ajoutCommande(product);
-                    orderedItemsListModel.set(i, q);
-                    found = true;
+                    this.commande = rq.ajouterProduitCommande(this.commande, product);
+
+                    orderedItemsListModel.clear();
+                    for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
+                        orderedItemsListModel.addElement(quantiteCommande);
+                    }
+                    return;
                 }
             }
 
-            if (!found) {
 
-                QuantiteCommande q = this.commande.ajoutCommande(product);
-                orderedItemsListModel.addElement(q);
+            // Lors de l'ajout dans la commande d'un item qui n'était pas présent, il y a un problème qui fait
+            // que quand on veut en rajouter un autre il y a duplication dans la bdd
+            // Le problème se règle quand on relance l'application
+            this.commande = rq.ajouterProduitCommande(this.commande, product);
+
+            orderedItemsListModel.clear();
+            for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
+                orderedItemsListModel.addElement(quantiteCommande);
             }
 
-            System.out.println(this.commande.getCompositionCommande());
-            rq.saveCommande(this.commande);
+
         }
     }
 

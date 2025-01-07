@@ -21,7 +21,7 @@ public class Commande {
     private int id;
 
     @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<QuantiteCommande> compositionCommande;
+    private List<QuantiteCommande> compositionCommande;
 
     @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.ALL)
     private List<Recu> listeRecus;
@@ -43,7 +43,7 @@ public class Commande {
     private boolean finalise;
 
     public Commande() {
-        this.compositionCommande = new HashSet<>();
+        this.compositionCommande = new ArrayList<>();
         this.listeRecus = new ArrayList<>();
 
         LocalDateTime now = LocalDateTime.now();
@@ -83,7 +83,6 @@ public class Commande {
         for (QuantiteCommande quantiteCommande : this.compositionCommande) {
             if (quantiteCommande.getProduit().equals(commandable)) {
                 quantiteCommande.add();
-                System.out.println("found");
                 quantiteAffectee = quantiteCommande;
                 found = true;
             }
@@ -102,7 +101,7 @@ public class Commande {
 
     public void retraitCommande(Commandable commandable) {
         for (QuantiteCommande quantiteCommande : this.compositionCommande) {
-            if (quantiteCommande.getProduit() == commandable) {
+            if (quantiteCommande.getProduit().equals(commandable)) {
 
                 quantiteCommande.subtract();
                 if (quantiteCommande.getQuantite() == 0) {
@@ -117,7 +116,7 @@ public class Commande {
         recalculerPrixEtTVA();
     }
 
-    public Set<QuantiteCommande> getCompositionCommande() {
+    public List<QuantiteCommande> getCompositionCommande() {
         return compositionCommande;
     }
 

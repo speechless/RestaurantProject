@@ -88,14 +88,14 @@ public class TestCommande {
             em.persist(c3);
 
             et.commit();
-
+            System.out.println("Génération de la base terminée");
 
         }
-//        catch (Exception ex) {
-//            System.out.println("exception : " + ex);
-//            System.out.println("rollback");
-//            et.rollback();
-//        }
+        catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
+        }
         finally {
             if (em != null && em.isOpen()) {
                 em.close();
