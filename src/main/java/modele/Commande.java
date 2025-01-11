@@ -32,6 +32,11 @@ public class Commande {
     private double montantTVA5_5;
     @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA10;
+
+    public void setNumTable(int numTable) {
+        this.numTable = numTable;
+    }
+
     @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA20;
     @Column(columnDefinition = "NUMERIC(10,2)")

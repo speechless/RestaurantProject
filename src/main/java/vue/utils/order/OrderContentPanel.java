@@ -4,11 +4,15 @@ import modele.Commandable;
 import modele.Commande;
 import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
+import vue.pages.CommandPage;
+import vue.pages.PageManager;
 import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 public class OrderContentPanel extends JPanel {
 
@@ -27,7 +31,7 @@ public class OrderContentPanel extends JPanel {
         for (QuantiteCommande quantiteCommande : commande.getCompositionCommande()) {
             model.addElement(quantiteCommande);
         }
-        System.out.println(this.commande.getCompositionCommande());
+
         this.orderedItemsListModel = model;
 
         GridBagConstraints gbcOrderContentList = new GridBagConstraints();
@@ -41,6 +45,33 @@ public class OrderContentPanel extends JPanel {
         // JList avec un renderer personnalisé
         JList<QuantiteCommande> orderList = new JList<>(model);
         orderList.setCellRenderer(new OrderedItemRenderer());
+        orderList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Récupérer l'index de l'élément cliqué
+                    int index = orderList.locationToIndex(e.getPoint());
+
+                    // Vérifier si un élément valide est cliqué
+                    if (index != -1) {
+                        // Récupérer l'élément correspondant
+                        QuantiteCommande selectedItem = model.getElementAt(index);
+
+                        // Passer l'élément à la méthode
+                        removeProductFromOrder(selectedItem);
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
 
         JScrollPane sp = new JScrollPane(orderList);
 
@@ -49,28 +80,16 @@ public class OrderContentPanel extends JPanel {
         listPanel.add(sp, BorderLayout.CENTER);
         listPanel.setPreferredSize(new Dimension((int) (this.getWidth() * 0.8), (int)(this.getHeight() * 0.8)));
         this.add(sp, gbcOrderContentList);
-        if(!completed) {
-            // Bouton de suppression
-            JButton removeButton = ButtonTemplates.setupClassicButton("Retirer de la commande", () -> {
-                QuantiteCommande elementSelectionne = orderList.getSelectedValue();
-                if (elementSelectionne != null) {
-                    this.commande = rq.retirerProduitCommande(this.commande, elementSelectionne.getProduit());
 
-                    orderedItemsListModel.clear();
-                    for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
-                        orderedItemsListModel.addElement(quantiteCommande);
-                    }
+    }
 
-                    System.out.println(this.commande.getCompositionCommande());
-                }
-            });
+    private void removeProductFromOrder(QuantiteCommande elementSelectionne){
+        this.commande = rq.retirerProduitCommande(this.commande, elementSelectionne.getProduit());
 
-            removeButton.setPreferredSize(new Dimension(200, 30));
-
-            gbcOrderContentList.gridy = 1;
-            this.add(removeButton, gbcOrderContentList);
+        orderedItemsListModel.clear();
+        for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
+            orderedItemsListModel.addElement(quantiteCommande);
         }
-
     }
 
     public void addProductToOrder(Commandable product) {

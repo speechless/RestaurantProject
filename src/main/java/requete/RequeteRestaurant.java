@@ -175,6 +175,25 @@ public class RequeteRestaurant {
         return commande;
     }
 
+    public Commande changeNumTable(Commande commande, int numTable) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.setNumTable(numTable);
+            em.merge(commande);
+
+            et.commit();
+            return commande;
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
 
     public QuantiteCommande creerQuantiteCommande(Commande commande, Commandable commandable) {
         EntityManager em = emf.createEntityManager();
@@ -252,21 +271,61 @@ public class RequeteRestaurant {
         try {
             et.begin();
             commande = em.merge(commande);
-            System.out.println("persist");
             et.commit();
         }
-        /*catch (Exception ex) {
-            System.out.println("exception : " + ex);
-            System.out.println("rollback");
-            et.rollback();
-        }*/
         finally {
-            if (em != null && em.isOpen()) {
+            if (em.isOpen()) {
                 em.close();
             }
         }
 
         return commande;
+    }
+
+    public Commande finaliserCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.finaliserCommande();
+            commande = em.merge(commande);
+            et.commit();
+        }
+        finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commande;
+    }
+
+
+    public void deleteCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            Commande managedCommande = em.find(Commande.class, commande.getId());
+            if (managedCommande != null) {
+                em.remove(managedCommande);
+            } else {
+                System.out.println("La commande n'existe pas dans la base de données.");
+            }
+
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            throw e; // Propager l'exception pour une gestion ultérieure
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
     }
 
 

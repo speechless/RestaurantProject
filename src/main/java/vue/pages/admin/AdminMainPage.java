@@ -25,9 +25,7 @@ public class AdminMainPage implements PageContent {
         st.setBorder(new EmptyBorder(10, 0, 10, 0));
         modifCarte.add(st, BorderLayout.NORTH);
         JButton modifCarteButton = ButtonTemplates.setupClassicButton("Modifier la carte",
-                () -> {
-                    System.out.println("Page de la modification de carte");
-                });
+                () -> System.out.println("Page de la modification de carte"));
         modifCarte.add(modifCarteButton, BorderLayout.SOUTH); // Ajouter dans la position SOUTH
 
         // Ajouter la section au leftAdminSection
@@ -57,14 +55,10 @@ public class AdminMainPage implements PageContent {
 
         JPanel buttonsPanel = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
         JButton modifMenusButton = ButtonTemplates.setupClassicButton("Modifier les menus",
-                () -> {
-                    System.out.println("Page de la modification des menus");
-                });
+                () -> System.out.println("Page de la modification des menus"));
         buttonsPanel.add(modifMenusButton);
         JButton modifItemsButton = ButtonTemplates.setupClassicButton("Modifier les items",
-                () -> {
-                    System.out.println("Page de la modification des items");
-                });
+                () -> System.out.println("Page de la modification des items"));
         buttonsPanel.add(modifItemsButton);
         modifCartePlus.add(buttonsPanel, BorderLayout.CENTER);
 
@@ -102,9 +96,7 @@ public class AdminMainPage implements PageContent {
         analyticsTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
         analytics.add(analyticsTitle, BorderLayout.NORTH); // Ajouter dans la position NORTH
         JButton SellsHistory = ButtonTemplates.setupClassicButton("Statistiques générales du restaurant",
-                () -> {
-                    System.out.println("Page de la modification de carte");
-                });
+                () -> System.out.println("Page de la modification de carte"));
         analytics.add(SellsHistory, BorderLayout.SOUTH); // Ajouter dans la position SOUTH
 
         // Ajouter la section au leftAdminSection
@@ -135,14 +127,10 @@ public class AdminMainPage implements PageContent {
 
         JPanel buttonsPanelRight = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
         JButton roomModifButton = ButtonTemplates.setupClassicButton("Modifier la salle",
-                () -> {
-                    System.out.println("Page de la modification de la salle");
-                });
+                () -> System.out.println("Page de la modification de la salle"));
         buttonsPanelRight.add(roomModifButton);
         JButton modifInfosRestaurant = ButtonTemplates.setupClassicButton("Modifier les infos du restaurant",
-                () -> {
-                    PageManager.getInstance().showPage(new RestaurantInfoPage());
-                });
+                () -> PageManager.getInstance().showPage(new RestaurantInfoPage()));
         buttonsPanelRight.add(modifInfosRestaurant);
         modifRestaurant.add(buttonsPanelRight, BorderLayout.CENTER);
 

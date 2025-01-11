@@ -1,5 +1,6 @@
 package vue.utils;
 
+import modele.Commandable;
 import vue.pages.*;
 import vue.pages.admin.AdminMainPage;
 import javax.swing.*;
@@ -144,6 +145,43 @@ public class Templates {
             }
         });
         scrollPane.setBorder(BorderFactory.createLineBorder(new Color(200, 200, 200))); // Bordure de la liste
+        return scrollPane;
+
+    }
+
+    public static JScrollPane setupCommandableScrollPane(JList<Commandable> list) {
+        list.setCellRenderer(new CommandableRenderer ());
+
+        // Ajouter la liste dans un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(list);
+
+        scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Commons.getSecondaryColor(); // Couleur de la barre
+                this.trackColor = Commons.getPrimaryColor(); // Couleur de l'arrière-plan
+            }
+
+            //Changer les affichages par défaut des boutons de déroulement
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            private JButton createZeroButton() {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                button.setMinimumSize(new Dimension(0, 0));
+                button.setMaximumSize(new Dimension(0, 0));
+                return button;
+            }
+        });
+        scrollPane.setBorder(BorderFactory.createLineBorder(Commons.getPrimaryColor())); // Bordure de la liste
         return scrollPane;
 
     }
