@@ -1,6 +1,7 @@
 package modele;
 
 import jakarta.persistence.*;
+import requete.RequeteRestaurant;
 
 @Entity
 public class Ticket extends Recu {
@@ -16,18 +17,20 @@ public class Ticket extends Recu {
     }
 
     public String genererTexte() {
-        String nomRestaurant = "MON RESTO";
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
 
         StringBuilder finalTicket = new StringBuilder(
                 String.format("<html>"
                 + "<div style='text-align:center;'><h1>%s</h1></div><br><br>"
-                + "<div style='text-align:center;'>Adresse du restaurant</div><br>"
-                + "<div style='text-align:center;'>SIRET : ... </div>"
-                + "<div style='text-align:center;'>TVA : ...</div><br>"
+                + "<div style='text-align:center;'>Adresse du restaurant : %s</div><br>"
+                + "<div style='text-align:center;'>SIRET : %s</div><br>"
+                + "<div style='text-align:center;'>TVA : %s</div><br>"
                 + "<b>Table %s</b><br>"
                 + "&nbsp;&nbsp;&nbsp;&nbsp;SLIM"
                 + "<br><br>"
-                + "Produits commandés :<br>",nomRestaurant,getCommandeSource().getNumTable()));
+                + "Produits commandés :<br>",
+                restaurant.getName(),restaurant.getAddress(), restaurant.getSIRENNumber(),restaurant.getTVANumber(),
+                getCommandeSource().getNumTable()));
 
         finalTicket.append("<table style='width:100%; border-collapse:collapse;'>");
         finalTicket.append("<tr><th>Quantité</th><th>Produit</th><th>Prix Unitaire</th><th>Total</th></tr>");

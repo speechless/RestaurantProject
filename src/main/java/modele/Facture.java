@@ -8,6 +8,7 @@ import com.itextpdf.layout.properties.TextAlignment;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import com.itextpdf.layout.Document;
+import requete.RequeteRestaurant;
 
 import java.util.Objects;
 
@@ -22,7 +23,6 @@ public class Facture extends Recu {
     private String mailClient;
     private String numeroTVAClient;
     private String conditions = "Aucune condition";
-    private String nomRestaurant = "MON RESTO";
 
     public Facture(Commande commandeSource, String nomClient, String prenomClient, String telephoneClient, String mailClient) {
         super(commandeSource);
@@ -51,12 +51,14 @@ public class Facture extends Recu {
 
 
     public String genererTexte() {
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
         StringBuilder finalFacture = new StringBuilder(
                 String.format("<html>"
                         + "<div style='text-align:center;'><h1>%s</h1></div><br><br>"
-                        + "<div style='text-align:center;'>Adresse du restaurant</div><br>"
-                        + "<div style='text-align:center;'>SIRET : ... </div>"
-                        + "<div style='text-align:center;'>TVA : ...</div><br>",nomRestaurant));
+                        + "<div style='text-align:center;'>Adresse du restaurant : %s</div><br>"
+                        + "<div style='text-align:center;'>SIREN : %s</div><br>"
+                        + "<div style='text-align:center;'>TVA : %s</div><br>",
+                        restaurant.getName(), restaurant.getAddress(), restaurant.getSIRENNumber(),restaurant.getTVANumber()));
 
         finalFacture.append(String.format("Facture n°%s<br>", numFacture));
         finalFacture.append(String.format("Client : %s %s<br>", nomClient.toUpperCase(), prenomClient));
@@ -105,20 +107,20 @@ public class Facture extends Recu {
     }
 
     public void generateDocument(PdfDocument pdfDoc){
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
         // Créer un document
         Document document = new Document(pdfDoc);
 
         // Ajouter un titre centré
-        Paragraph title = new Paragraph("Facture - "+nomRestaurant)
+        Paragraph title = new Paragraph("Facture - "+ restaurant.getName())
                 .setTextAlignment(TextAlignment.CENTER) // Centrer le texte
                 .setBold() // Texte en gras
                 .setFontSize(20); // Taille du texte
         document.add(title);
 
-
-        Paragraph restauGeneralInfos = new Paragraph("Adresse du restaurant\n" +
-                "SIRET : ...\n" +
-                "TVA : ...\n")
+        Paragraph restauGeneralInfos = new Paragraph("Adresse du restaurant : "+restaurant.getAddress()+"\n" +
+                "SIREN : "+restaurant.getSIRENNumber()+"\n" +
+                "TVA : "+restaurant.getTVANumber()+"\n")
                 .setTextAlignment(TextAlignment.LEFT); // Aligné à gauche
         document.add(restauGeneralInfos);
 
@@ -181,6 +183,12 @@ public class Facture extends Recu {
                 this.getDateCreation(),  this.getDateCreation()))
                 .setTextAlignment(TextAlignment.RIGHT);
         document.add(footer);
+
+        Paragraph aBientot = new Paragraph("A BIENTOT CHEZ "+ restaurant.getName())
+                .setTextAlignment(TextAlignment.CENTER) // Centrer le texte
+                .setBold() // Texte en gras
+                .setFontSize(20); // Taille du texte
+        document.add(aBientot);
 
         document.close();
     }

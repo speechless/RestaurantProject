@@ -78,7 +78,6 @@ public class CreateBill implements PageContent {
         gridPanel.add(label6);
         gridPanel.add(champConditions);
 
-        System.out.println();
         // Ajouter le bouton sous les champs
         JButton bouton = ButtonTemplates.setupClassicButton("Confirmer",
                 this::printBill);

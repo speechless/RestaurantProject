@@ -1,5 +1,8 @@
 package vue.utils;
 
+import modele.Restaurant;
+import requete.RequeteRestaurant;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
@@ -62,5 +65,9 @@ public class Commons {
             System.err.println("Icône non trouvée : " + path);
             return null;
         }
+    }
+
+    public static Restaurant mainGetRestaurant(){
+        return RequeteRestaurant.getInstance().getRestaurant("12345678910");
     }
 }

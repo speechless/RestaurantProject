@@ -169,7 +169,7 @@ public class MainPage implements PageContent {
 
         //import depuis la BDD
 
-        JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain());
+        JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain(4));
         list2.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

@@ -32,7 +32,7 @@ public class Templates {
         gbc.anchor = GridBagConstraints.WEST; // Logo à gauche
         gbc.gridx = 0;
         gbc.weightx = 0.1; //largeur de 10% de la page
-        JLabel logoLabel = new JLabel("LOGO");
+        JLabel logoLabel = new JLabel(Commons.mainGetRestaurant().getName());
         logoLabel.setFont(new Font("Arial", Font.BOLD, 16));
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 10)); // Marges
         topBar.add(logoLabel, gbc);

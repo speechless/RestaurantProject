@@ -141,7 +141,7 @@ public class AdminMainPage implements PageContent {
         buttonsPanelRight.add(roomModifButton);
         JButton modifInfosRestaurant = ButtonTemplates.setupClassicButton("Modifier les infos du restaurant",
                 () -> {
-                    System.out.println("Page de la modification des infos du restaurant");
+                    PageManager.getInstance().showPage(new RestaurantInfoPage());
                 });
         buttonsPanelRight.add(modifInfosRestaurant);
         modifRestaurant.add(buttonsPanelRight, BorderLayout.CENTER);
