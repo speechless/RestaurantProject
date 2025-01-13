@@ -15,14 +15,12 @@ import java.awt.event.MouseListener;
 
 public class OrderMenuListPanel extends JPanel {
 
-    private JButton addButton;
+    public JList<Commandable> listContent;
 
-    public OrderMenuListPanel(OrderContentPanel orderContentPanel) {
+    public OrderMenuListPanel() {
 
         this.setLayout(new GridBagLayout());
         this.setBorder(new EmptyBorder(20, 20, 20, 10)); // Marges autour de la section
-
-
 
         RequeteRestaurant rq = RequeteRestaurant.getInstance();
 
@@ -31,35 +29,9 @@ public class OrderMenuListPanel extends JPanel {
         model.addAll(rq.getCommandables());
 
         // JList avec un renderer personnalisé
-        JList<Commandable> listContent = new JList<>(model);
+        listContent = new JList<>(model);
         listContent.setCellRenderer(new CommandableRenderer());
-        listContent.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    // Récupérer l'index de l'élément cliqué
-                    int index = listContent.locationToIndex(e.getPoint());
 
-                    // Vérifier si un élément valide est cliqué
-                    if (index != -1) {
-                        // Récupérer l'élément correspondant
-                        Commandable selectedItem = model.getElementAt(index);
-
-                        // Passer l'élément à la méthode
-                        orderContentPanel.addProductToOrder(selectedItem);
-                    }
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        });
 
         JScrollPane sp = Templates.setupCommandableScrollPane(listContent);
 

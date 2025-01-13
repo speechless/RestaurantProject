@@ -1,6 +1,8 @@
 package vue.pages;
 
+import modele.Commandable;
 import modele.Commande;
+import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
 import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
@@ -8,6 +10,8 @@ import vue.utils.order.OrderMenuListPanel;
 import vue.actions.CreateTicket;
 
 import javax.swing.text.NumberFormatter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.text.NumberFormat;
 
@@ -26,14 +30,76 @@ public class CommandPage implements PageContent {
         this.commande = this.rq.saveCommande(this.commande);
 
         this.orderContentPanel = new OrderContentPanel(this.commande,false);
-        this.orderMenuListPanel = new OrderMenuListPanel(this.orderContentPanel);
+        this.orderMenuListPanel = new OrderMenuListPanel();
+
+        configurerInteractions();
     }
 
     public CommandPage(int id) {
         this.commande = this.rq.getCommande(id);
 
         this.orderContentPanel = new OrderContentPanel(this.commande,false);
-        this.orderMenuListPanel = new OrderMenuListPanel(this.orderContentPanel);
+        this.orderMenuListPanel = new OrderMenuListPanel();
+
+        configurerInteractions();
+    }
+
+    private void configurerInteractions() {
+        this.orderContentPanel.orderList.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Récupérer l'index de l'élément cliqué
+                    int index = orderContentPanel.orderList.locationToIndex(e.getPoint());
+
+                    // Vérifier si un élément valide est cliqué
+                    if (index != -1) {
+                        // Récupérer l'élément correspondant
+                        QuantiteCommande selectedItem = orderContentPanel.orderList.getModel().getElementAt(index);
+
+                        // Passer l'élément à la méthode
+                        commande = orderContentPanel.removeProductFromOrder(selectedItem);
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+
+        orderMenuListPanel.listContent.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    // Récupérer l'index de l'élément cliqué
+                    int index = orderMenuListPanel.listContent.locationToIndex(e.getPoint());
+
+                    // Vérifier si un élément valide est cliqué
+                    if (index != -1) {
+                        // Récupérer l'élément correspondant
+                        Commandable selectedItem = orderMenuListPanel.listContent.getModel().getElementAt(index);
+
+                        // Passer l'élément à la méthode
+                        commande = orderContentPanel.addProductToOrder(selectedItem);
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
     }
 
     @Override
@@ -145,5 +211,4 @@ public class CommandPage implements PageContent {
 
         return mainPanel;
     }
-
 }

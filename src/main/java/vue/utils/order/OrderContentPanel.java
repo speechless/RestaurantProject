@@ -13,11 +13,12 @@ import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Observable;
 
 public class OrderContentPanel extends JPanel {
 
     private Commande commande;
-    private JList<QuantiteCommande> orderList;
+    public JList<QuantiteCommande> orderList;
     private DefaultListModel<QuantiteCommande> orderedItemsListModel;
     private RequeteRestaurant rq = RequeteRestaurant.getInstance();
 
@@ -44,35 +45,9 @@ public class OrderContentPanel extends JPanel {
         gbcOrderContentList.insets = new Insets(5, 5, 5, 5);
 
         // JList avec un renderer personnalisé
-        JList<QuantiteCommande> orderList = new JList<>(model);
+        orderList = new JList<>(model);
         orderList.setCellRenderer(new OrderedItemRenderer());
-        orderList.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.getClickCount() == 2) {
-                    // Récupérer l'index de l'élément cliqué
-                    int index = orderList.locationToIndex(e.getPoint());
 
-                    // Vérifier si un élément valide est cliqué
-                    if (index != -1) {
-                        // Récupérer l'élément correspondant
-                        QuantiteCommande selectedItem = model.getElementAt(index);
-
-                        // Passer l'élément à la méthode
-                        removeProductFromOrder(selectedItem);
-                    }
-                }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {}
-            @Override
-            public void mouseReleased(MouseEvent e) {}
-            @Override
-            public void mouseEntered(MouseEvent e) {}
-            @Override
-            public void mouseExited(MouseEvent e) {}
-        });
 
         JScrollPane sp = new JScrollPane(this.orderList);
 
@@ -84,20 +59,24 @@ public class OrderContentPanel extends JPanel {
 
     }
 
-    private void removeProductFromOrder(QuantiteCommande elementSelectionne){
+    public Commande removeProductFromOrder(QuantiteCommande elementSelectionne){
         this.commande = rq.retirerProduitCommande(this.commande, elementSelectionne.getProduit());
 
         orderedItemsListModel.clear();
         for (QuantiteCommande quantiteCommande : this.commande.getCompositionCommande()) {
             orderedItemsListModel.addElement(quantiteCommande);
         }
+
+        return this.commande;
     }
 
-    public void addProductToOrder(Commandable product) {
+    public Commande addProductToOrder(Commandable product) {
         if (product != null) {
             this.commande = rq.ajouterProduitCommande(this.commande, product);
             actualiserAffichage();
         }
+
+        return this.commande;
     }
 
     private void actualiserAffichage() {
