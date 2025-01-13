@@ -12,12 +12,14 @@ public class OrderedItemRenderer extends JPanel implements ListCellRenderer<Quan
     public OrderedItemRenderer() {
         this.add(nameLabel, BorderLayout.WEST);
         this.add(quantityLabel, BorderLayout.EAST);
+
     }
 
     @Override
     public Component getListCellRendererComponent(JList<? extends QuantiteCommande> list, QuantiteCommande value, int index, boolean isSelected, boolean cellHasFocus) {
         this.nameLabel.setText(value.getProduit().getNom());
         this.quantityLabel.setText("x" + value.getQuantite());
+        this.setOpaque(true);
 
         // Couleurs de sélection
         if (isSelected) {

@@ -87,12 +87,7 @@ public abstract class Commandable extends Observable {
         Commandable that = (Commandable) o;
         return Objects.equals(nom, that.nom);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nom);
-    }
-
+    
     @Override
     public String toString() {
         return "Commandable : " + nom +

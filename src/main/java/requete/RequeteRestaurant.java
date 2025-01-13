@@ -8,7 +8,9 @@ import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.time.LocalDate;
 
 
 public class RequeteRestaurant {
@@ -18,7 +20,7 @@ public class RequeteRestaurant {
 
 
     private RequeteRestaurant() {
-        this.emf = Persistence.createEntityManagerFactory("RestaurantPU");
+        this.emf = Requete.getInstance().getEmf();
     }
 
     public static RequeteRestaurant getInstance() {
@@ -26,6 +28,65 @@ public class RequeteRestaurant {
             instance = new RequeteRestaurant();
         }
         return instance;
+    }
+
+    public Restaurant createRestaurant(Restaurant restaurant){
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            em.persist(restaurant);
+
+            et.commit();
+            return restaurant;
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    public Restaurant getRestaurant(String SIRENNumber){
+        EntityManager em = emf.createEntityManager();
+        try{
+            String strQuery = "SELECT r FROM Restaurant r " +
+                    " WHERE r.SIRENNumber = :SIRENNumber";
+            Query query = em.createQuery(strQuery);
+            query.setParameter("SIRENNumber", SIRENNumber);
+            Restaurant r = (Restaurant) query.getSingleResult();
+            return r;
+        }catch (NoResultException e){
+            System.out.println("Aucun restaurant trouvé");
+            return null;
+        }
+
+    }
+
+    public void modifRestaurant(String champNom,String champAddresse,String champTVA,
+                                      String champTel,String champSIREN){
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            Restaurant r = Commons.mainGetRestaurant();
+            r.setName(champNom);
+            r.setAddress(champAddresse);
+            r.setTVANumber(champTVA);
+            r.setPhoneNumber(champTel);
+            r.setSIRENNumber(champSIREN);
+
+            em.merge(r);
+
+            et.commit();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
     }
 
     public List<Commandable> getCommandables() {
@@ -90,10 +151,11 @@ public class RequeteRestaurant {
         return commandes;
     }
 
-    public List<Commande> getCommandesTermineesMain() {
+    public List<Commande> getCommandesTermineesMain(int limite) {
         EntityManager em = emf.createEntityManager();
-        String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut DESC limit 3";
+        String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut DESC limit :limite";
         Query query = em.createQuery(strQuery);
+        query.setParameter("limite", limite);
         List<Commande> commandes = query.getResultList();
         return commandes;
     }
@@ -139,19 +201,25 @@ public class RequeteRestaurant {
         return commande;
     }
 
-//    public List<QuantiteCommande> getVentesParCategorie() {
-//        EntityManager em = emf.createEntityManager();
-//        String strQuery = "SELECT q FROM QuantiteCommande q join Commande c WHERE c.finalise = true";
-//        Query query = em.createQuery(strQuery);
-//        List<QuantiteCommande> quantiteCommandes = query.getResultList();
-//
-//        for (QuantiteCommande q : quantiteCommandes) {
-//            if (q.getProduit() instanceof Menu) {
-//
-//            }
-//        }
-//        return commandes;
-//    }
+    public Commande changeNumTable(Commande commande, int numTable) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.setNumTable(numTable);
+            em.merge(commande);
+
+            et.commit();
+            return commande;
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
 
     public Commande retirerProduitCommande(Commande commande, Commandable produit) {
         EntityManager em = emf.createEntityManager();
@@ -297,16 +365,10 @@ public class RequeteRestaurant {
         try {
             et.begin();
             commande = em.merge(commande);
-            System.out.println("persist");
             et.commit();
         }
-        /*catch (Exception ex) {
-            System.out.println("exception : " + ex);
-            System.out.println("rollback");
-            et.rollback();
-        }*/
         finally {
-            if (em != null && em.isOpen()) {
+            if (em.isOpen()) {
                 em.close();
             }
         }
@@ -314,34 +376,61 @@ public class RequeteRestaurant {
         return commande;
     }
 
+    public Commande finaliserCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commande.finaliserCommande();
+            commande = em.merge(commande);
+            et.commit();
+        }
+        finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commande;
+    }
+
+
+    public void deleteCommande(Commande commande) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            Commande managedCommande = em.find(Commande.class, commande.getId());
+            if (managedCommande != null) {
+                em.remove(managedCommande);
+            } else {
+                System.out.println("La commande n'existe pas dans la base de données.");
+            }
+
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            throw e; // Propager l'exception pour une gestion ultérieure
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+
+
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
-        //System.out.println(rr.getCommandables());
-        List<Commandable> x = rr.getCommandables();
-        List<Commande> y = rr.getCommandesCourantes();
-/*
-        for(Commande e : x){
-            System.out.println(e.getNumTable());
-            System.out.println(e.getTotalTTC());
-            System.out.println(e.getDateDebut());
-            for(QuantiteCommande i : e.getCompositionCommande()){
-                Commandable j = i.getProduit();
+        Restaurant r = rr.getRestaurant("12345678910");
+        System.out.println(r);
 
-                if(j instanceof Menu){
-                    System.out.println("*"+j.getNom());
-                    for(Item k : rr.getItemsFromMenu(j.getId())){
-                        System.out.println("    "+k.getNom());
-                    }
-                }
-                else{
-                    System.out.println("-"+j.getNom());
-                }
+        Restaurant r2 = rr.getRestaurant("123456710");
+        System.out.println(r2);
 
-            }*/
-
-
-        //System.out.println(rr.getVentesParCategorie());
-        //List<Item> li = rr.getItemsFromMenu(2);
-        //System.out.println(li);
     }
 }

@@ -2,9 +2,6 @@ package modele;
 
 import jakarta.persistence.*;
 
-import javax.lang.model.element.QualifiedNameable;
-import java.util.Objects;
-
 @Entity
 public class QuantiteCommande {
     @Id

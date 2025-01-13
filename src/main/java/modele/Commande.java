@@ -32,6 +32,11 @@ public class Commande {
     private double montantTVA5_5;
     @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA10;
+
+    public void setNumTable(int numTable) {
+        this.numTable = numTable;
+    }
+
     @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA20;
     @Column(columnDefinition = "NUMERIC(10,2)")
@@ -39,7 +44,6 @@ public class Commande {
     @Column(columnDefinition = "NUMERIC(10,2)")
     private double totalTTC;
 
-    //private int hashcode;
     private boolean finalise;
 
     public Commande() {
@@ -163,7 +167,7 @@ public class Commande {
         return ticket;
     }
 
-    public Facture creerFacture(String nomClient, String prenomClient, String telephoneClient, String mailClient, int numeroTVAClient) {
+    public Facture creerFacture(String nomClient, String prenomClient, String telephoneClient, String mailClient, String numeroTVAClient) {
         if (!finalise) {
             finaliserCommande();
         }
@@ -223,16 +227,5 @@ public class Commande {
         compCmd+=";";
         compCmd+=totalTTC;
         return compCmd;
-        /*return compCmd +
-                "numTable=" + numTable +
-                ", dateDebut=" + dateDebut +
-                ", montantTVA5_5=" + montantTVA5_5 +
-                ", montantTVA10=" + montantTVA10 +
-                ", montantTVA20=" + montantTVA20 +
-                ", totalHT=" + totalHT +
-                ", totalTTC=" + totalTTC;
-                //", hashcode=" + hashcode +
-                //", finalise=" + finalise
-
-    */}
+    }
 }

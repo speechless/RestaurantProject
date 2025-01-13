@@ -1,5 +1,6 @@
 package vue.utils;
 
+import modele.Commandable;
 import vue.pages.*;
 import vue.pages.admin.AdminMainPage;
 import javax.swing.*;
@@ -32,7 +33,7 @@ public class Templates {
         gbc.anchor = GridBagConstraints.WEST; // Logo à gauche
         gbc.gridx = 0;
         gbc.weightx = 0.1; //largeur de 10% de la page
-        JLabel logoLabel = new JLabel("LOGO");
+        JLabel logoLabel = new JLabel(Commons.mainGetRestaurant().getName());
         logoLabel.setFont(new Font("Arial", Font.BOLD, 16));
         logoLabel.setBorder(BorderFactory.createEmptyBorder(10, 30, 10, 10)); // Marges
         topBar.add(logoLabel, gbc);
@@ -148,6 +149,43 @@ public class Templates {
 
     }
 
+    public static JScrollPane setupCommandableScrollPane(JList<Commandable> list) {
+        list.setCellRenderer(new CommandableRenderer ());
+
+        // Ajouter la liste dans un JScrollPane
+        JScrollPane scrollPane = new JScrollPane(list);
+
+        scrollPane.getVerticalScrollBar().setUI(new javax.swing.plaf.basic.BasicScrollBarUI() {
+            @Override
+            protected void configureScrollBarColors() {
+                this.thumbColor = Commons.getSecondaryColor(); // Couleur de la barre
+                this.trackColor = Commons.getPrimaryColor(); // Couleur de l'arrière-plan
+            }
+
+            //Changer les affichages par défaut des boutons de déroulement
+            @Override
+            protected JButton createDecreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            @Override
+            protected JButton createIncreaseButton(int orientation) {
+                return createZeroButton();
+            }
+
+            private JButton createZeroButton() {
+                JButton button = new JButton();
+                button.setPreferredSize(new Dimension(0, 0));
+                button.setMinimumSize(new Dimension(0, 0));
+                button.setMaximumSize(new Dimension(0, 0));
+                return button;
+            }
+        });
+        scrollPane.setBorder(BorderFactory.createLineBorder(Commons.getPrimaryColor())); // Bordure de la liste
+        return scrollPane;
+
+    }
+
 
     /**
      * Créer un menu déroulant avec une liste de menus donnée
@@ -201,4 +239,6 @@ public class Templates {
 
         return scrollPane;
     }
+
+
 }

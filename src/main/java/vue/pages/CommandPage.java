@@ -5,6 +5,11 @@ import requete.RequeteRestaurant;
 import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
 import vue.utils.order.OrderMenuListPanel;
+import vue.actions.CreateTicket;
+
+import javax.swing.text.NumberFormatter;
+import java.io.IOException;
+import java.text.NumberFormat;
 
 import javax.swing.*;
 import java.awt.*;
@@ -36,17 +41,42 @@ public class CommandPage implements PageContent {
         JPanel mainPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
 
+        // Configurer un NumberFormatter pour permettre uniquement les nombres entiers
+        NumberFormat format = NumberFormat.getIntegerInstance();
+        NumberFormatter formatter = new NumberFormatter(format);
+        formatter.setValueClass(Integer.class); // Type attendu
+        formatter.setAllowsInvalid(false);     // Bloque les entrées invalides
+        formatter.setMinimum(0);               // Valeur minimale autorisée
+        formatter.setMaximum(1000);            // Valeur maximale autorisée
+        JFormattedTextField numberField = new JFormattedTextField(formatter);
+
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Bouton retour accueil
         JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'accueil",
-                () -> PageManager.getInstance().showPage(new MainPage()));
+                () -> {
+            RequeteRestaurant.getInstance().changeNumTable(commande,(Integer) numberField.getValue());
+            PageManager.getInstance().showPage(new MainPage());
+        });
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         topButton.setPreferredSize(new Dimension(150, 30));
 
         // Ajouter le bouton au panneau BorderLayout
         borderPanel.add(topButton, BorderLayout.WEST);
+
+        // Bouton suppression commande
+        JButton deleteCommandeButton = ButtonTemplates.setupClassicButton("Supprimer la commande",
+                () -> {
+                    RequeteRestaurant.getInstance().deleteCommande(commande);
+                    PageManager.getInstance().showPage(new MainPage());
+                });
+        deleteCommandeButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        deleteCommandeButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
+        deleteCommandeButton.setPreferredSize(new Dimension(150, 30));
+
+        // Ajouter le bouton au panneau BorderLayout
+        borderPanel.add(deleteCommandeButton, BorderLayout.EAST);
 
         // Ajouter borderPanel au mainPanel avec GridBagConstraints
         gbc.gridx = 0; // Colonne
@@ -60,9 +90,44 @@ public class CommandPage implements PageContent {
         gbc.gridy = 1;
         gbc.gridwidth = 1; // Une seule colonne
         gbc.weightx = 0.5; // 50% de l'espace horizontal
-        gbc.weighty = 1.0; // Prendre tout l'espace vertical
+        gbc.weighty = 0.6; // Prendre tout l'espace vertical
         gbc.fill = GridBagConstraints.BOTH; // Remplir complètement
         mainPanel.add(this.orderContentPanel, gbc);
+
+        JPanel numTablePanel = new JPanel();
+        numberField.setColumns(10); // Largeur en colonnes
+        numberField.setValue(commande.getNumTable());
+        JLabel labelTable = new JLabel("Numéro de table :");
+
+        numTablePanel.add(labelTable);
+        numTablePanel.add(numberField);
+
+        JButton confirmButton = ButtonTemplates.setupClassicButton ("Confirmer la commande",()->{
+            try {
+                Integer value = (Integer) numberField.getValue();
+                if (value != null && value != 0) {
+                    RequeteRestaurant.getInstance().changeNumTable(commande,(Integer) numberField.getValue());
+                    RequeteRestaurant.getInstance().finaliserCommande(commande);
+                    CreateTicket.printTicket(commande);
+                    PageManager.getInstance().showPage(new MainPage());
+
+                } else {
+                    JOptionPane.showMessageDialog(null, "Le numéro de table est invalide.");
+                }
+            }catch (NullPointerException npe){
+                JOptionPane.showMessageDialog(null, "Le numéro de table est vide.");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1; // Une seule colonne
+        gbc.weightx = 0.5; // 50% de l'espace horizontal
+        gbc.weighty = 0.2; // Prendre tout l'espace vertical
+        mainPanel.add(numTablePanel,gbc);
 
         gbc.gridx = 1;
         gbc.gridy = 1;
@@ -70,6 +135,13 @@ public class CommandPage implements PageContent {
         gbc.weighty = 1.0;
         gbc.fill = GridBagConstraints.BOTH;
         mainPanel.add(this.orderMenuListPanel, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1; // Une seule colonne
+        gbc.weightx = 0.5; // 50% de l'espace horizontal
+        gbc.weighty = 0.2; // Prendre tout l'espace vertical
+        mainPanel.add(confirmButton,gbc);
 
         return mainPanel;
     }

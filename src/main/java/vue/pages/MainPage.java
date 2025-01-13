@@ -35,8 +35,6 @@ public class MainPage implements PageContent {
         gbcLeft.fill = GridBagConstraints.HORIZONTAL;
         leftSection.add(sectionTitle, gbcLeft);
 
-        //JButton createNewCommandButton = Templates.setupClassicButton("Nouvelle commande",
-        //        () -> PageManager.getInstance().showPage(new RoomPage()));
         JButton createNewCommandButton = ButtonTemplates.setupClassicButton("Nouvelle commande",
                 () -> PageManager.getInstance().showPage(new CommandPage()));
 
@@ -48,12 +46,12 @@ public class MainPage implements PageContent {
 
         //Remplir liste
         //listModel.addElement(new CommandListItem("Élément 1", "Description pour l'élément 1."));
-        JList<CommandListItem> list1 =  CommandListItem.createList(rq.getCommandesCourantes());
-        list1.addMouseListener(new MouseListener() {
+        JList<CommandListItem> commandesCourantesList =  CommandListItem.createList(rq.getCommandesCourantes());
+        commandesCourantesList.addMouseListener(new MouseListener() {
            @Override
            public void mouseClicked(MouseEvent e) {
                if (e.getClickCount() == 2) {
-                   PageManager.getInstance().showPage(new CommandPage(list1.getSelectedValue().getId()));
+                   PageManager.getInstance().showPage(new CommandPage(commandesCourantesList.getSelectedValue().getId()));
                }
            }
 
@@ -67,7 +65,7 @@ public class MainPage implements PageContent {
            public void mouseExited(MouseEvent e) {}
        });
 
-        JScrollPane scrollPane = Templates.setupCommandeScrollPane(list1);
+        JScrollPane scrollPane = Templates.setupCommandeScrollPane(commandesCourantesList);
         gbcLeft.gridy = 2;
         gbcLeft.weighty = 1.0; // Prend tout l'espace vertical restant
         gbcLeft.fill = GridBagConstraints.BOTH; // Remplit horizontalement et verticalement
@@ -169,12 +167,12 @@ public class MainPage implements PageContent {
 
         //import depuis la BDD
 
-        JList<CommandListItem> list2 =  CommandListItem.createList(rq.getCommandesTermineesMain());
-        list2.addMouseListener(new MouseListener() {
+        JList<CommandListItem> commandesFiniesList =  CommandListItem.createList(rq.getCommandesTermineesMain(4));
+        commandesFiniesList.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    PageManager.getInstance().showPage(new PastCommandPage(list2.getSelectedValue().getId()));
+                    PageManager.getInstance().showPage(new PastCommandPage(commandesFiniesList.getSelectedValue().getId()));
                 }
             }
 
@@ -189,14 +187,11 @@ public class MainPage implements PageContent {
         });
 
 
-        list2.setFixedCellHeight(100);
-        list2.setVisibleRowCount(4);
+        commandesFiniesList.setFixedCellHeight(100);
+        commandesFiniesList.setVisibleRowCount(4);
 
-        JScrollPane scrollPane2 = Templates.setupCommandeScrollPane(list2);
-        /*scrollPane2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
-        scrollPane2.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);*/
-
-        int preferredHeight = list2.getFixedCellHeight() * list2.getVisibleRowCount();
+        JScrollPane scrollPane2 = Templates.setupCommandeScrollPane(commandesFiniesList);
+        int preferredHeight = commandesFiniesList.getFixedCellHeight() * commandesFiniesList.getVisibleRowCount();
         scrollPane2.setPreferredSize(new Dimension(100, preferredHeight));
 
         JButton viewMoreButton = ButtonTemplates.setupClassicButton("Voir Plus",
