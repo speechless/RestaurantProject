@@ -97,7 +97,7 @@ public class ModifMenuPage implements PageContent {
 
 
         JButton boutonNouveauMenu = ButtonTemplates.setupClassicButton("Créer un menu",
-                () -> PageManager.getInstance().showPage(new ModifMenu()));
+                () -> PageManager.getInstance().showPage(new ModifMenu(0)));
         boutonNouveauMenu.setFont(new Font("Arial", Font.PLAIN, 12));
         boutonNouveauMenu.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         boutonNouveauMenu.setPreferredSize(new Dimension(150, 30));
@@ -109,7 +109,7 @@ public class ModifMenuPage implements PageContent {
         mainPanel.add(boutonNouveauMenu, gbc);
 
         JButton boutonNouvelItem = ButtonTemplates.setupClassicButton("Créer un produit",
-                () -> PageManager.getInstance().showPage(new ModifItem()));
+                () -> PageManager.getInstance().showPage(new ModifItem(0)));
         boutonNouvelItem.setFont(new Font("Arial", Font.PLAIN, 12));
         boutonNouvelItem.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         boutonNouvelItem.setPreferredSize(new Dimension(150, 30));
