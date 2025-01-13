@@ -7,6 +7,7 @@ import jakarta.persistence.Persistence;
 import modele.Commande;
 import modele.Item;
 import modele.Menu;
+import vue.pages.admin.CategorieItem;
 
 public class TestCommande {
 
@@ -20,9 +21,9 @@ public class TestCommande {
  ////////////////////////////////////////////////////////////////////////////////////////////////////
             Menu menu1 = new Menu("Menu1");
 
-            Item item1 = new Item(10.5, 0.055, "Pates au beurre", "Plat", true);
-            Item item2 = new Item(4, 0.2, "Coca cola cherry", "Boisson", true);
-            Item item3 = new Item(2, 0.1, "Chocolat chuad", "Autre", true);
+            Item item1 = new Item(10.5, 0.055, "Pates au beurre", CategorieItem.PLAT, true);
+            Item item2 = new Item(4, 0.2, "Coca cola cherry", CategorieItem.BOISSON, true);
+            Item item3 = new Item(2, 0.1, "Chocolat chuad", CategorieItem.AUTRE, true);
 
             menu1.ajouterItem(item1);
             menu1.ajouterItem(item2);
@@ -30,8 +31,8 @@ public class TestCommande {
 
             Menu menu2 = new Menu("Menu2");
 
-            Item item4 = new Item(15.5, 0.055, "Pâtes bolo", "Plat", true);
-            Item item5 = new Item(4, 0.2, "7up", "Boisson", true);
+            Item item4 = new Item(15.5, 0.055, "Pâtes bolo", CategorieItem.PLAT, true);
+            Item item5 = new Item(4, 0.2, "7up", CategorieItem.BOISSON, true);
 
             menu2.ajouterItem(item4);
             menu2.ajouterItem(item5);
