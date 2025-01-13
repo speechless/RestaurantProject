@@ -45,7 +45,7 @@ public class Menu extends Commandable implements Observer {
         return false;
     }
 
-    private void recalculerTVA() {
+    public void recalculerTVA() {
         this.setTauxTVA(0);
 
         for (Item item : this.listeItems) {
@@ -55,7 +55,7 @@ public class Menu extends Commandable implements Observer {
         }
     }
 
-    private void recalculerprixHT() {
+    public void recalculerprixHT() {
         this.setPrixHT(0);
 
         for (Item item : this.listeItems) {

@@ -1,15 +1,16 @@
 package modele;
 
 import jakarta.persistence.*;
+import vue.pages.admin.CategorieItem;
 
 import java.util.Objects;
 import java.util.Observable;
 
 @Entity
 public class Item extends Commandable {
-    private String categorie;
+    private CategorieItem categorie;
 
-    public Item(double prixHT, double tauxTVA, String nom, String categorie, boolean visibiliteCarte) {
+    public Item(double prixHT, double tauxTVA, String nom, CategorieItem categorie, boolean visibiliteCarte) {
         super(nom);
         this.setPrixHT(prixHT);
         this.setTauxTVA(tauxTVA);
@@ -21,11 +22,11 @@ public class Item extends Commandable {
         super();
     }
 
-    public String getCategorie() {
+    public CategorieItem getCategorie() {
         return categorie;
     }
 
-    public void setCategorie(String categorie) {
+    public void setCategorie(CategorieItem categorie) {
         this.categorie = categorie;
     }
 

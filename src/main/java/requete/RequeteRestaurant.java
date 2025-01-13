@@ -2,10 +2,12 @@ package requete;
 
 import jakarta.persistence.*;
 import modele.*;
+import vue.pages.TypeAffichage;
 import vue.utils.MenuListItem;
 import vue.utils.Commons;
 
 import javax.swing.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -34,33 +36,37 @@ public class RequeteRestaurant {
         return commandables;
     }
 
-    public JList<MenuListItem> parseListCommandables() {
+    public JList<MenuListItem> parseListCommandables(TypeAffichage type) {
         Commons commons = new Commons();
         List<Commandable> items = getCommandables();
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
 
         for (Commandable i : items) {
             if (i instanceof Menu) {
-                listModel.addElement(new MenuListItem(
-                        i.getNom(),
-                        commons.loadImage("img/Whiteboard.png"),
-                        i.getPrixHT(),
-                        i.getPrixHT() * (1 + i.getTauxTVA()),
-                        i.isVisibiliteCarte(), false));
-                for (Item k : getItemsFromMenu(i.getId())) {
+                if (type == TypeAffichage.MENU || type == TypeAffichage.BOTH) {
                     listModel.addElement(new MenuListItem(
-                            " * " + i.getNom() + "---" + k.getNom(),
-                            commons.loadImage(""),
-                            0,
-                            0,
-                            false, true));
+                            i.getNom(),
+                            commons.loadImage("img/Whiteboard.png"),
+                            i.getPrixHT(),
+                            i.getPrixHT() * (1 + i.getTauxTVA()),
+                            i.isVisibiliteCarte(), false, false, i.getId()));
+                    for (Item k : getItemsFromMenu(i.getId())) {
+                        listModel.addElement(new MenuListItem(
+                                " * " + i.getNom() + "---" + k.getNom(),
+                                commons.loadImage(""),
+                                0,
+                                0,
+                                false, true, true, i.getId()));
+                    }
                 }
             } else {
-                listModel.addElement(new MenuListItem(i.getNom(),
-                        commons.loadImage(""),
-                        i.getPrixHT(),
-                        i.getPrixHT() * (1 + i.getTauxTVA()),
-                        i.isVisibiliteCarte(), false));
+                if (type == TypeAffichage.ITEM || type == TypeAffichage.BOTH) {
+                    listModel.addElement(new MenuListItem(i.getNom(),
+                            commons.loadImage(""),
+                            i.getPrixHT(),
+                            i.getPrixHT() * (1 + i.getTauxTVA()),
+                            i.isVisibiliteCarte(), false, true, i.getId()));
+                }
             }
         }
         JList<MenuListItem> list = new JList<>(listModel);
@@ -103,6 +109,26 @@ public class RequeteRestaurant {
 
     }
 
+    public Item getItem(int id) {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT i FROM Item i WHERE i.id = :id";
+        Query query = em.createQuery(strQuery);
+        query.setParameter("id", id);
+
+        Item item = (Item) query.getSingleResult();
+        return item;
+    }
+
+    public Menu getMenu(int id) {
+        EntityManager em = emf.createEntityManager();
+        String strQuery = "SELECT m FROM Menu m WHERE m.id = :id";
+        Query query = em.createQuery(strQuery);
+        query.setParameter("id", id);
+
+        Menu menu = (Menu) query.getSingleResult();
+        return menu;
+    }
+
     public Commande getCommande(int id) {
         EntityManager em = emf.createEntityManager();
         String strQuery = "SELECT c FROM Commande c WHERE c.id = :id";
@@ -126,26 +152,6 @@ public class RequeteRestaurant {
 //        }
 //        return commandes;
 //    }
-
-    public QuantiteCommande creerQuantiteCommande(Commande commande, Commandable commandable) {
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-
-            QuantiteCommande quantiteCommande = new QuantiteCommande(commande, commandable, 1);
-            em.persist(quantiteCommande);
-
-            et.commit();
-            return quantiteCommande;
-        }
-        finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
-        }
-    }
 
     public Commande retirerProduitCommande(Commande commande, Commandable produit) {
         EntityManager em = emf.createEntityManager();
@@ -194,6 +200,94 @@ public class RequeteRestaurant {
         }
 
         return commande;
+    }
+
+    public Menu saveMenu(Menu menu) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            menu = em.merge(menu);
+
+            String strQuery = "SELECT c FROM Commande c " +
+                    "JOIN c.compositionCommande compo " +
+                    "WHERE compo.produit.id = :produitId";
+            Query query = em.createQuery(strQuery);
+            query.setParameter("produitId", menu.getId());
+            List<Commande> commandesAffectees = query.getResultList();
+
+            for (Commande commande : commandesAffectees) {
+                commande.recalculerPrixEtTVA();
+                saveCommande(commande);
+            }
+
+            et.commit();
+        }
+        /*catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
+        }*/
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return menu;
+    }
+
+    public Commandable saveCommandable(Commandable commandable) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            commandable = em.merge(commandable);
+
+            List<Menu> menusAffectes = new ArrayList<>();
+            if (commandable instanceof Item) {
+                String strQ = "SELECT m FROM Menu m " +
+                        "JOIN m.listeItems compo " +
+                        "WHERE compo.id = :produitId";
+                Query q = em.createQuery(strQ);
+                q.setParameter("produitId", commandable.getId());
+                menusAffectes = q.getResultList();
+            }
+
+            for (Menu menu : menusAffectes) {
+                menu.recalculerTVA();
+                menu.recalculerprixHT();
+                saveMenu(menu);
+            }
+
+            String strQuery = "SELECT c FROM Commande c " +
+                    "JOIN c.compositionCommande compo " +
+                    "WHERE compo.produit.id = :produitId";
+            Query query = em.createQuery(strQuery);
+            query.setParameter("produitId", commandable.getId());
+            List<Commande> commandesAffectees = query.getResultList();
+
+            for (Commande commande : commandesAffectees) {
+                commande.recalculerPrixEtTVA();
+                saveCommande(commande);
+            }
+
+            et.commit();
+        }
+        /*catch (Exception ex) {
+            System.out.println("exception : " + ex);
+            System.out.println("rollback");
+            et.rollback();
+        }*/
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return commandable;
     }
 
     public Commande saveCommande(Commande commande) {

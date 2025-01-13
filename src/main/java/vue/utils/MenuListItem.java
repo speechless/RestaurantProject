@@ -9,15 +9,19 @@ public class MenuListItem {
     private double priceHT; // Prix HT
     private double priceTTC; // Prix TTC
     private boolean isVisible; // Visibilité
+    private boolean isItem; // Correspond à une classe item (sinon menu)
     private boolean isItemInMenu;
+    private int id;
     public MenuListItem(String title, ImageIcon image, double priceHT, double priceTTC,
-                        boolean isVisible,boolean isItemInMenu) {
+                        boolean isVisible,boolean isItemInMenu, boolean isItem, int id) {
         this.title = title;
         this.image = image;
         this.priceHT = priceHT;
         this.priceTTC = priceTTC;
         this.isVisible = isVisible;
         this.isItemInMenu = isItemInMenu;
+        this.id = id;
+        this.isItem = isItem;
     }
 
     public String getTitle() {
@@ -42,4 +46,12 @@ public class MenuListItem {
     }
 
     public boolean isItemInMenu() {return isItemInMenu;}
+
+    public boolean isItem() {
+        return isItem;
+    }
+
+    public int getId() {
+        return id;
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import modele.Item;
 import modele.Menu;
+import vue.pages.admin.CategorieItem;
 
 public class TestMenu {
     public static void main(String[] args) {
@@ -17,9 +18,9 @@ public class TestMenu {
             et.begin();
             Menu menu1 = new Menu("Menu1");
 
-            Item item1 = new Item(12.5, 0.055, "Saucisses", "Plat", true);
-            Item item2 = new Item(3, 0.2, "Coca", "Boisson", true);
-            Item item3 = new Item(2, 0.15, "Café", "Autre", true);
+            Item item1 = new Item(12.5, 0.055, "Saucisses", CategorieItem.PLAT, true);
+            Item item2 = new Item(3, 0.2, "Coca", CategorieItem.BOISSON, true);
+            Item item3 = new Item(2, 0.15, "Café", CategorieItem.AUTRE, true);
 
             System.out.println(menu1);
 
