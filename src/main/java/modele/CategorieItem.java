@@ -1,4 +1,4 @@
-package vue.pages.admin;
+package modele;
 
 public enum CategorieItem {
     ENTREE("Entrée"),
@@ -8,7 +8,8 @@ public enum CategorieItem {
     FROMAGE("Fromage"),
     DESSERT("Dessert"),
     PLAT("Plat"),
-    AUTRE("Autre");
+    AUTRE("Autre"),
+    AUCUNE("Aucune");
 
     public final String label;
 

@@ -7,7 +7,7 @@ import jakarta.persistence.Persistence;
 import modele.Commande;
 import modele.Item;
 import modele.Menu;
-import vue.pages.admin.CategorieItem;
+import modele.CategorieItem;
 
 public class TestCommande {
 

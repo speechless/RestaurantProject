@@ -6,7 +6,7 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import modele.Item;
 import modele.Menu;
-import vue.pages.admin.CategorieItem;
+import modele.CategorieItem;
 
 public class TestMenu {
     public static void main(String[] args) {

@@ -1,8 +1,8 @@
 package vue.pages.admin;
 
+import modele.CategorieItem;
 import modele.Item;
 import requete.RequeteRestaurant;
-import vue.pages.MainPage;
 import vue.pages.PageContent;
 import vue.pages.PageManager;
 import vue.utils.ButtonTemplates;
@@ -10,14 +10,7 @@ import vue.utils.ButtonTemplates;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.text.FieldPosition;
-import java.text.Format;
 import java.text.NumberFormat;
-import java.text.ParsePosition;
 
 public class ModifItem implements PageContent {
     private Item item;
@@ -38,9 +31,20 @@ public class ModifItem implements PageContent {
     private JLabel labelCategorie;
     private JLabel labelVisibilite;
 
+    public ModifItem() {
+        this.item = new Item();
+        this.item = RequeteRestaurant.getInstance().saveItem(this.item);
+
+        initComponents();
+    }
+
     public ModifItem(int id) {
         this.item = RequeteRestaurant.getInstance().getItem(id);
 
+        initComponents();
+    }
+
+    private void initComponents() {
         this.labelNom = new JLabel("Nom");
         this.labelPrixHT = new JLabel("Prix HT");
         this.labelTauxTVA = new JLabel("TVA");
@@ -77,40 +81,14 @@ public class ModifItem implements PageContent {
         this.champVisibilite.setSelected(this.item.getVisibiliteCarte());
 
         this.boutonValider = new JButton("Valider les modifications");
-        this.boutonValider.addMouseListener(new MouseListener() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                item.setNom(champNom.getText());
-                item.setPrixHT((Double)champPrixHT.getValue());
-                item.setTauxTVA((Double)champTauxTVA.getValue());
-                item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
-                item.setVisibiliteCarte(champVisibilite.isSelected());
+        this.boutonValider.addActionListener(e -> {
+            item.setNom(champNom.getText());
+            item.setPrixHT((Double)champPrixHT.getValue());
+            item.setTauxTVA((Double)champTauxTVA.getValue());
+            item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
+            item.setVisibiliteCarte(champVisibilite.isSelected());
 
-                RequeteRestaurant.getInstance().saveCommandable(item);
-                System.out.println("save");
-                System.out.println(item.getId());
-                System.out.println(item);
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
+            item = RequeteRestaurant.getInstance().saveItem(item);
         });
     }
 

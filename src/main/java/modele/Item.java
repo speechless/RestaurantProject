@@ -1,10 +1,6 @@
 package modele;
 
 import jakarta.persistence.*;
-import vue.pages.admin.CategorieItem;
-
-import java.util.Objects;
-import java.util.Observable;
 
 @Entity
 public class Item extends Commandable {
@@ -20,6 +16,7 @@ public class Item extends Commandable {
 
     public Item() {
         super();
+        this.categorie = CategorieItem.AUCUNE;
     }
 
     public CategorieItem getCategorie() {
