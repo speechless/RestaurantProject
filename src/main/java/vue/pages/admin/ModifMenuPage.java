@@ -103,17 +103,17 @@ public class ModifMenuPage implements PageContent {
         boutonNouveauMenu.setPreferredSize(new Dimension(150, 30));
         gbc.gridx = 0; // Colonne
         gbc.gridy = 1; // Ligne
-        gbc.gridwidth = 1; // Étend sur deux colonnes
+        gbc.gridwidth = 1; // Étend sur une colonne
         gbc.weightx = 1.0; // S'étend horizontalement
         gbc.weighty = 1.0; // Prend tout l'espace vertical
         mainPanel.add(boutonNouveauMenu, gbc);
 
         JButton boutonNouvelItem = ButtonTemplates.setupClassicButton("Créer un produit",
-                () -> PageManager.getInstance().showPage(new ModifItem(0)));
+                () -> PageManager.getInstance().showPage(new ModifItem()));
         boutonNouvelItem.setFont(new Font("Arial", Font.PLAIN, 12));
         boutonNouvelItem.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         boutonNouvelItem.setPreferredSize(new Dimension(150, 30));
-        gbc.gridx = 0; // Colonne
+        gbc.gridx = 1; // Colonne
         gbc.gridy = 1; // Ligne
         gbc.gridwidth = 1; // Étend sur deux colonnes
         gbc.weightx = 1.0; // S'étend horizontalement
