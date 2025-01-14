@@ -5,6 +5,7 @@ import modele.Item;
 import requete.RequeteRestaurant;
 import vue.pages.PageContent;
 import vue.pages.PageManager;
+import vue.pages.TypeAffichage;
 import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
@@ -16,6 +17,7 @@ public class ModifItem implements PageContent {
     private Item item;
 
     private JButton boutonValider;
+    private JButton boutonSupprimer;
 
     // Champs de modification
     private JTextField champNom;
@@ -90,6 +92,12 @@ public class ModifItem implements PageContent {
 
             item = RequeteRestaurant.getInstance().saveItem(item);
         });
+
+        this.boutonSupprimer = new JButton("Supprimer le produit");
+        this.boutonSupprimer.addActionListener(e -> {
+            RequeteRestaurant.getInstance().deleteItem(item);
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.ITEM));
+        });
     }
 
     @Override
@@ -136,6 +144,7 @@ public class ModifItem implements PageContent {
         mainPanel.add(champs);
 
         mainPanel.add(boutonValider);
+        mainPanel.add(boutonSupprimer);
 
         return mainPanel;
     }

@@ -3,6 +3,7 @@ package vue.utils.order;
 import modele.Commandable;
 import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
+import vue.pages.TypeAffichage;
 import vue.utils.ButtonTemplates;
 import vue.utils.CommandableRenderer;
 import vue.utils.Templates;
@@ -26,7 +27,7 @@ public class OrderMenuListPanel extends JPanel {
 
         // Modèle de liste
         DefaultListModel<Commandable> model = new DefaultListModel<>();
-        model.addAll(rq.getCommandables());
+        model.addAll(rq.getCommandables(TypeAffichage.BOTH));
 
         // JList avec un renderer personnalisé
         listContent = new JList<>(model);

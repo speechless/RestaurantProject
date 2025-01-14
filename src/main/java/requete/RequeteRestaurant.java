@@ -88,9 +88,19 @@ public class RequeteRestaurant {
         }
     }
 
-    public List<Commandable> getCommandables() {
+    public List<Commandable> getCommandables(TypeAffichage type) {
         EntityManager em = emf.createEntityManager();
-        String strQuery = "SELECT c FROM Commandable c ORDER BY c.nom";
+
+        String strQuery;
+        if (type == TypeAffichage.ITEM) {
+            strQuery = "SELECT i FROM Item i ORDER BY i.nom";
+        }
+        else if (type == TypeAffichage.MENU) {
+            strQuery = "SELECT m FROM Menu m ORDER BY m.nom";
+        }
+        else {
+            strQuery = "SELECT c FROM Commandable c ORDER BY c.nom";
+        }
         Query query = em.createQuery(strQuery);
         List<Commandable> commandables = query.getResultList();
         return commandables;
@@ -98,7 +108,7 @@ public class RequeteRestaurant {
 
     public JList<MenuListItem> parseListCommandables(TypeAffichage type) {
         Commons commons = new Commons();
-        List<Commandable> items = getCommandables();
+        List<Commandable> items = getCommandables(type);
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
 
         for (Commandable i : items) {
@@ -226,11 +236,10 @@ public class RequeteRestaurant {
 
         try {
             et.begin();
+
             commande.retraitCommande(produit);
             commande = em.merge(commande);
-            //produit = em.merge(produit);
 
-            //System.out.println("persist");
             et.commit();
         }
         finally {
@@ -249,15 +258,8 @@ public class RequeteRestaurant {
         try {
             et.begin();
             commande.ajoutCommande(produit);
-            //quantiteCommande = em.merge(quantiteCommande);
-//            if (quantiteCommande.getQuantite() == 1) {
-//                em.persist(quantiteCommande);
-//            }
             commande = em.merge(commande);
-            //produit = em.merge(produit);
 
-
-            //System.out.println("persist");
             et.commit();
         }
         finally {
@@ -267,6 +269,48 @@ public class RequeteRestaurant {
         }
 
         return commande;
+    }
+
+    public Menu retirerProduitMenu(Menu menu, Item item) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+
+            menu.supprimerItem(item);
+            menu = em.merge(menu);
+
+            et.commit();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return menu;
+    }
+
+    public Menu ajouterProduitMenu(Menu menu, Item item) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+
+            menu.ajouterItem(item);
+            menu = em.merge(menu);
+
+            et.commit();
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return menu;
     }
 
     public Menu saveMenu(Menu menu) {
@@ -409,6 +453,58 @@ public class RequeteRestaurant {
                 em.remove(managedCommande);
             } else {
                 System.out.println("La commande n'existe pas dans la base de données.");
+            }
+
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            throw e; // Propager l'exception pour une gestion ultérieure
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    public void deleteMenu(Menu menu) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            Menu managedMenu = em.find(Menu.class, menu.getId());
+            if (managedMenu != null) {
+                em.remove(managedMenu);
+            } else {
+                System.out.println("Le menu n'existe pas dans la base de données.");
+            }
+
+            et.commit();
+        } catch (Exception e) {
+            if (et.isActive()) {
+                et.rollback();
+            }
+            throw e; // Propager l'exception pour une gestion ultérieure
+        } finally {
+            if (em.isOpen()) {
+                em.close();
+            }
+        }
+    }
+
+    public void deleteItem(Item item) {
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            Item managedItem = em.find(Item.class, item.getId());
+            if (managedItem != null) {
+                em.remove(managedItem);
+            } else {
+                System.out.println("Le produit n'existe pas dans la base de données.");
             }
 
             et.commit();
