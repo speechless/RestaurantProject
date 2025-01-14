@@ -31,6 +31,10 @@ public class PageManager {
         return frame;
     }
 
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(frame, message, "Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
+    }
+
     public void showPage(PageContent page) {
         frame.getContentPane().removeAll();
         String className =  page.getClass().getName();

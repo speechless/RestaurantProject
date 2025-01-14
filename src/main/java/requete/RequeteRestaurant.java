@@ -2,15 +2,14 @@ package requete;
 
 import jakarta.persistence.*;
 import modele.*;
+import vue.pages.PageManager;
 import vue.pages.TypeAffichage;
 import vue.utils.MenuListItem;
 import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.ArrayList;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.time.LocalDate;
 
 
 public class RequeteRestaurant {
@@ -278,6 +277,7 @@ public class RequeteRestaurant {
             et.begin();
             menu = em.merge(menu);
 
+            // Mise à jour des commandes contenant le menu
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
                     "WHERE compo.produit.id = :produitId";
@@ -292,11 +292,10 @@ public class RequeteRestaurant {
 
             et.commit();
         }
-        /*catch (Exception ex) {
-            System.out.println("exception : " + ex);
-            System.out.println("rollback");
+        catch (Exception ex) {
             et.rollback();
-        }*/
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la sauvegarde d'un menu");
+        }
         finally {
             if (em != null && em.isOpen()) {
                 em.close();
@@ -306,23 +305,22 @@ public class RequeteRestaurant {
         return menu;
     }
 
-    public Commandable saveCommandable(Commandable commandable) {
+    public Item saveItem(Item item) {
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
 
         try {
             et.begin();
-            commandable = em.merge(commandable);
+            item = em.merge(item);
 
+            // Mise à jour des menus contenant l'item
             List<Menu> menusAffectes = new ArrayList<>();
-            if (commandable instanceof Item) {
-                String strQ = "SELECT m FROM Menu m " +
-                        "JOIN m.listeItems compo " +
-                        "WHERE compo.id = :produitId";
-                Query q = em.createQuery(strQ);
-                q.setParameter("produitId", commandable.getId());
-                menusAffectes = q.getResultList();
-            }
+            String strQ = "SELECT m FROM Menu m " +
+                    "JOIN m.listeItems compo " +
+                    "WHERE compo.id = :produitId";
+            Query q = em.createQuery(strQ);
+            q.setParameter("produitId", item.getId());
+            menusAffectes = q.getResultList();
 
             for (Menu menu : menusAffectes) {
                 menu.recalculerTVA();
@@ -330,11 +328,12 @@ public class RequeteRestaurant {
                 saveMenu(menu);
             }
 
+            // Mise à jour des commandes contenant directement l'item
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
                     "WHERE compo.produit.id = :produitId";
             Query query = em.createQuery(strQuery);
-            query.setParameter("produitId", commandable.getId());
+            query.setParameter("produitId", item.getId());
             List<Commande> commandesAffectees = query.getResultList();
 
             for (Commande commande : commandesAffectees) {
@@ -344,18 +343,17 @@ public class RequeteRestaurant {
 
             et.commit();
         }
-        /*catch (Exception ex) {
-            System.out.println("exception : " + ex);
-            System.out.println("rollback");
+        catch (Exception ex) {
             et.rollback();
-        }*/
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la sauvegarde d'un produit");
+        }
         finally {
             if (em != null && em.isOpen()) {
                 em.close();
             }
         }
 
-        return commandable;
+        return item;
     }
 
     public Commande saveCommande(Commande commande) {
@@ -366,6 +364,10 @@ public class RequeteRestaurant {
             et.begin();
             commande = em.merge(commande);
             et.commit();
+        }
+        catch (Exception ex) {
+            et.rollback();
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la sauvegarde d'une commande");
         }
         finally {
             if (em.isOpen()) {
