@@ -60,6 +60,28 @@ public class ButtonTemplates {
     }
 
     /**
+     * Renvoie un bouton de retour à la page d'accueil en fonction
+     * de l'affichage de la page contenante qui n'utilise pas GridBagConstraints
+     *
+     * @return JPanel - Le bouton
+     */
+    public static JPanel returnMenuButtonSimple() {
+        JPanel borderPanel = new JPanel(new BorderLayout());
+
+        // Titre de la section
+        JButton topButton = setupClassicButton("Retour page d'accueil",
+                () -> PageManager.getInstance().showPage(new MainPage()));
+
+        topButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        topButton.setMargin(new Insets(5, 0, 5, 0)); // Supprime les marges internes
+        topButton.setPreferredSize(new Dimension(150, 30));
+
+        borderPanel.add(topButton, BorderLayout.WEST);
+
+        return borderPanel;
+    }
+
+    /**
      * Renvoie un bouton à 2 états
      *
      * @param text Texte dans le bouton
@@ -70,21 +92,21 @@ public class ButtonTemplates {
     public static JButton setupSingleToggleButton(String text, Runnable actionOn, Runnable actionOff) {
         //VISUEL
         JButton button = new JButton(text);
-        button.setBackground(Color.WHITE);
         button.setFont(new Font("Arial", Font.PLAIN, 14));
         button.setContentAreaFilled(false);
         button.setOpaque(true);
         button.setFocusPainted(false);
         button.setRolloverEnabled(false);
+        button.setBackground(Commons.getSecondaryColor());
 
 
         // Utilisation d'une variable pour suivre l'état du bouton
-        boolean[] isActive = {false};
+        boolean[] isActive = {true};
 
         button.addActionListener(e -> {
             isActive[0] = !isActive[0];  // Inverse l'état du bouton
             if (isActive[0]) {
-                button.setBackground(Color.GREEN);  // Bouton activé
+                button.setBackground(Commons.getSecondaryColor());  // Bouton activé
                 actionOn.run();
             } else {
                 button.setBackground(Color.WHITE);  // Bouton désactivé

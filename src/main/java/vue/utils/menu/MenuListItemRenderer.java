@@ -1,4 +1,6 @@
-package vue.utils;
+package vue.utils.menu;
+
+import vue.utils.Commons;
 
 import javax.swing.*;
 import java.awt.*;

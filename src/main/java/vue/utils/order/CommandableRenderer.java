@@ -1,7 +1,8 @@
-package vue.utils;
+package vue.utils.order;
 
 import modele.Commandable;
 import modele.QuantiteCommande;
+import vue.utils.Commons;
 
 import javax.swing.*;
 import java.awt.*;

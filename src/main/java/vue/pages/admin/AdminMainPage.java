@@ -105,7 +105,7 @@ public class AdminMainPage implements PageContent {
         analyticsTitle.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
         analytics.add(analyticsTitle, BorderLayout.NORTH); // Ajouter dans la position NORTH
         JButton SellsHistory = ButtonTemplates.setupClassicButton("Statistiques générales du restaurant",
-                () -> System.out.println("Page de la modification de carte"));
+                () -> PageManager.getInstance().showPage(new StatsMainPage()));
         analytics.add(SellsHistory, BorderLayout.SOUTH); // Ajouter dans la position SOUTH
 
         // Ajouter la section au leftAdminSection

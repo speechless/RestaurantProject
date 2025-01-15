@@ -1,6 +1,5 @@
-package vue.utils;
+package vue.utils.listItem;
 
-import modele.Commandable;
 import modele.Commande;
 
 import javax.swing.*;

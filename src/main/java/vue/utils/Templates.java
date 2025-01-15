@@ -3,6 +3,12 @@ package vue.utils;
 import modele.Commandable;
 import vue.pages.*;
 import vue.pages.admin.AdminMainPage;
+import vue.utils.listItem.CommandListItem;
+import vue.utils.listItem.CommandListItemRenderer;
+import vue.utils.menu.MenuListItem;
+import vue.utils.menu.MenuListItemRenderer;
+import vue.utils.order.CommandableRenderer;
+
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
@@ -150,7 +156,7 @@ public class Templates {
     }
 
     public static JScrollPane setupCommandableScrollPane(JList<Commandable> list) {
-        list.setCellRenderer(new CommandableRenderer ());
+        list.setCellRenderer(new CommandableRenderer());
 
         // Ajouter la liste dans un JScrollPane
         JScrollPane scrollPane = new JScrollPane(list);

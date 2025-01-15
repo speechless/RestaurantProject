@@ -2,7 +2,7 @@ package vue.pages;
 
 import requete.RequeteRestaurant;
 import vue.utils.ButtonTemplates;
-import vue.utils.CommandListItem;
+import vue.utils.listItem.CommandListItem;
 import vue.utils.Templates;
 
 import javax.swing.*;
@@ -62,7 +62,6 @@ public class PreviousCommandsPage implements PageContent {
                 ()-> System.out.println("Type5 activé"),
                 ()-> System.out.println("Type5 désactivé"));
 
-        // Ajouter des boutons pour d'autres types si nécessaire
         typeButtonPanel.add(type1Button);
         typeButtonPanel.add(type2Button);
         typeButtonPanel.add(type3Button);

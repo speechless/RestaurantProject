@@ -7,6 +7,7 @@ import modele.Menu;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RequeteFiltres {
@@ -17,6 +18,13 @@ public class RequeteFiltres {
 
     private RequeteFiltres() {
         this.emf = Requete.getInstance().getEmf();
+    }
+
+    public static RequeteFiltres getInstance() {
+        if (instance == null) {
+            instance = new RequeteFiltres();
+        }
+        return instance;
     }
 
     public Item getItemById(int id){
@@ -46,8 +54,8 @@ public class RequeteFiltres {
         }
     }
 
-    public List<Object[]> getQuantiteVenteProduit(LocalDate startingDate, LocalDate endingDate
-            , List<String> categories, int limite) {
+    public List<Object[]> getQuantiteVenteProduit(LocalDate startingDate, LocalDate endingDate,
+            List<String> categories, int limite) {
         if (categories == null)
             return null;
 
@@ -78,8 +86,6 @@ public class RequeteFiltres {
                         System.out.println(i.getCategorie() + " " + i.getNom() + " " +
                                 result[1]);
                     }
-                } else {
-                    System.err.println("Type d'objet inconnu\n");
                 }
             }
         }
@@ -93,7 +99,7 @@ public class RequeteFiltres {
         String startingDateAsString = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         String endingDateAsString = endingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
-        if(endingDate.isBefore(startingDate)){
+        if(endingDate.isBefore(startingDate) && !endingDate.equals(LocalDate.now())){
             System.err.println("\nERROR : La date de fin est avant la date de début.\n");
             return null;
         }
@@ -121,16 +127,63 @@ public class RequeteFiltres {
         return query.getResultList();
     }
 
+    public Object[][] getQuantiteVenteCategorie(LocalDate startingDate, LocalDate endingDate,
+                                                  List<String> categories) {
+        if (categories == null)
+            return null;
+
+        //Créer un tableau avec les catégories
+        List<Object[]> RqList = getQuantiteVenteProduitByDate(startingDate, endingDate);
+        Object[][] ReturnList = new Object[][] {
+                {"Plat", 0},
+                {"Boisson", 0},
+                {"Menu", 0},
+                {"Autre", 0}
+        };
+
+
+        //Ajouter la quantité dans la valeur du tableau correspondante
+        for (Object[] result : RqList) {
+                if (categories.contains("Menu")) {
+                    Menu m = getMenuById((Integer) result[0]);
+                    if (m != null) {
+                        incrementValue(ReturnList,"Menu");
+                        continue;
+                    }
+
+                }
+                Item i = getItemById((Integer) result[0]);
+                if (i != null) {
+                    if (categories.contains(i.getCategorie())) {
+                        incrementValue(ReturnList,i.getCategorie());
+                    }
+                }
+            }
+
+        return ReturnList;
+    }
+
+    public static void incrementValue(Object[][] table, String category) {
+        for (int i = 0; i < table.length; i++) {
+            if (table[i][0].equals(category)) {  // Vérifier si la catégorie correspond
+                int currentValue = (Integer) table[i][1];  // Récupérer la valeur actuelle
+                table[i][1] = currentValue + 1;  // Incrémenter la valeur
+                break;  // Une fois trouvé, on sort de la boucle
+            }
+        }
+    }
+
     public static void main(String[] args) {
         RequeteFiltres rr = new RequeteFiltres();
         LocalDate d1 = LocalDate.of(2025,1,1);
         LocalDate d2 = LocalDate.of(2024,10,18);
 
         List<String> l = new ArrayList<>();
-        l.add("Menu");
-        l.add("Boisson");
-
-        List<Object[]> x = rr.getQuantiteVenteProduit(d2,LocalDate.now(),l,3);
+        l.add("Autre");
+        l.add("Plat");
+        Object[][] y = rr.getQuantiteVenteCategorie(d1,LocalDate.now(),l);
+        System.out.println(Arrays.deepToString(y));
+        /*List<Object[]> x = rr.getQuantiteVenteProduit(d2,LocalDate.now(),l,3);
         if(x == null){
             System.out.println("Rien a signaler");
         }else{
@@ -141,6 +194,6 @@ public class RequeteFiltres {
 
             }
 
-        }
+        }*/
     }
 }

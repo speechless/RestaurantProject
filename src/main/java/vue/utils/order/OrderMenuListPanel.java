@@ -1,11 +1,13 @@
 package vue.utils.order;
 
 import modele.Commandable;
-import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
+<<<<<<< Updated upstream
 import vue.pages.TypeAffichage;
 import vue.utils.ButtonTemplates;
 import vue.utils.CommandableRenderer;
+=======
+>>>>>>> Stashed changes
 import vue.utils.Templates;
 
 import javax.swing.*;

@@ -1,4 +1,4 @@
-package vue.utils;
+package vue.utils.listItem;
 
 import javax.swing.*;
 import java.awt.*;
