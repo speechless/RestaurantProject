@@ -9,7 +9,6 @@ import vue.utils.Commons;
 import javax.swing.*;
 import java.util.ArrayList;
 
-import vue.utils.Templates;
 import vue.utils.menu.MenuListItem;
 import java.util.List;
 
@@ -29,24 +28,6 @@ public class RequeteRestaurant {
             instance = new RequeteRestaurant();
         }
         return instance;
-    }
-
-    public Restaurant createRestaurant(Restaurant restaurant){
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.persist(restaurant);
-            et.commit();
-        }
-        finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
-        }
-
-        return restaurant;
     }
 
     public Restaurant getRestaurant(){
@@ -364,13 +345,12 @@ public class RequeteRestaurant {
             item = em.merge(item);
 
             // Mise à jour des menus contenant l'item
-            List<Menu> menusAffectes = new ArrayList<>();
             String strQ = "SELECT m FROM Menu m " +
                     "JOIN m.listeItems compo " +
                     "WHERE compo.id = :produitId";
             Query q = em.createQuery(strQ);
             q.setParameter("produitId", item.getId());
-            menusAffectes = q.getResultList();
+            List<Menu> menusAffectes = q.getResultList();
 
             for (Menu menu : menusAffectes) {
                 menu.recalculerTVA();

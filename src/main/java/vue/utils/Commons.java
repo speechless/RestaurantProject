@@ -1,8 +1,6 @@
 package vue.utils;
 
-import modele.Commandable;
 import modele.Restaurant;
-import requete.RequeteRestaurant;
 
 import javax.swing.*;
 import java.awt.*;

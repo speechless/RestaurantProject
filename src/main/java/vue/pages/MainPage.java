@@ -1,5 +1,4 @@
 package vue.pages;
-import com.sun.tools.javac.Main;
 import requete.RequeteRestaurant;
 import vue.utils.*;
 import vue.utils.listItem.CommandListItem;

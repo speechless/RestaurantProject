@@ -1,7 +1,6 @@
 package vue.utils;
 
 import vue.pages.MainPage;
-import vue.pages.PageContent;
 import vue.pages.PageManager;
 
 import javax.swing.*;

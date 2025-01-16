@@ -4,16 +4,10 @@ import modele.Commandable;
 import modele.Commande;
 import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
-import vue.pages.CommandPage;
-import vue.pages.PageManager;
-import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.util.Observable;
 
 public class OrderContentPanel extends JPanel {
 
