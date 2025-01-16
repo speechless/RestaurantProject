@@ -3,7 +3,6 @@ package vue.utils.menu;
 import modele.Item;
 import modele.Menu;
 import requete.RequeteRestaurant;
-import vue.utils.CommandableRenderer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -40,7 +39,7 @@ public class MenuContentPanel extends JPanel {
 
         // JList avec un renderer personnalisé
         menuContentList = new JList<>(model);
-        menuContentList.setCellRenderer(new CommandableRenderer());
+        //menuContentList.setCellRenderer(new CommandableRenderer());
 
 
         JScrollPane sp = new JScrollPane(this.menuContentList);

@@ -126,7 +126,7 @@ public class RequeteFiltres {
         }
         return query.getResultList();
     }
-
+/*
     public Object[][] getQuantiteVenteCategorie(LocalDate startingDate, LocalDate endingDate,
                                                   List<String> categories) {
         if (categories == null)
@@ -162,7 +162,7 @@ public class RequeteFiltres {
 
         return ReturnList;
     }
-
+*/
     public static void incrementValue(Object[][] table, String category) {
         for (int i = 0; i < table.length; i++) {
             if (table[i][0].equals(category)) {  // Vérifier si la catégorie correspond

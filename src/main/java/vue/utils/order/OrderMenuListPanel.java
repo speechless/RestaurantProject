@@ -2,19 +2,12 @@ package vue.utils.order;
 
 import modele.Commandable;
 import requete.RequeteRestaurant;
-<<<<<<< Updated upstream
 import vue.pages.TypeAffichage;
-import vue.utils.ButtonTemplates;
-import vue.utils.CommandableRenderer;
-=======
->>>>>>> Stashed changes
 import vue.utils.Templates;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 public class OrderMenuListPanel extends JPanel {
 

@@ -2,20 +2,13 @@ package requete;
 
 import jakarta.persistence.*;
 import modele.*;
-<<<<<<< Updated upstream
 import vue.pages.PageManager;
 import vue.pages.TypeAffichage;
-import vue.utils.MenuListItem;
 import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.ArrayList;
-=======
 import vue.utils.menu.MenuListItem;
-import vue.utils.Commons;
-
-import javax.swing.*;
->>>>>>> Stashed changes
 import java.util.List;
 
 
