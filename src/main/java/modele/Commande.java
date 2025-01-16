@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;*/
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -62,6 +63,18 @@ public class Commande {
     public Commande(int numTable) {
         this();
         this.numTable = numTable;
+    }
+
+    public Commande(int numTable, LocalDateTime date) {
+        this.compositionCommande = new ArrayList<>();
+        this.listeRecus = new ArrayList<>();
+
+        // Format spécifique (jusqu'aux minutes)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // Formater la date
+        this.dateDebut = date.format(formatter);
+        this.numTable = numTable;
+        this.finalise = false;
     }
 
     public List<Recu> getListeRecus() {
