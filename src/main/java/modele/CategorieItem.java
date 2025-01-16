@@ -16,4 +16,9 @@ public enum CategorieItem {
     private CategorieItem(String label) {
         this.label = label;
     }
+
+    @Override
+    public String toString() {
+        return label;
+    }
 }

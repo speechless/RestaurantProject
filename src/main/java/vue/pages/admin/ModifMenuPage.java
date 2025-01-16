@@ -30,7 +30,7 @@ public class ModifMenuPage implements PageContent {
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Titre de la section
-        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'admin",
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour",
                 () -> PageManager.getInstance().showPage(new AdminMainPage()));
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes

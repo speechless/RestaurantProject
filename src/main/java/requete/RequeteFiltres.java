@@ -6,8 +6,12 @@ import modele.Menu;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.time.DayOfWeek;
+import java.util.Objects;
 
 public class RequeteFiltres {
 
@@ -53,60 +57,13 @@ public class RequeteFiltres {
         }
     }
 
-    public List<Object[]> getQuantiteVenteProduit(LocalDate startingDate, LocalDate endingDate,
-            List<String> categories, int limite) {
-        if (categories == null)
-            return null;
-
-        List<Object[]> RqList = getQuantiteVenteProduitByDate(startingDate, endingDate);
-        List<Object[]> ReturnList = new ArrayList<>();
-
-        //Voir si le commandable est un menu ou un item
-        //Si menu voir catégorie menu
-        //Si item renvoyer la catégorie
-        for (Object[] result : RqList) {
-            if (ReturnList.size() >= limite) {
-                return ReturnList;
-            } else {
-                if (categories.contains("Menu")) {
-                    Menu m = getMenuById((Integer) result[0]);
-                    if (m != null) {
-                        ReturnList.add(new Object[] { m.getNom(), result[1] });
-                        System.out.println("Menu," + m.getNom() + " " +
-                                result[1]);
-                        continue;
-                    }
-
-                }
-                Item i = getItemById((Integer) result[0]);
-                if (i != null) {
-                    if (categories.contains(i.getCategorie())) {
-                        ReturnList.add(new Object[] { i.getNom(), result[1] });
-                        System.out.println(i.getCategorie() + " " + i.getNom() + " " +
-                                result[1]);
-                    }
-                }
-            }
-        }
-        return ReturnList;
-    }
-
-    public List<Object[]> getQuantiteVenteProduitByDate(LocalDate startingDate,LocalDate endingDate) {
+    public List<Object[]> getQuantiteVenteProduitByDate(String startingDate,String endingDate) {
         EntityManager em = emf.createEntityManager();
-
-        //LocalDate currentDate = LocalDate.now();
-        String startingDateAsString = startingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-        String endingDateAsString = endingDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-
-        if(endingDate.isBefore(startingDate) && !endingDate.equals(LocalDate.now())){
-            System.err.println("\nERROR : La date de fin est avant la date de début.\n");
-            return null;
-        }
 
         String jpql;
         TypedQuery<Object[]> query;
 
-        if(endingDate.equals(LocalDate.now())) {
+        if(startingDate.isEmpty()) {
             jpql = "SELECT q.produit.id, SUM(q.quantite) AS totalQuantite " +
                     "FROM QuantiteCommande q " +
                     "GROUP BY q.produit.id " +
@@ -120,25 +77,38 @@ public class RequeteFiltres {
                     "GROUP BY q.produit.id " +
                     "ORDER BY totalQuantite DESC";
             query = em.createQuery(jpql, Object[].class);
-            query.setParameter("startingDate", startingDateAsString);
-            query.setParameter("endingDate", endingDateAsString);
+            query.setParameter("startingDate", startingDate);
+            query.setParameter("endingDate", endingDate);
         }
         return query.getResultList();
     }
-/*
-    public Object[][] getQuantiteVenteCategorie(LocalDate startingDate, LocalDate endingDate,
-                                                  List<String> categories) {
+
+    public Object[][] getQuantiteVenteCategorie(String givenDate,String dateOption, List<String> categories) {
         if (categories == null)
             return null;
 
+        List<Object[]> RqList;
+        if(Objects.equals(dateOption, "Global")){
+            RqList = getQuantiteVenteProduitByDate("","");
+        }else{
+            String[] intervale = createIntervale(givenDate,dateOption);
+            RqList = getQuantiteVenteProduitByDate(intervale[0], intervale[1]);
+        }
+
         //Créer un tableau avec les catégories
-        List<Object[]> RqList = getQuantiteVenteProduitByDate(startingDate, endingDate);
         Object[][] ReturnList = new Object[][] {
-                {"Plat", 0},
-                {"Boisson", 0},
                 {"Menu", 0},
-                {"Autre", 0}
+                {"Entrée", 0},
+                {"Poisson", 0},
+                {"Boisson", 0},
+                {"Viande", 0},
+                {"Fromage", 0},
+                {"Dessert", 0},
+                {"Plat", 0},
+                {"Autre", 0},
+                {"Aucune", 0}
         };
+
 
 
         //Ajouter la quantité dans la valeur du tableau correspondante
@@ -153,16 +123,16 @@ public class RequeteFiltres {
                 }
                 Item i = getItemById((Integer) result[0]);
                 if (i != null) {
-                    if (categories.contains(i.getCategorie())) {
-                        incrementValue(ReturnList,i.getCategorie());
+                    if (categories.contains(i.getCategorie().toString())) {
+                        incrementValue(ReturnList,i.getCategorie().toString());
                     }
                 }
             }
 
         return ReturnList;
     }
-*/
-    public static void incrementValue(Object[][] table, String category) {
+
+    private static void incrementValue(Object[][] table, String category) {
         for (int i = 0; i < table.length; i++) {
             if (table[i][0].equals(category)) {  // Vérifier si la catégorie correspond
                 int currentValue = (Integer) table[i][1];  // Récupérer la valeur actuelle
@@ -172,27 +142,55 @@ public class RequeteFiltres {
         }
     }
 
+    private String[] createIntervale(String date, String dateOption){
+        String[] dates = new String[2];
+        LocalDate localdate = LocalDate.parse(date);
+        switch (dateOption){
+            case "Semaine":
+                // Obtenir le premier jour de la semaine (lundi)
+                LocalDate startOfWeek = LocalDate.parse(date).with(DayOfWeek.MONDAY);
+                dates[0] = startOfWeek.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                // Ajouter les 6 jours à partir du lundi pour obtenir dimanche
+                dates[1] = startOfWeek.plusDays(6)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                break;
+            case "Mois":
+                // Premier jour du mois
+                dates[0] = localdate.withDayOfMonth(1)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                // Dernier jour du mois
+                dates[1] = localdate.with(TemporalAdjusters.lastDayOfMonth())
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                break;
+
+            case "Annee":
+
+                // Premier jour de l'année
+                dates[0] = localdate.withDayOfYear(1)
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+                // Dernier jour de l'année
+                dates[1] = localdate.with(TemporalAdjusters.lastDayOfYear())
+                        .format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                break;
+
+        }
+        return dates;
+    }
+
     public static void main(String[] args) {
         RequeteFiltres rr = new RequeteFiltres();
-        /*LocalDate d1 = LocalDate.of(2025,1,1);
-        LocalDate d2 = LocalDate.of(2024,10,18);
-
         List<String> l = new ArrayList<>();
-        l.add("Autre");
+        l.add("Menu");
+        l.add("Boisson");
+        l.add("Fromage");
         l.add("Plat");
-        Object[][] y = rr.getQuantiteVenteCategorie(d1,LocalDate.now(),l);
+        l.add("Autre");
+
+        Object[][] y = rr.getQuantiteVenteCategorie("2025-01-16","Mois",l);
         System.out.println(Arrays.deepToString(y));
-        List<Object[]> x = rr.getQuantiteVenteProduit(d2,LocalDate.now(),l,3);
-        if(x == null){
-            System.out.println("Rien a signaler");
-        }else{
-            for(Object[] a : x){
-                System.out.println("--");
-                System.out.println(a[0]);
-                System.out.println(a[1]);
-
-            }
-
-        }*/
     }
 }

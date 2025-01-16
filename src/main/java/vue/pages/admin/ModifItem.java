@@ -7,6 +7,7 @@ import vue.pages.PageContent;
 import vue.pages.PageManager;
 import vue.pages.TypeAffichage;
 import vue.utils.ButtonTemplates;
+import java.util.Locale;
 
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
@@ -71,7 +72,8 @@ public class ModifItem implements PageContent {
         this.champNom.setFont(fieldFont);
         this.champNom.setColumns(30);
 
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH);
+        numberFormat.setMinimumFractionDigits(2);
 
         this.champPrixHT = new JFormattedTextField(numberFormat);
         this.champPrixHT.setFont(fieldFont);
@@ -105,38 +107,22 @@ public class ModifItem implements PageContent {
         this.champVisibilite = new JCheckBox();
         this.champVisibilite.setFont(fieldFont);
         this.champVisibilite.setSelected(this.item.getVisibiliteCarte());
-
-
-        /*
-
-
-
-
-        L'erreur est juste en dessous
-
-
-
-
-        */
         // Boutons avec actions
 
         this.boutonValider = ButtonTemplates.setupClassicButton("Valider les modifications", () -> {
-            try {
-                item.setNom(champNom.getText());
-                item.setPrixHT((Double) champPrixHT.getValue());
-                item.setTauxTVA((Double) champTauxTVA.getValue());
-                item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
-                item.setVisibiliteCarte(champVisibilite.isSelected());
+            item.setNom(champNom.getText());
+            item.setPrixHT(((Number) champPrixHT.getValue()).doubleValue());
+            item.setTauxTVA(((Number) champTauxTVA.getValue()).doubleValue());
+            item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
+            item.setVisibiliteCarte(champVisibilite.isSelected());
 
-                item = RequeteRestaurant.getInstance().saveItem(item);
-            }catch(ClassCastException e){
-                System.err.println("Problème");
-            }
+            item = RequeteRestaurant.getInstance().saveItem(item);
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH));
         });
 
         this.boutonSupprimer = ButtonTemplates.setupClassicButton("Supprimer le produit", () -> {
             RequeteRestaurant.getInstance().deleteItem(item);
-            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.ITEM));
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH));
         });
     }
 
@@ -146,8 +132,8 @@ public class ModifItem implements PageContent {
         mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Bouton retour admin
-        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'administration",
-                () -> PageManager.getInstance().showPage(new AdminMainPage()));
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour",
+                () -> PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH)));
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         topPanel.add(topButton);
 

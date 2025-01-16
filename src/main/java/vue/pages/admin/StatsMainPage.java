@@ -4,19 +4,19 @@ import com.toedter.calendar.JDateChooser;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
+
 import org.jfree.data.category.DefaultCategoryDataset;
 import requete.RequeteFiltres;
 import vue.pages.PageContent;
+import vue.pages.PageManager;
 import vue.utils.ButtonTemplates;
 
 import javax.swing.*;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.List;
 
-//TODO relier les boutons du haut, brancher le diagramme, mettre en place la vue produit
 
 public class StatsMainPage implements PageContent {
 
@@ -24,8 +24,17 @@ public class StatsMainPage implements PageContent {
     private boolean boissonIsActive = true;
     private boolean menuIsActive = true;
     private boolean autreIsActive = true;
+    private boolean entreeIsActive = true;
+    private boolean poissonIsActive = true;
+    private boolean viandeIsActive = true;
+    private boolean fromageIsActive = true;
+    private boolean dessertIsActive = true;
+    private boolean aucuneIsActive = true;
+
+    private JPanel mainContentPanel;
     private JDateChooser dateChooser;
     private JComboBox<String> comboBoxSelect;
+    private JPanel diagram;
 
     @Override
     public JPanel getContentPanel() {
@@ -44,17 +53,15 @@ public class StatsMainPage implements PageContent {
         JPanel topBar = new JPanel(new BorderLayout());
         topBar.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 
-        JButton leftButton = ButtonTemplates.setupClassicButton("Accueil", () -> System.out.println("Accueil cliqué"));
-        JButton rightButton = ButtonTemplates.setupClassicButton("Déconnexion", () -> System.out.println("Déconnexion cliqué"));
-
+        JButton leftButton = ButtonTemplates.setupClassicButton("Retour",
+                () -> PageManager.getInstance().showPage(new AdminMainPage()));
         topBar.add(leftButton, BorderLayout.WEST);
-        topBar.add(rightButton, BorderLayout.EAST);
 
         return topBar;
     }
 
     private JPanel createMainContentPanel() {
-        JPanel mainContentPanel = new JPanel();
+        mainContentPanel = new JPanel();
         mainContentPanel.setLayout(new BoxLayout(mainContentPanel, BoxLayout.Y_AXIS));
         mainContentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
@@ -63,7 +70,8 @@ public class StatsMainPage implements PageContent {
         mainContentPanel.add(createFilterPanel());
         mainContentPanel.add(createDatePanel());
         mainContentPanel.add(createConfirmPanel());
-        mainContentPanel.add(createChartPanel());
+        diagram = createDefaultChartPanel();
+        mainContentPanel.add(diagram);
 
         return mainContentPanel;
     }
@@ -71,7 +79,7 @@ public class StatsMainPage implements PageContent {
     private JPanel createOptionsPanel() {
         JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel vueSelectLabel = new JLabel("Sélectionner une option :");
-        String[] optionsSelect = {"Semaine", "Mois", "Année", "Global"};
+        String[] optionsSelect = {"Semaine", "Mois", "Annee", "Global"};
         comboBoxSelect = new JComboBox<>(optionsSelect);
         optionsPanel.add(vueSelectLabel);
         optionsPanel.add(comboBoxSelect);
@@ -79,7 +87,7 @@ public class StatsMainPage implements PageContent {
     }
 
     private JPanel createFilterPanel() {
-        JPanel filterPanel = new JPanel(new GridLayout(1, 4, 5, 5));
+        JPanel filterPanel = new JPanel(new GridLayout(1, 10, 5, 5));
         filterPanel.setBorder(BorderFactory.createTitledBorder("Sélectionner les catégories"));
 
         JButton platFiltreButton = ButtonTemplates.setupSingleToggleButton("Plat",
@@ -94,18 +102,42 @@ public class StatsMainPage implements PageContent {
         JButton autreFiltreButton = ButtonTemplates.setupSingleToggleButton("Autre",
                 () -> setAutreIsActive(true),
                 () -> setAutreIsActive(false));
+        JButton entreeFiltreButton = ButtonTemplates.setupSingleToggleButton("Entrée",
+                () -> setEntreeIsActive(true),
+                () -> setEntreeIsActive(false));
+        JButton poissonFiltreButton = ButtonTemplates.setupSingleToggleButton("Poisson",
+                () -> setPoissonIsActive(true),
+                () -> setPoissonIsActive(false));
+        JButton viandeFiltreButton = ButtonTemplates.setupSingleToggleButton("Viande",
+                () -> setViandeIsActive(true),
+                () -> setViandeIsActive(false));
+        JButton fromageFiltreButton = ButtonTemplates.setupSingleToggleButton("Fromage",
+                () -> setFromageIsActive(true),
+                () -> setFromageIsActive(false));
+        JButton dessertFiltreButton = ButtonTemplates.setupSingleToggleButton("Dessert",
+                () -> setDessertIsActive(true),
+                () -> setDessertIsActive(false));
+        JButton aucuneFiltreButton = ButtonTemplates.setupSingleToggleButton("Aucune",
+                () -> setAucuneIsActive(true),
+                () -> setAucuneIsActive(false));
 
         filterPanel.add(platFiltreButton);
         filterPanel.add(boissonFiltreButton);
         filterPanel.add(menuFiltreButton);
         filterPanel.add(autreFiltreButton);
+        filterPanel.add(entreeFiltreButton);
+        filterPanel.add(poissonFiltreButton);
+        filterPanel.add(viandeFiltreButton);
+        filterPanel.add(fromageFiltreButton);
+        filterPanel.add(dessertFiltreButton);
+        filterPanel.add(aucuneFiltreButton);
 
         return filterPanel;
     }
 
     private JPanel createDatePanel() {
         JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JLabel dateLabel = new JLabel("Sélectionner le mois et / ou l'année :");
+        JLabel dateLabel = new JLabel("Sélectionner un jour de la semaine / mois / année :");
         dateChooser = new JDateChooser();
         dateChooser.setMaxSelectableDate(new Date());
         dateChooser.setDate(new Date()); // Initialisation à la date actuelle
@@ -118,26 +150,31 @@ public class StatsMainPage implements PageContent {
 
     private JPanel createConfirmPanel() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        // Formater la date
-        String formattedDate = dateFormat.format(dateChooser.getDate());
 
         JPanel confirmPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         JButton confirmButton = ButtonTemplates.setupClassicButton("Appliquer les filtres",
-                () -> setupDiagramGlobal(isPlatIsActive(), isMenuIsActive(), isBoissonIsActive(), isAutreIsActive(),
-                        (String) comboBoxSelect.getSelectedItem(),formattedDate));
+                () -> {
+                    // Récupération directe de la date du JDateChooser
+                    Date selectedDate = dateChooser.getDate();
+                    if (selectedDate == null) {
+                        selectedDate = new Date(); // Par défaut, la date actuelle
+                    }
+                    String formattedDate = dateFormat.format(selectedDate);
+
+                    setupDiagramGlobal((String) comboBoxSelect.getSelectedItem(), formattedDate);
+                }
+        );
+
         confirmPanel.add(confirmButton);
         return confirmPanel;
     }
 
-    private JPanel createChartPanel() {
-        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-        dataset.addValue(10, "Catégorie A", "Janvier");
-        dataset.addValue(15, "Catégorie A", "Février");
-        dataset.addValue(20, "Catégorie A", "Mars");
 
+    private JPanel createDefaultChartPanel() {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         JFreeChart chart = ChartFactory.createBarChart(
-                "Ventes Mensuelles",
-                "Mois",
+                "Ventes par catégorie",
+                "Semaine",
                 "Ventes",
                 dataset
         );
@@ -152,19 +189,58 @@ public class StatsMainPage implements PageContent {
         return chartContainerPanel;
     }
 
-    private void setupDiagramGlobal(boolean plat, boolean menu, boolean boisson, boolean autre,String dateOption,String date) {
+    private JPanel createChartPanel(Object[][] data) {
+        DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+        for(Object[] d : data){
+                dataset.addValue((Integer) d[1], "", d[0].toString());
+        }
+
+        JFreeChart chart = ChartFactory.createBarChart(
+                "Ventes par catégorie", // Titre
+                "Catégorie",             // Axe X
+                "Nombre de ventes",           // Axe Y
+                dataset
+        );
+
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(800, 400));
+
+        JPanel chartContainerPanel = new JPanel();
+        chartContainerPanel.setLayout(new BorderLayout());
+        chartContainerPanel.add(chartPanel, BorderLayout.CENTER);
+        return chartContainerPanel;
+    }
+
+    private void setupDiagramGlobal(String dateOption,String date) {
+        System.out.println(date+" "+ dateOption);
         RequeteFiltres rf = RequeteFiltres.getInstance();
-        LocalDate d1 = LocalDate.of(2025,1,1);
 
+        List<String> selectedCategories = getSelectedCategories();
+
+        Object[][] data = rf.getQuantiteVenteCategorie(date, dateOption, selectedCategories);
+        mainContentPanel.remove(diagram); // Supprime l'ancien diagramme
+        diagram = createChartPanel(data);
+        System.out.println(Arrays.deepToString(data));
+
+        mainContentPanel.add(diagram); // Ajoute le nouveau diagramme
+        mainContentPanel.revalidate();
+        mainContentPanel.repaint();
+    }
+
+    private List<String> getSelectedCategories() {
         List<String> selectedCategories = new ArrayList<>();
-        if (plat) selectedCategories.add("Plat");
-        if (menu) selectedCategories.add("Menu");
-        if (boisson) selectedCategories.add("Boisson");
-        if (autre) selectedCategories.add("Autre");
-
-        System.out.println(dateOption+" "+date);
-        //Object[][] data = rf.getQuantiteVenteCategorie(d1, LocalDate.now(), selectedCategories);
-        //System.out.println(Arrays.deepToString(data));
+        if (isPlatIsActive()) selectedCategories.add("Plat");
+        if (isMenuIsActive()) selectedCategories.add("Menu");
+        if (isBoissonIsActive()) selectedCategories.add("Boisson");
+        if (isAutreIsActive()) selectedCategories.add("Autre");
+        if (isEntreeIsActive()) selectedCategories.add("Entrée");
+        if (isPoissonIsActive()) selectedCategories.add("Poisson");
+        if (isViandeIsActive()) selectedCategories.add("Viande");
+        if (isFromageIsActive()) selectedCategories.add("Fromage");
+        if (isDessertIsActive()) selectedCategories.add("Dessert");
+        if (isAucuneIsActive()) selectedCategories.add("Aucune");
+        return selectedCategories;
     }
 
     public boolean isPlatIsActive() {
@@ -197,5 +273,53 @@ public class StatsMainPage implements PageContent {
 
     public void setAutreIsActive(boolean autreIsActive) {
         this.autreIsActive = autreIsActive;
+    }
+
+    public boolean isEntreeIsActive() {
+        return entreeIsActive;
+    }
+
+    public void setEntreeIsActive(boolean entreeIsActive) {
+        this.entreeIsActive = entreeIsActive;
+    }
+
+    public boolean isPoissonIsActive() {
+        return poissonIsActive;
+    }
+
+    public void setPoissonIsActive(boolean poissonIsActive) {
+        this.poissonIsActive = poissonIsActive;
+    }
+
+    public boolean isViandeIsActive() {
+        return viandeIsActive;
+    }
+
+    public void setViandeIsActive(boolean viandeIsActive) {
+        this.viandeIsActive = viandeIsActive;
+    }
+
+    public boolean isFromageIsActive() {
+        return fromageIsActive;
+    }
+
+    public void setFromageIsActive(boolean fromageIsActive) {
+        this.fromageIsActive = fromageIsActive;
+    }
+
+    public boolean isDessertIsActive() {
+        return dessertIsActive;
+    }
+
+    public void setDessertIsActive(boolean dessertIsActive) {
+        this.dessertIsActive = dessertIsActive;
+    }
+
+    public boolean isAucuneIsActive() {
+        return aucuneIsActive;
+    }
+
+    public void setAucuneIsActive(boolean aucuneIsActive) {
+        this.aucuneIsActive = aucuneIsActive;
     }
 }
