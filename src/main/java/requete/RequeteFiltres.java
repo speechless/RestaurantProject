@@ -1,6 +1,7 @@
 package requete;
 
 import jakarta.persistence.*;
+import modele.CategorieItem;
 import modele.Item;
 import modele.Menu;
 
@@ -57,6 +58,12 @@ public class RequeteFiltres {
         }
     }
 
+    /**
+     * Récupère l'occurence des différentes catégories dans un intervalle de temps
+     * @param startingDate
+     * @param endingDate
+     * @return
+     */
     public List<Object[]> getQuantiteVenteProduitByDate(String startingDate,String endingDate) {
         EntityManager em = emf.createEntityManager();
 
@@ -83,20 +90,29 @@ public class RequeteFiltres {
         return query.getResultList();
     }
 
-    public Object[][] getQuantiteVenteCategorie(String givenDate,String dateOption, List<String> categories) {
+    /**
+     * Utilisé pour le diagramme, cette fonction récupère l'occurence des différentes catégories
+     * d'item dans un certain intervalle de temps en fonction d'une date et d'un paramètre temporel (Semaine, Mois,etc..)
+     * @param givenDate
+     * @param dateOption
+     * @param categories
+     * @return
+     */
+    public Object[][] getQuantiteVenteCategorie(String givenDate, String dateOption, List<String> categories) {
         if (categories == null)
             return null;
 
         List<Object[]> RqList;
-        if(Objects.equals(dateOption, "Global")){
-            RqList = getQuantiteVenteProduitByDate("","");
-        }else{
-            String[] intervale = createIntervale(givenDate,dateOption);
+        //Si global on récupère tout
+        if (Objects.equals(dateOption, "Global")) {
+            RqList = getQuantiteVenteProduitByDate("", "");
+        } else {
+            String[] intervale = createIntervale(givenDate, dateOption);
             RqList = getQuantiteVenteProduitByDate(intervale[0], intervale[1]);
         }
 
         //Créer un tableau avec les catégories
-        Object[][] ReturnList = new Object[][] {
+        Object[][] ReturnList = new Object[][]{
                 {"Menu", 0},
                 {"Entrée", 0},
                 {"Poisson", 0},
@@ -109,39 +125,69 @@ public class RequeteFiltres {
                 {"Aucune", 0}
         };
 
+        for (Object[] x : RqList) {
+            System.out.println(Arrays.toString(x));
+        }
 
 
-        //Ajouter la quantité dans la valeur du tableau correspondante
+        //BARRIERE POUR EVITER LES ERREURS DE TYPE
         for (Object[] result : RqList) {
-                if (categories.contains("Menu")) {
-                    Menu m = getMenuById((Integer) result[0]);
-                    if (m != null) {
-                        incrementValue(ReturnList,"Menu");
-                        continue;
-                    }
+            //Ajouter la quantité dans la valeur du tableau correspondante
+            int index;
+            if (result[0] instanceof Integer) {
+                index = (Integer) result[0];
+            } else if (result[0] instanceof Long) {
+                index = ((Long) result[0]).intValue();
+            } else {
+                throw new IllegalArgumentException("RequeteFiltres.getQuantiteVenteCategorie() : " +
+                        "Unsupported type for result[0]: " + result[0].getClass().getName());
+            }
 
-                }
-                Item i = getItemById((Integer) result[0]);
-                if (i != null) {
-                    if (categories.contains(i.getCategorie().toString())) {
-                        incrementValue(ReturnList,i.getCategorie().toString());
-                    }
+            //BARRIERE POUR EVITER LES ERREURS DE TYPE
+            int valueResult;
+            if (result[1] instanceof Integer) {
+                valueResult = (Integer) result[0];
+            } else if (result[1] instanceof Long) {
+                valueResult = ((Long) result[1]).intValue();
+            } else {
+                throw new IllegalArgumentException("RequeteFiltres.getQuantiteVenteCategorie() : " +
+                        "Unsupported type for result[1]");
+            }
+
+            if (categories.contains("Menu")) {
+                Menu m = getMenuById(index);
+                if (m != null) {
+                    incrementValue(ReturnList, "Menu",valueResult);
                 }
             }
+            Item i = getItemById(index);
+            if (i != null) {
+                if (categories.contains(i.getCategorie().label)) {
+                    incrementValue(ReturnList, i.getCategorie().label, valueResult);
+                }
+            }
+
+        }
 
         return ReturnList;
     }
 
-    private static void incrementValue(Object[][] table, String category) {
+    private static void incrementValue(Object[][] table, String category,int value) {
         for (int i = 0; i < table.length; i++) {
             if (table[i][0].equals(category)) {  // Vérifier si la catégorie correspond
-                int currentValue = (Integer) table[i][1];  // Récupérer la valeur actuelle
-                table[i][1] = currentValue + 1;  // Incrémenter la valeur
+                int currentValue = (int) table[i][1];  // Récupérer la valeur actuelle
+                table[i][1] = currentValue + value;  // Incrémenter la valeur
                 break;  // Une fois trouvé, on sort de la boucle
             }
         }
     }
 
+    /**
+     * Créer l'intervalle de temps en fonction d'une date donnée et d'un paramètre temporel
+     * @param date
+     * @param dateOption
+     * @return
+     */
     private String[] createIntervale(String date, String dateOption){
         String[] dates = new String[2];
         LocalDate localdate = LocalDate.parse(date);
@@ -190,7 +236,7 @@ public class RequeteFiltres {
         l.add("Plat");
         l.add("Autre");
 
-        Object[][] y = rr.getQuantiteVenteCategorie("2025-01-16","Mois",l);
+        Object[][] y = rr.getQuantiteVenteCategorie("2024-01-16","Mois",l);
         System.out.println(Arrays.deepToString(y));
     }
 }

@@ -24,6 +24,7 @@ public class AdminMainPage implements PageContent {
         st.setFont(new Font("Arial", Font.BOLD, 16));
         st.setBorder(new EmptyBorder(10, 0, 10, 0));
         modifCarte.add(st, BorderLayout.NORTH);
+
         JButton modifCarteButton = ButtonTemplates.setupClassicButton("Modifier la carte",
                 () -> PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH)));
         modifCarte.add(modifCarteButton, BorderLayout.SOUTH); // Ajouter dans la position SOUTH

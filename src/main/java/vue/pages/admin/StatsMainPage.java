@@ -60,6 +60,10 @@ public class StatsMainPage implements PageContent {
         return topBar;
     }
 
+    /**
+     * Créé la page dans son ensemble
+     * @return
+     */
     private JPanel createMainContentPanel() {
         mainContentPanel = new JPanel();
         mainContentPanel.setLayout(new BoxLayout(mainContentPanel, BoxLayout.Y_AXIS));
@@ -76,6 +80,11 @@ public class StatsMainPage implements PageContent {
         return mainContentPanel;
     }
 
+    /**
+     * Agencement de l'espace d'options de sélection en rapport avec la date
+     * @return
+     */
+
     private JPanel createOptionsPanel() {
         JPanel optionsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel vueSelectLabel = new JLabel("Sélectionner une option :");
@@ -86,6 +95,10 @@ public class StatsMainPage implements PageContent {
         return optionsPanel;
     }
 
+    /**
+     * Agencement de l'espace d'options de sélection en rapport avec les filtres de la carte
+     * @return
+     */
     private JPanel createFilterPanel() {
         JPanel filterPanel = new JPanel(new GridLayout(1, 10, 5, 5));
         filterPanel.setBorder(BorderFactory.createTitledBorder("Sélectionner les catégories"));
@@ -135,6 +148,10 @@ public class StatsMainPage implements PageContent {
         return filterPanel;
     }
 
+    /**
+     * Initialisation du choisisseur de date
+     * @return
+     */
     private JPanel createDatePanel() {
         JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JLabel dateLabel = new JLabel("Sélectionner un jour de la semaine / mois / année :");
@@ -148,6 +165,10 @@ public class StatsMainPage implements PageContent {
         return datePanel;
     }
 
+    /**
+     * Agencement de l'espace pour confirmer la requête avec les conditions
+     * @return
+     */
     private JPanel createConfirmPanel() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -170,6 +191,10 @@ public class StatsMainPage implements PageContent {
     }
 
 
+    /**
+     * Diagramme par défaut
+     * @return
+     */
     private JPanel createDefaultChartPanel() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
         JFreeChart chart = ChartFactory.createBarChart(
@@ -189,6 +214,11 @@ public class StatsMainPage implements PageContent {
         return chartContainerPanel;
     }
 
+    /**
+     * Diagramme personnalisé
+     * @param data
+     * @return
+     */
     private JPanel createChartPanel(Object[][] data) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
@@ -212,8 +242,13 @@ public class StatsMainPage implements PageContent {
         return chartContainerPanel;
     }
 
+
+    /**
+     * Récupère les infos sur les filtres pour les mettre dans le diagramme
+     * @param dateOption
+     * @param date
+     */
     private void setupDiagramGlobal(String dateOption,String date) {
-        System.out.println(date+" "+ dateOption);
         RequeteFiltres rf = RequeteFiltres.getInstance();
 
         List<String> selectedCategories = getSelectedCategories();
@@ -228,6 +263,10 @@ public class StatsMainPage implements PageContent {
         mainContentPanel.repaint();
     }
 
+    /**
+     * Récupère la valeur des filtres
+     * @return
+     */
     private List<String> getSelectedCategories() {
         List<String> selectedCategories = new ArrayList<>();
         if (isPlatIsActive()) selectedCategories.add("Plat");
