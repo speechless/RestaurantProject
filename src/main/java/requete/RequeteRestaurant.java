@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import vue.utils.menu.MenuListItem;
 import java.util.List;
 
+/**
+ * Requêtes relatives au restaurant et aux affichages avec sélection simple dans les différentes pages
+ */
 
 public class RequeteRestaurant {
     private static RequeteRestaurant instance;

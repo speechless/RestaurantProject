@@ -6,7 +6,10 @@ import vue.utils.Templates;
 import javax.swing.*;
 import java.awt.*;
 
-
+/**
+ * Classe permettant de gérer la gestion de l'instance de la page, sa création
+ * ainsi que l'affichage d'une page sur cette dernière
+ */
 public class PageManager {
     private static PageManager instance;
     private final JFrame frame;

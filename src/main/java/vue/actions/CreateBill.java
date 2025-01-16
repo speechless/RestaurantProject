@@ -16,6 +16,9 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import vue.pages.PageManager;
 import vue.utils.ButtonTemplates;
 
+/**
+ * Page permettant de créer une facture
+ */
 public class CreateBill implements PageContent {
     private Commande commande;
     private Facture facture;

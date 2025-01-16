@@ -7,6 +7,10 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
+/**
+ * Page principale du menu Admin
+ */
+
 public class AdminMainPage implements PageContent {
 
     @Override
@@ -129,7 +133,7 @@ public class AdminMainPage implements PageContent {
 
         JPanel buttonsPanelRight = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
         JButton roomModifButton = ButtonTemplates.setupClassicButton("Modifier la salle",
-                () -> System.out.println("Page de la modification de la salle"));
+                () -> JOptionPane.showMessageDialog(null, "Fonctionnalité disponible prochainement."));
         buttonsPanelRight.add(roomModifButton);
         JButton modifInfosRestaurant = ButtonTemplates.setupClassicButton("Modifier les infos du restaurant",
                 () -> PageManager.getInstance().showPage(new RestaurantInfoPage()));

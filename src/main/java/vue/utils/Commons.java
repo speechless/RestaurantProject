@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
+/**
+ * Classe contenant les variables communes et certaines fonctions principales
+ */
 public class Commons {
 
     private static Restaurant restaurant = null;
@@ -20,10 +23,6 @@ public class Commons {
      */
     private static final Color SECONDARY_COLOR = new Color(130, 179, 246);
 
-    /**
-     * Intervalle maximal en ms pour un double-clic
-     */
-    public static final int DOUBLE_CLICK_INTERVAL = 300;
 
     /**
      * Renvoie la couleur principale de l'application

@@ -16,6 +16,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Page permettant modifier / créer un menu
+ */
 public class ModifMenu implements PageContent {
     private Menu menu;
 

@@ -6,6 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+/**
+ * Page d'affichage de l'agencement de la salle (Non aboutti)
+ */
 public class RoomPage implements PageContent {
 
     @Override

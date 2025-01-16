@@ -16,6 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Test à exécuter afin de remplir la base de données de commandes (à l'année 2024), de menus et d'item
+ */
 public class TestAleatoire {
 
     private final static int INTERVAL_JOURS = 3;

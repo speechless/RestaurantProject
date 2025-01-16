@@ -15,6 +15,9 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+/**
+ * Page contenant des templates de mises en pages comme pour la topBar ou les JScrollPane
+ */
 public class Templates {
     /**
      * Créer la barre supérieure de la page

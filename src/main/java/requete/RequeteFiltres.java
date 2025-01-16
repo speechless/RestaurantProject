@@ -13,6 +13,9 @@ import java.util.List;
 import java.time.DayOfWeek;
 import java.util.Objects;
 
+/**
+ * Requêtes pour la page de statistiques de ventes
+ */
 public class RequeteFiltres {
 
     private static RequeteFiltres instance;

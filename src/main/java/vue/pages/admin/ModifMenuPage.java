@@ -10,7 +10,10 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-
+/**
+ * Page permettant d'afficher la carte d'un point de vue admin
+ * et de choisir entre modifier / créer un item ou un menu, si besoin
+ */
 public class ModifMenuPage implements PageContent {
 
     TypeAffichage type;

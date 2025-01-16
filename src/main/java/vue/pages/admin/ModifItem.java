@@ -14,6 +14,9 @@ import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
 import java.text.NumberFormat;
 
+/**
+ * Page permettant modifier / créer un item
+ */
 public class ModifItem implements PageContent {
     private Item item;
 

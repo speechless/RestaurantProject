@@ -11,6 +11,10 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Page d'affichage de toutes les commandes finalisées
+ */
+
 public class PreviousCommandsPage implements PageContent {
     @Override
     public JPanel getContentPanel() {

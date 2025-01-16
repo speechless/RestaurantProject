@@ -8,6 +8,10 @@ import vue.pages.PageManager;
 import javax.swing.*;
 import java.io.IOException;
 
+/**
+ * Page permettant de créer un ticket de caisse
+ */
+
 public class CreateTicket{
     private static boolean isPopupOpened = false;
 

@@ -17,7 +17,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.List;
 
-
+/**
+ * Page des statistiques de ventes du restaurant
+ */
 public class StatsMainPage implements PageContent {
 
     private boolean platIsActive = true;

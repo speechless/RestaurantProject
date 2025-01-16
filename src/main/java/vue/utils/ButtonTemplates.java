@@ -6,6 +6,9 @@ import vue.pages.PageManager;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Classe de templates pour l'utilisation et la création de boutons
+ */
 public class ButtonTemplates {
 
     /**

@@ -7,7 +7,9 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 
-
+/**
+ * Page d'affichage de la carte du restaurant
+ */
 public class MenuPage implements PageContent {
 
     @Override

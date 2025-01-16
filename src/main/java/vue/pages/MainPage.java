@@ -9,6 +9,9 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Page principale du mode normal de l'application
+ */
 public class MainPage implements PageContent {
 
     @Override

@@ -12,7 +12,9 @@ import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.IOException;
 
-
+/**
+ * Page de détails sur une commande déjà finalisée
+ */
 
 public class PastCommandPage implements PageContent {
     private final RequeteRestaurant rq = RequeteRestaurant.getInstance();

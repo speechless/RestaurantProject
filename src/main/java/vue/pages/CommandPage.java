@@ -19,6 +19,9 @@ import java.text.NumberFormat;
 import javax.swing.*;
 import java.awt.*;
 
+/**
+ * Page permettant de créer une nouvelle commande ou d'en modifier une existante
+ */
 public class CommandPage implements PageContent {
     private final RequeteRestaurant rq = RequeteRestaurant.getInstance();
     private Commande commande;

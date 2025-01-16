@@ -2,6 +2,7 @@ package vue.pages.admin;
 
 import modele.Restaurant;
 import requete.RequeteRestaurant;
+import vue.pages.MainPage;
 import vue.pages.PageContent;
 import vue.pages.PageManager;
 import vue.utils.ButtonTemplates;
@@ -9,7 +10,11 @@ import vue.utils.Commons;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
+/**
+ * Page de création et de modification du restaurant, toutes les infos
+ */
 public class RestaurantInfoPage implements PageContent {
 
     Restaurant restaurant;
@@ -69,6 +74,11 @@ public class RestaurantInfoPage implements PageContent {
         JTextField champSIREN = new JTextField(restaurant.getSIRENNumber());
         champSIREN.setPreferredSize(new Dimension(200, 30));
 
+        //Empecher la modification de l'ID du restaurant
+        if (this.restaurant != null) {
+            champSIREN.setEnabled(false);
+        }
+
         // Ajouter les composants au panneau avec GridBagLayout
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -117,15 +127,21 @@ public class RestaurantInfoPage implements PageContent {
 
         // Ajouter le bouton "Confirmer"
         JButton bouton = ButtonTemplates.setupClassicButton("Confirmer", () -> {
+            if(!Objects.equals(champNom.getText(), "") &&!Objects.equals(champAddresse.getText(), "")
+            && !Objects.equals(champTVA.getText(), "") && !Objects.equals(champTel.getText(), "")
+            && !Objects.equals(champSIREN.getText(), "")) {
 
-            restaurant.setName(champNom.getText());
-            restaurant.setAddress(champAddresse.getText());
-            restaurant.setTVANumber(champTVA.getText());
-            restaurant.setPhoneNumber(champTel.getText());
-            restaurant.setSIRENNumber(champSIREN.getText());
+                restaurant.setName(champNom.getText());
+                restaurant.setAddress(champAddresse.getText());
+                restaurant.setTVANumber(champTVA.getText());
+                restaurant.setPhoneNumber(champTel.getText());
+                restaurant.setSIRENNumber(champSIREN.getText());
 
-            Commons.setRestaurant(RequeteRestaurant.getInstance().saveRestaurant(this.restaurant));
-            PageManager.getInstance().showPage(new AdminMainPage());
+                Commons.setRestaurant(RequeteRestaurant.getInstance().saveRestaurant(this.restaurant));
+                PageManager.getInstance().showPage(new MainPage());
+            }else{
+                JOptionPane.showMessageDialog(null, "Veuillez remplir tous les champs.");
+            }
         });
 
         JPanel buttonPanel = new JPanel();
