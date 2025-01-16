@@ -316,7 +316,8 @@ public class RequeteRestaurant {
             // Mise à jour des commandes contenant le menu
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
-                    "WHERE compo.produit.id = :produitId";
+                    "WHERE compo.produit.id = :produitId " +
+                    "AND c.finalise = false";
             Query query = em.createQuery(strQuery);
             query.setParameter("produitId", menu.getId());
             List<Commande> commandesAffectees = query.getResultList();
@@ -366,7 +367,8 @@ public class RequeteRestaurant {
             // Mise à jour des commandes contenant directement l'item
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
-                    "WHERE compo.produit.id = :produitId";
+                    "WHERE compo.produit.id = :produitId " +
+                    "AND c.finalise = false";
             Query query = em.createQuery(strQuery);
             query.setParameter("produitId", item.getId());
             List<Commande> commandesAffectees = query.getResultList();
