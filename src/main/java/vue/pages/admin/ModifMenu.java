@@ -68,6 +68,8 @@ public class ModifMenu implements PageContent {
             menu.setVisibiliteCarte(champVisibilite.isSelected());
 
             menu = RequeteRestaurant.getInstance().saveMenu(menu);
+
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.MENU));
         });
     }
 
@@ -137,8 +139,8 @@ public class ModifMenu implements PageContent {
         JPanel borderPanel = new JPanel(new BorderLayout());
 
         // Bouton retour accueil
-        JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'administration",
-                () -> PageManager.getInstance().showPage(new AdminMainPage()));
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour",
+                () -> PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.MENU)));
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         topButton.setPreferredSize(new Dimension(150, 30));

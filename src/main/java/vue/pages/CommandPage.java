@@ -1,5 +1,6 @@
 package vue.pages;
 
+import jakarta.persistence.PersistenceException;
 import modele.Commandable;
 import modele.Commande;
 import modele.QuantiteCommande;
@@ -13,6 +14,7 @@ import javax.swing.text.NumberFormatter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.text.NumberFormat;
 
 import javax.swing.*;
@@ -121,8 +123,14 @@ public class CommandPage implements PageContent {
         // Bouton retour accueil
         JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'accueil",
                 () -> {
-            RequeteRestaurant.getInstance().changeNumTable(commande,(Integer) numberField.getValue());
-            PageManager.getInstance().showPage(new MainPage());
+            try {
+                RequeteRestaurant.getInstance().changeNumTable(commande, (Integer) numberField.getValue());
+                PageManager.getInstance().showPage(new MainPage());
+            }catch (PersistenceException e){
+                PageManager.getInstance().showErrorMessage(
+                        "Une commande a été donnée trop récemment avec la même table.\n" +
+                                "Veuillez changer la table de cette commande.");
+            }
         });
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
@@ -172,10 +180,17 @@ public class CommandPage implements PageContent {
             try {
                 Integer value = (Integer) numberField.getValue();
                 if (value != null && value != 0) {
-                    RequeteRestaurant.getInstance().changeNumTable(commande,(Integer) numberField.getValue());
-                    RequeteRestaurant.getInstance().finaliserCommande(commande);
-                    CreateTicket.printTicket(commande);
-                    PageManager.getInstance().showPage(new MainPage());
+                    try{
+                        RequeteRestaurant.getInstance().changeNumTable(commande,(Integer) numberField.getValue());
+                        RequeteRestaurant.getInstance().finaliserCommande(commande);
+                        CreateTicket.printTicket(commande);
+                        PageManager.getInstance().showPage(new MainPage());
+                    }catch (PersistenceException e){
+                        PageManager.getInstance().showErrorMessage(
+                                "Une erreur s'est produite lors de la validation de la commande.\n" +
+                                        "Il doit y avoir un conflit avec les valeurs d'une autre commande.\n" +
+                                        "Vérifiez le numéros de table avec l'horaire correspondant.");
+                    }
 
                 } else {
                     JOptionPane.showMessageDialog(null, "Le numéro de table est invalide.");

@@ -8,6 +8,7 @@ import vue.utils.ButtonTemplates;
 import vue.utils.order.OrderContentPanel;
 
 import javax.swing.*;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.io.IOException;
 
@@ -54,9 +55,23 @@ public class PastCommandPage implements PageContent {
         gbc.gridy = 1;
         gbc.gridwidth = 1; // Une seule colonne
         gbc.weightx = 0.5; // 50% de l'espace horizontal
-        gbc.weighty = 1.0; // Prendre tout l'espace vertical
+        gbc.weighty = 0.9; // Prendre tout l'espace vertical
         gbc.fill = GridBagConstraints.BOTH; // Remplir complètement
         mainPanel.add(this.orderContentPanel, gbc);
+
+        JLabel priceLabel = new JLabel("Prix de la commande : "+this.commande.getTotalTTC());
+        priceLabel.setOpaque(true);
+        priceLabel.setBorder(new LineBorder(Color.BLACK));
+        priceLabel.setBackground(Color.white);
+        priceLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.gridwidth = 1; // Une seule colonne
+        gbc.weightx = 0.5; // 50% de l'espace horizontal
+        gbc.weighty = 0.1; // Prendre tout l'espace vertical
+        gbc.fill = GridBagConstraints.BOTH; // Remplir complètement
+        mainPanel.add(priceLabel, gbc);
 
         JPanel settingsPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbcSettings = new GridBagConstraints();

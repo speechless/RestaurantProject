@@ -25,10 +25,7 @@ public class AdminMainPage implements PageContent {
         st.setBorder(new EmptyBorder(10, 0, 10, 0));
         modifCarte.add(st, BorderLayout.NORTH);
         JButton modifCarteButton = ButtonTemplates.setupClassicButton("Modifier la carte",
-                () -> {
-                    PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH));
-                    System.out.println("Page de la modification de carte");
-                });
+                () -> PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH)));
         modifCarte.add(modifCarteButton, BorderLayout.SOUTH); // Ajouter dans la position SOUTH
 
         // Ajouter la section au leftAdminSection
@@ -58,16 +55,11 @@ public class AdminMainPage implements PageContent {
 
         JPanel buttonsPanel = new JPanel(new GridLayout(2, 1, 5, 5)); // Grille pour les boutons
         JButton modifMenusButton = ButtonTemplates.setupClassicButton("Modifier les menus",
-                () -> {
-                    PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.MENU));
-                    System.out.println("Page de la modification des menus");
-                });
+                () -> PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.MENU)));
         buttonsPanel.add(modifMenusButton);
+
         JButton modifItemsButton = ButtonTemplates.setupClassicButton("Modifier les items",
-                () -> {
-                    PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.ITEM));
-                    System.out.println("Page de la modification des items");
-                });
+                () ->PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.ITEM)));
         buttonsPanel.add(modifItemsButton);
         modifCartePlus.add(buttonsPanel, BorderLayout.CENTER);
 

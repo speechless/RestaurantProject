@@ -47,27 +47,48 @@ public class ModifItem implements PageContent {
     }
 
     private void initComponents() {
-        this.labelNom = new JLabel("Nom");
-        this.labelPrixHT = new JLabel("Prix HT");
-        this.labelTauxTVA = new JLabel("TVA");
-        this.labelCategorie = new JLabel("Catégorie");
-        this.labelVisibilite = new JLabel("Visibilité");
+        // Création des labels avec une police plus grande
+        Font labelFont = new Font("Arial", Font.BOLD, 16);
+        Font fieldFont = new Font("Arial", Font.PLAIN, 14);
 
+        this.labelNom = new JLabel("Nom :");
+        this.labelNom.setFont(labelFont);
+
+        this.labelPrixHT = new JLabel("Prix HT :");
+        this.labelPrixHT.setFont(labelFont);
+
+        this.labelTauxTVA = new JLabel("TVA :");
+        this.labelTauxTVA.setFont(labelFont);
+
+        this.labelCategorie = new JLabel("Catégorie :");
+        this.labelCategorie.setFont(labelFont);
+
+        this.labelVisibilite = new JLabel("Visibilité :");
+        this.labelVisibilite.setFont(labelFont);
+
+        // Champs de texte
         this.champNom = new JTextField(this.item.getNom());
+        this.champNom.setFont(fieldFont);
         this.champNom.setColumns(30);
 
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
 
         this.champPrixHT = new JFormattedTextField(numberFormat);
+        this.champPrixHT.setFont(fieldFont);
         this.champPrixHT.setColumns(10);
         this.champPrixHT.setValue(item.getPrixHT());
 
         this.champTauxTVA = new JFormattedTextField(numberFormat);
+        this.champTauxTVA.setFont(fieldFont);
         this.champTauxTVA.setColumns(5);
         this.champTauxTVA.setValue(item.getTauxTVA());
 
+        // ComboBox avec fond blanc et police modifiée
         this.champCategorie = new JComboBox<>(CategorieItem.values());
+        this.champCategorie.setFont(fieldFont);
         this.champCategorie.setSelectedItem(item.getCategorie());
+        this.champCategorie.setBackground(Color.WHITE); // Applique un fond gris clair
+        this.champCategorie.setOpaque(true); // Active le remplissage de l'arrière-plan
         this.champCategorie.setRenderer(new BasicComboBoxRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
@@ -75,21 +96,42 @@ public class ModifItem implements PageContent {
                 if (value instanceof CategorieItem) {
                     setText(((CategorieItem) value).label);
                 }
+                setBackground(Color.WHITE); // Fond blanc pour chaque option
                 return this;
             }
         });
 
+        // Case à cocher avec style et police
         this.champVisibilite = new JCheckBox();
+        this.champVisibilite.setFont(fieldFont);
         this.champVisibilite.setSelected(this.item.getVisibiliteCarte());
 
-        this.boutonValider = ButtonTemplates.setupClassicButton ("Valider les modifications",() -> {
-            item.setNom(champNom.getText());
-            item.setPrixHT((Double)champPrixHT.getValue());
-            item.setTauxTVA((Double)champTauxTVA.getValue());
-            item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
-            item.setVisibiliteCarte(champVisibilite.isSelected());
 
-            item = RequeteRestaurant.getInstance().saveItem(item);
+        /*
+
+
+
+
+        L'erreur est juste en dessous
+
+
+
+
+        */
+        // Boutons avec actions
+
+        this.boutonValider = ButtonTemplates.setupClassicButton("Valider les modifications", () -> {
+            try {
+                item.setNom(champNom.getText());
+                item.setPrixHT((Double) champPrixHT.getValue());
+                item.setTauxTVA((Double) champTauxTVA.getValue());
+                item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
+                item.setVisibiliteCarte(champVisibilite.isSelected());
+
+                item = RequeteRestaurant.getInstance().saveItem(item);
+            }catch(ClassCastException e){
+                System.err.println("Problème");
+            }
         });
 
         this.boutonSupprimer = ButtonTemplates.setupClassicButton("Supprimer le produit", () -> {
@@ -100,49 +142,67 @@ public class ModifItem implements PageContent {
 
     @Override
     public JPanel getContentPanel() {
-        JPanel mainPanel = new JPanel(new GridBagLayout());
-        GridBagConstraints gbc = new GridBagConstraints();
-
-        JPanel borderPanel = new JPanel(new BorderLayout());
+        JPanel mainPanel = new JPanel(new BorderLayout(10, 10));
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Bouton retour admin
         JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'administration",
                 () -> PageManager.getInstance().showPage(new AdminMainPage()));
-        topButton.setFont(new Font("Arial", Font.PLAIN, 12));
-        topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
-        topButton.setPreferredSize(new Dimension(150, 30));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.add(topButton);
 
-        // Ajouter le bouton au panneau BorderLayout
-        borderPanel.add(topButton, BorderLayout.WEST);
+        mainPanel.add(topPanel, BorderLayout.NORTH);
 
-        // Ajouter borderPanel au mainPanel avec GridBagConstraints
-        gbc.gridx = 0; // Colonne
-        gbc.gridy = 0; // Ligne
-        gbc.gridwidth = 2; // Étend sur deux colonnes
+        // Formulaire de modification
+        JPanel formPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.insets = new Insets(5, 5, 5, 5);
-        mainPanel.add(borderPanel, gbc);
 
+        // Ajout des champs et labels
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        formPanel.add(labelNom, gbc);
 
-        JPanel labels = new JPanel(new GridLayout(0, 1));
-        labels.add(labelNom);
-        labels.add(labelPrixHT);
-        labels.add(labelTauxTVA);
-        labels.add(labelCategorie);
-        labels.add(labelVisibilite);
+        gbc.gridx = 1;
+        formPanel.add(champNom, gbc);
 
-        JPanel champs = new JPanel(new GridLayout(0, 1));
-        champs.add(champNom);
-        champs.add(champPrixHT);
-        champs.add(champTauxTVA);
-        champs.add(champCategorie);
-        champs.add(champVisibilite);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        formPanel.add(labelPrixHT, gbc);
 
-        mainPanel.add(labels);
-        mainPanel.add(champs);
+        gbc.gridx = 1;
+        formPanel.add(champPrixHT, gbc);
 
-        mainPanel.add(boutonValider);
-        mainPanel.add(boutonSupprimer);
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        formPanel.add(labelTauxTVA, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(champTauxTVA, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 3;
+        formPanel.add(labelCategorie, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(champCategorie, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        formPanel.add(labelVisibilite, gbc);
+
+        gbc.gridx = 1;
+        formPanel.add(champVisibilite, gbc);
+
+        mainPanel.add(formPanel, BorderLayout.CENTER);
+
+        // Boutons de validation et suppression
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
+        buttonPanel.add(boutonValider);
+        buttonPanel.add(boutonSupprimer);
+
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         return mainPanel;
     }
