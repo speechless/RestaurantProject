@@ -1,7 +1,6 @@
 package requete;
 
 import jakarta.persistence.*;
-import modele.CategorieItem;
 import modele.Item;
 import modele.Menu;
 
