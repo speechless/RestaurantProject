@@ -62,9 +62,9 @@ public class RequeteFiltres {
 
     /**
      * Récupère l'occurence des différentes catégories dans un intervalle de temps
-     * @param startingDate
-     * @param endingDate
-     * @return
+     * @param startingDate date de debut de l'intervalle
+     * @param endingDate date de fin de l'intervalle
+     * @return L'occurence des différentes catégories dans l'intervalle
      */
     public List<Object[]> getQuantiteVenteProduitByDate(String startingDate,String endingDate) {
         EntityManager em = emf.createEntityManager();
@@ -95,10 +95,10 @@ public class RequeteFiltres {
     /**
      * Utilisé pour le diagramme, cette fonction récupère l'occurence des différentes catégories
      * d'item dans un certain intervalle de temps en fonction d'une date et d'un paramètre temporel (Semaine, Mois,etc..)
-     * @param givenDate
-     * @param dateOption
-     * @param categories
-     * @return
+     * @param givenDate Une date pour la sélection
+     * @param dateOption  Savoir si on prend la semaine, le mois, l'année ou tout
+     * @param categories   Les catégories d'items/menus qu'on veut comme valeur de quantité
+     * @return Un tableau de paire (Nom de la catégorie, quantité)
      */
     public Object[][] getQuantiteVenteCategorie(String givenDate, String dateOption, List<String> categories) {
         if (categories == null)
@@ -148,6 +148,7 @@ public class RequeteFiltres {
             //BARRIERE POUR EVITER LES ERREURS DE TYPE
             int valueResult;
             if (result[1] instanceof Integer) {
+                assert result[0] instanceof Integer;
                 valueResult = (Integer) result[0];
             } else if (result[1] instanceof Long) {
                 valueResult = ((Long) result[1]).intValue();
@@ -186,9 +187,9 @@ public class RequeteFiltres {
 
     /**
      * Créer l'intervalle de temps en fonction d'une date donnée et d'un paramètre temporel
-     * @param date
-     * @param dateOption
-     * @return
+     * @param date date donnée, si vide on veut tout, pas d'intervalle donc
+     * @param dateOption  Savoir si on prend la semaine, le mois, l'année ou tout
+     * @return 2 dates qui composent les bornes de l'intervalle souhaité
      */
     private String[] createIntervale(String date, String dateOption){
         String[] dates = new String[2];

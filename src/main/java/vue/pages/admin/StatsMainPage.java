@@ -64,7 +64,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Créé la page dans son ensemble
-     * @return
      */
     private JPanel createMainContentPanel() {
         mainContentPanel = new JPanel();
@@ -84,7 +83,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Agencement de l'espace d'options de sélection en rapport avec la date
-     * @return
      */
 
     private JPanel createOptionsPanel() {
@@ -99,7 +97,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Agencement de l'espace d'options de sélection en rapport avec les filtres de la carte
-     * @return
      */
     private JPanel createFilterPanel() {
         JPanel filterPanel = new JPanel(new GridLayout(1, 10, 5, 5));
@@ -152,7 +149,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Initialisation du choisisseur de date
-     * @return
      */
     private JPanel createDatePanel() {
         JPanel datePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -169,7 +165,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Agencement de l'espace pour confirmer la requête avec les conditions
-     * @return
      */
     private JPanel createConfirmPanel() {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -195,7 +190,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Diagramme par défaut
-     * @return
      */
     private JPanel createDefaultChartPanel() {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -218,8 +212,8 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Diagramme personnalisé
-     * @param data
-     * @return
+     * @param data Un tableau de paire (Nom de la catégorie, quantité)
+     *             voir RequeteFiltres.getQuantiteVenteCategorie()
      */
     private JPanel createChartPanel(Object[][] data) {
         DefaultCategoryDataset dataset = new DefaultCategoryDataset();
@@ -247,8 +241,6 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Récupère les infos sur les filtres pour les mettre dans le diagramme
-     * @param dateOption
-     * @param date
      */
     private void setupDiagramGlobal(String dateOption,String date) {
         RequeteFiltres rf = RequeteFiltres.getInstance();
@@ -267,7 +259,7 @@ public class StatsMainPage implements PageContent {
 
     /**
      * Récupère la valeur des filtres
-     * @return
+     * @return une liste de catégories en fonction des valeurs des boutons
      */
     private List<String> getSelectedCategories() {
         List<String> selectedCategories = new ArrayList<>();

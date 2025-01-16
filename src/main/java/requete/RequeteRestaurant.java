@@ -7,7 +7,6 @@ import vue.pages.TypeAffichage;
 import vue.utils.Commons;
 
 import javax.swing.*;
-import java.util.ArrayList;
 
 import vue.utils.menu.MenuListItem;
 import java.util.List;
@@ -157,7 +156,8 @@ public class RequeteRestaurant {
 
     public List<Commande> getCommandesTermineesMain(int limite) {
         EntityManager em = emf.createEntityManager();
-        String strQuery = "SELECT c FROM Commande c WHERE finalise = true ORDER BY c.dateDebut DESC limit :limite";
+        String strQuery = "SELECT c FROM Commande c WHERE finalise = true " +
+                "ORDER BY c.dateDebut DESC limit :limite";
         Query query = em.createQuery(strQuery);
         query.setParameter("limite", limite);
         List<Commande> commandes = query.getResultList();
