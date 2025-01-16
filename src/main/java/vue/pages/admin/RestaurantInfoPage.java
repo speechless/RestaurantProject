@@ -27,8 +27,18 @@ public class RestaurantInfoPage implements PageContent {
     public JPanel getContentPanel() {
         JPanel mainPanel = new JPanel(new BorderLayout());
 
-        JPanel borderPanel = ButtonTemplates.returnMenuButtonSimple();
-        mainPanel.add(borderPanel, BorderLayout.NORTH);
+        if (Commons.mainGetRestaurant() != null) {
+            JPanel borderPanel = ButtonTemplates.returnMenuButtonSimple();
+            mainPanel.add(borderPanel, BorderLayout.NORTH);
+        }
+        else {
+            JPanel borderPanel = new JPanel();
+            JLabel titre = new JLabel("Saisissez les informations de votre restaurant");
+            titre.setFont(new Font("Arial", Font.PLAIN, 40));
+
+            borderPanel.add(titre);
+            mainPanel.add(borderPanel, BorderLayout.NORTH);
+        }
 
         // Utiliser GridBagLayout pour une disposition flexible
         JPanel gridPanel = new JPanel(new GridBagLayout());

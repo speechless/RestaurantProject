@@ -1,4 +1,5 @@
 package vue.pages;
+import vue.pages.admin.RestaurantInfoPage;
 import vue.utils.Commons;
 import vue.utils.Templates;
 
@@ -41,11 +42,15 @@ public class PageManager {
 
         frame.getContentPane().setLayout(new BorderLayout());
 
-        if(className.startsWith("vue.pages.admin.")) {
-            frame.getContentPane().add(Templates.createTopBar(false), BorderLayout.NORTH);
-        }else{
-            frame.getContentPane().add(Templates.createTopBar(true), BorderLayout.NORTH);
+        // Si c'est une autre page que celle de création du restaurant
+        if (!(page instanceof RestaurantInfoPage && Commons.mainGetRestaurant() == null)) {
+            if(className.startsWith("vue.pages.admin.")) {
+                frame.getContentPane().add(Templates.createTopBar(false), BorderLayout.NORTH);
+            }else{
+                frame.getContentPane().add(Templates.createTopBar(true), BorderLayout.NORTH);
+            }
         }
+
 
         frame.getContentPane().add(page.getContentPanel(), BorderLayout.CENTER);
 
