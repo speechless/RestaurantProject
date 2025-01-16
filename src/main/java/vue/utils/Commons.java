@@ -1,13 +1,14 @@
 package vue.utils;
 
 import modele.Restaurant;
-import requete.RequeteRestaurant;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.URL;
 
 public class Commons {
+
+    private static Restaurant restaurant = null;
 
     /**
      * Couleur principale de l'application
@@ -67,7 +68,13 @@ public class Commons {
         }
     }
 
+    public static void setRestaurant(Restaurant restaurant) {
+            if (restaurant != null) {
+                Commons.restaurant = restaurant;
+            }
+    }
+
     public static Restaurant mainGetRestaurant(){
-        return RequeteRestaurant.getInstance().getRestaurant("12345678910");
+        return Commons.restaurant;
     }
 }

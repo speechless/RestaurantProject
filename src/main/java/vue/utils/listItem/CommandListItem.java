@@ -43,8 +43,7 @@ public class CommandListItem {
                     c.getId()));
         }
 
-        JList<CommandListItem> list = new JList<>(listModel);
-        return list;
+        return new JList<>(listModel);
     }
 
 

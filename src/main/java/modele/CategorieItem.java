@@ -16,16 +16,4 @@ public enum CategorieItem {
     private CategorieItem(String label) {
         this.label = label;
     }
-
-    public static String[] toStringArray() {
-        String[] array = new String[CategorieItem.values().length];
-
-        int i = 0;
-        for (CategorieItem item : CategorieItem.values()) {
-            array[i] = item.label;
-            i++;
-        }
-
-        return array;
-    }
 }

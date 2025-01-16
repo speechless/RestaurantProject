@@ -51,7 +51,7 @@ public class Facture extends Recu {
 
 
     public String genererTexte() {
-        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant();
         StringBuilder finalFacture = new StringBuilder(
                 String.format("<html>"
                         + "<div style='text-align:center;'><h1>%s</h1></div><br><br>"
@@ -107,7 +107,7 @@ public class Facture extends Recu {
     }
 
     public void generateDocument(PdfDocument pdfDoc){
-        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant();
         // Créer un document
         Document document = new Document(pdfDoc);
 

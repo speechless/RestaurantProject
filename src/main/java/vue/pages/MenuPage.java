@@ -52,7 +52,7 @@ public class MenuPage implements PageContent {
         leftMenuSection.add(st, BorderLayout.NORTH);
 
         // Liste
-        JList<MenuListItem> l = rr.parseListCommandables(TypeAffichage.BOTH);
+        JList<MenuListItem> l = rr.parseListCommandables(TypeAffichage.BOTH, true);
         JScrollPane sp = Templates.setupMenuScrollPane(l);
         leftMenuSection.add(sp, BorderLayout.CENTER);
 

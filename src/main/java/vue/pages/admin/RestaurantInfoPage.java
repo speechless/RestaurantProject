@@ -9,13 +9,22 @@ import vue.utils.Commons;
 
 import javax.swing.*;
 import java.awt.*;
-import javax.swing.border.EmptyBorder;
 
 public class RestaurantInfoPage implements PageContent {
+
+    Restaurant restaurant;
+
+    public RestaurantInfoPage() {
+        this.restaurant = Commons.mainGetRestaurant();
+
+        if (this.restaurant == null) {
+            this.restaurant = new Restaurant();
+        }
+
+    }
+
     @Override
     public JPanel getContentPanel() {
-
-        Restaurant restaurant = Commons.mainGetRestaurant();
         JPanel mainPanel = new JPanel(new BorderLayout());
 
         JPanel borderPanel = ButtonTemplates.returnMenuButtonSimple();
@@ -98,13 +107,14 @@ public class RestaurantInfoPage implements PageContent {
 
         // Ajouter le bouton "Confirmer"
         JButton bouton = ButtonTemplates.setupClassicButton("Confirmer", () -> {
-            RequeteRestaurant.getInstance().modifRestaurant(
-                    champNom.getText(),
-                    champAddresse.getText(),
-                    champTVA.getText(),
-                    champTel.getText(),
-                    champSIREN.getText()
-            );
+
+            restaurant.setName(champNom.getText());
+            restaurant.setAddress(champAddresse.getText());
+            restaurant.setTVANumber(champTVA.getText());
+            restaurant.setPhoneNumber(champTel.getText());
+            restaurant.setSIRENNumber(champSIREN.getText());
+
+            Commons.setRestaurant(RequeteRestaurant.getInstance().saveRestaurant(this.restaurant));
             PageManager.getInstance().showPage(new AdminMainPage());
         });
 

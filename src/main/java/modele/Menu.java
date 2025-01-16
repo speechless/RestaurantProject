@@ -23,7 +23,7 @@ public class Menu extends Commandable implements Observer {
 
     public void ajouterItem(Item item) {
         this.listeItems.add(item);
-        this.setPrixHT(this.getPrixHT() + item.getPrixHT());;
+        this.setPrixHT(this.getPrixHT() + item.getPrixHT());
 
         if (item.getTauxTVA() > this.getTauxTVA()) {
             this.setTauxTVA(item.getTauxTVA());

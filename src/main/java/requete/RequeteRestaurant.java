@@ -8,6 +8,7 @@ import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.ArrayList;
+
 import vue.utils.menu.MenuListItem;
 import java.util.List;
 
@@ -29,57 +30,21 @@ public class RequeteRestaurant {
         return instance;
     }
 
-    public Restaurant createRestaurant(Restaurant restaurant){
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            em.persist(restaurant);
-
-            et.commit();
-            return restaurant;
-        }
-        finally {
-            if (em != null && em.isOpen()) {
-                em.close();
-            }
-        }
-    }
-
-    public Restaurant getRestaurant(String SIRENNumber){
+    public Restaurant getRestaurant(){
         EntityManager em = emf.createEntityManager();
         try{
-            String strQuery = "SELECT r FROM Restaurant r " +
-                    " WHERE r.SIRENNumber = :SIRENNumber";
+            String strQuery = "SELECT r FROM Restaurant r";
             Query query = em.createQuery(strQuery);
-            query.setParameter("SIRENNumber", SIRENNumber);
             Restaurant r = (Restaurant) query.getSingleResult();
             return r;
-        }catch (NoResultException e){
+        }
+        catch (NoResultException e){
             System.out.println("Aucun restaurant trouvé");
             return null;
         }
-
-    }
-
-    public void modifRestaurant(String champNom,String champAddresse,String champTVA,
-                                      String champTel,String champSIREN){
-        EntityManager em = emf.createEntityManager();
-        EntityTransaction et = em.getTransaction();
-
-        try {
-            et.begin();
-            Restaurant r = Commons.mainGetRestaurant();
-            r.setName(champNom);
-            r.setAddress(champAddresse);
-            r.setTVANumber(champTVA);
-            r.setPhoneNumber(champTel);
-            r.setSIRENNumber(champSIREN);
-
-            em.merge(r);
-
-            et.commit();
+        catch (Exception e) {
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la récupération des infos du restaurant");
+            return null;
         }
         finally {
             if (em != null && em.isOpen()) {
@@ -88,27 +53,54 @@ public class RequeteRestaurant {
         }
     }
 
-    public List<Commandable> getCommandables(TypeAffichage type) {
+    public Restaurant saveRestaurant(Restaurant restaurant){
+        EntityManager em = emf.createEntityManager();
+        EntityTransaction et = em.getTransaction();
+
+        try {
+            et.begin();
+            em.merge(restaurant);
+            et.commit();
+        }
+        catch(Exception ex) {
+            et.rollback();
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la sauvegarde des informations du restaurant");
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return restaurant;
+    }
+
+    public List<Commandable> getCommandables(TypeAffichage type, boolean onlyVisible) {
         EntityManager em = emf.createEntityManager();
 
         String strQuery;
         if (type == TypeAffichage.ITEM) {
-            strQuery = "SELECT i FROM Item i ORDER BY i.nom";
+            strQuery = "SELECT c FROM Item c";
         }
         else if (type == TypeAffichage.MENU) {
-            strQuery = "SELECT m FROM Menu m ORDER BY m.nom";
+            strQuery = "SELECT c FROM Menu c";
         }
         else {
-            strQuery = "SELECT c FROM Commandable c ORDER BY c.nom";
+            strQuery = "SELECT c FROM Commandable c";
         }
+        if (onlyVisible) {
+            strQuery += " WHERE c.visibiliteCarte = true";
+        }
+        strQuery += " ORDER BY c.nom";
+
         Query query = em.createQuery(strQuery);
         List<Commandable> commandables = query.getResultList();
         return commandables;
     }
 
-    public JList<MenuListItem> parseListCommandables(TypeAffichage type) {
+    public JList<MenuListItem> parseListCommandables(TypeAffichage type, boolean onlyVisible) {
         Commons commons = new Commons();
-        List<Commandable> items = getCommandables(type);
+        List<Commandable> items = getCommandables(type, onlyVisible);
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
 
         for (Commandable i : items) {
@@ -324,7 +316,8 @@ public class RequeteRestaurant {
             // Mise à jour des commandes contenant le menu
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
-                    "WHERE compo.produit.id = :produitId";
+                    "WHERE compo.produit.id = :produitId " +
+                    "AND c.finalise = false";
             Query query = em.createQuery(strQuery);
             query.setParameter("produitId", menu.getId());
             List<Commande> commandesAffectees = query.getResultList();
@@ -358,13 +351,12 @@ public class RequeteRestaurant {
             item = em.merge(item);
 
             // Mise à jour des menus contenant l'item
-            List<Menu> menusAffectes = new ArrayList<>();
             String strQ = "SELECT m FROM Menu m " +
                     "JOIN m.listeItems compo " +
                     "WHERE compo.id = :produitId";
             Query q = em.createQuery(strQ);
             q.setParameter("produitId", item.getId());
-            menusAffectes = q.getResultList();
+            List<Menu> menusAffectes = q.getResultList();
 
             for (Menu menu : menusAffectes) {
                 menu.recalculerTVA();
@@ -375,7 +367,8 @@ public class RequeteRestaurant {
             // Mise à jour des commandes contenant directement l'item
             String strQuery = "SELECT c FROM Commande c " +
                     "JOIN c.compositionCommande compo " +
-                    "WHERE compo.produit.id = :produitId";
+                    "WHERE compo.produit.id = :produitId " +
+                    "AND c.finalise = false";
             Query query = em.createQuery(strQuery);
             query.setParameter("produitId", item.getId());
             List<Commande> commandesAffectees = query.getResultList();
@@ -524,11 +517,7 @@ public class RequeteRestaurant {
 
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
-        Restaurant r = rr.getRestaurant("12345678910");
+        Restaurant r = rr.getRestaurant();
         System.out.println(r);
-
-        Restaurant r2 = rr.getRestaurant("123456710");
-        System.out.println(r2);
-
     }
 }

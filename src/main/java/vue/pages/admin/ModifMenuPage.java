@@ -61,7 +61,7 @@ public class ModifMenuPage implements PageContent {
         leftMenuSection.add(st, BorderLayout.NORTH);
 
         // Liste
-        JList<MenuListItem> l = rr.parseListCommandables(this.type);
+        JList<MenuListItem> l = rr.parseListCommandables(this.type, false);
         l.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

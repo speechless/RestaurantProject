@@ -1,7 +1,6 @@
 package vue.utils.menu;
 
 import javax.swing.*;
-import java.util.List;
 
 public class MenuListItem {
     private String title;

@@ -22,7 +22,7 @@ public class OrderMenuListPanel extends JPanel {
 
         // Modèle de liste
         DefaultListModel<Commandable> model = new DefaultListModel<>();
-        model.addAll(rq.getCommandables(TypeAffichage.BOTH));
+        model.addAll(rq.getCommandables(TypeAffichage.BOTH, true));
 
         // JList avec un renderer personnalisé
         listContent = new JList<>(model);

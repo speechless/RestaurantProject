@@ -2,7 +2,6 @@ package modele;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Observable;
 
