@@ -3,7 +3,6 @@ package vue.pages.admin;
 import modele.Commandable;
 import modele.Item;
 import modele.Menu;
-import modele.QuantiteCommande;
 import requete.RequeteRestaurant;
 import vue.pages.PageContent;
 import vue.pages.PageManager;
@@ -139,9 +138,7 @@ public class ModifMenu implements PageContent {
 
         // Bouton retour accueil
         JButton topButton = ButtonTemplates.setupClassicButton("Retour page d'administration",
-                () -> {
-                    PageManager.getInstance().showPage(new AdminMainPage());
-                });
+                () -> PageManager.getInstance().showPage(new AdminMainPage()));
         topButton.setFont(new Font("Arial", Font.PLAIN, 12));
         topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
         topButton.setPreferredSize(new Dimension(150, 30));
