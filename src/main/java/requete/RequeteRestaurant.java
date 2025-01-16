@@ -108,13 +108,13 @@ public class RequeteRestaurant {
                 if (type == TypeAffichage.MENU || type == TypeAffichage.BOTH) {
                     listModel.addElement(new MenuListItem(
                             i.getNom(),
-                            commons.loadImage("img/Whiteboard.png"),
+                            commons.loadImage("img/icone.jpg"),
                             i.getPrixHT(),
                             i.getPrixHT() * (1 + i.getTauxTVA()),
                             i.isVisibiliteCarte(), false, false, i.getId()));
                     for (Item k : getItemsFromMenu(i.getId())) {
                         listModel.addElement(new MenuListItem(
-                                " * " + i.getNom() + "---" + k.getNom(),
+                                i.getNom() + "   -   " + k.getNom(),
                                 commons.loadImage(""),
                                 0,
                                 0,
@@ -202,7 +202,7 @@ public class RequeteRestaurant {
         return commande;
     }
 
-    public Commande changeNumTable(Commande commande, int numTable) {
+    public Commande changeNumTable(Commande commande, int numTable) throws PersistenceException {
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
 

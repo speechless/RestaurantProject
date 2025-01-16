@@ -13,7 +13,7 @@ public class PageManager {
     private PageManager() {
         frame = new JFrame("Restaurant App");
         Commons c = new Commons();
-        frame.setIconImage(c.loadImage("img/Whiteboard.png").getImage());
+        frame.setIconImage(c.loadImage("img/icone.jpg").getImage());
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setMinimumSize(new Dimension(1200, 800));
         frame.setMaximumSize(new Dimension(1920, 1080));
