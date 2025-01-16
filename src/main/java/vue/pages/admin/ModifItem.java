@@ -82,8 +82,7 @@ public class ModifItem implements PageContent {
         this.champVisibilite = new JCheckBox();
         this.champVisibilite.setSelected(this.item.getVisibiliteCarte());
 
-        this.boutonValider = new JButton("Valider les modifications");
-        this.boutonValider.addActionListener(e -> {
+        this.boutonValider = ButtonTemplates.setupClassicButton ("Valider les modifications",() -> {
             item.setNom(champNom.getText());
             item.setPrixHT((Double)champPrixHT.getValue());
             item.setTauxTVA((Double)champTauxTVA.getValue());
@@ -93,8 +92,7 @@ public class ModifItem implements PageContent {
             item = RequeteRestaurant.getInstance().saveItem(item);
         });
 
-        this.boutonSupprimer = new JButton("Supprimer le produit");
-        this.boutonSupprimer.addActionListener(e -> {
+        this.boutonSupprimer = ButtonTemplates.setupClassicButton("Supprimer le produit", () -> {
             RequeteRestaurant.getInstance().deleteItem(item);
             PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.ITEM));
         });

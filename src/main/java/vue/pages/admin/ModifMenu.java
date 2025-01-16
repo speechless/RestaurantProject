@@ -62,8 +62,7 @@ public class ModifMenu implements PageContent {
         this.champVisibilite = new JCheckBox();
         this.champVisibilite.setSelected(this.menu.getVisibiliteCarte());
 
-        this.boutonValider = new JButton("Valider les modifications");
-        this.boutonValider.addActionListener(e -> {
+        this.boutonValider = ButtonTemplates.setupClassicButton ("Valider les modifications", () -> {
             menu.setNom(champNom.getText());
             menu.recalculerprixHT();
             menu.recalculerTVA();

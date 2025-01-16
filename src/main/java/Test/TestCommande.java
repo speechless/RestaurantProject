@@ -23,7 +23,7 @@ public class TestCommande {
 
             Item item1 = new Item(10.5, 0.055, "Pates au beurre", CategorieItem.PLAT, true);
             Item item2 = new Item(4, 0.2, "Coca cola cherry", CategorieItem.BOISSON, true);
-            Item item3 = new Item(2, 0.1, "Chocolat chuad", CategorieItem.AUTRE, true);
+            Item item3 = new Item(2, 0.1, "Chocolat chaud", CategorieItem.AUTRE, true);
 
             menu1.ajouterItem(item1);
             menu1.ajouterItem(item2);
