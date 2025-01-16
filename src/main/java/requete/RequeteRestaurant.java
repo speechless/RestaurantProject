@@ -7,7 +7,6 @@ import vue.pages.TypeAffichage;
 import vue.utils.Commons;
 
 import javax.swing.*;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.ArrayList;
 import vue.utils.menu.MenuListItem;
 import java.util.List;
