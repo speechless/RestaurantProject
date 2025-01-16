@@ -168,7 +168,7 @@ public class CommandPage implements PageContent {
         numTablePanel.add(labelTable);
         numTablePanel.add(numberField);
 
-        JButton confirmButton = ButtonTemplates.setupClassicButton ("Confirmer la commande",()->{
+        JButton confirmButton = ButtonTemplates.setupClassicButton ("Finaliser la commande",()->{
             try {
                 Integer value = (Integer) numberField.getValue();
                 if (value != null && value != 0) {

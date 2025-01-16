@@ -17,7 +17,7 @@ public class Ticket extends Recu {
     }
 
     public String genererTexte() {
-        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant("12345678910");
+        Restaurant restaurant = RequeteRestaurant.getInstance().getRestaurant();
 
         StringBuilder finalTicket = new StringBuilder(
                 String.format("<html>"

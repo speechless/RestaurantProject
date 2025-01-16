@@ -8,6 +8,8 @@ import vue.utils.Commons;
 
 import javax.swing.*;
 import java.util.ArrayList;
+
+import vue.utils.Templates;
 import vue.utils.menu.MenuListItem;
 import java.util.List;
 
@@ -36,9 +38,32 @@ public class RequeteRestaurant {
         try {
             et.begin();
             em.persist(restaurant);
-
             et.commit();
-            return restaurant;
+        }
+        finally {
+            if (em != null && em.isOpen()) {
+                em.close();
+            }
+        }
+
+        return restaurant;
+    }
+
+    public Restaurant getRestaurant(){
+        EntityManager em = emf.createEntityManager();
+        try{
+            String strQuery = "SELECT r FROM Restaurant r";
+            Query query = em.createQuery(strQuery);
+            Restaurant r = (Restaurant) query.getSingleResult();
+            return r;
+        }
+        catch (NoResultException e){
+            System.out.println("Aucun restaurant trouvé");
+            return null;
+        }
+        catch (Exception e) {
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la récupération des infos du restaurant");
+            return null;
         }
         finally {
             if (em != null && em.isOpen()) {
@@ -47,45 +72,26 @@ public class RequeteRestaurant {
         }
     }
 
-    public Restaurant getRestaurant(String SIRENNumber){
-        EntityManager em = emf.createEntityManager();
-        try{
-            String strQuery = "SELECT r FROM Restaurant r " +
-                    " WHERE r.SIRENNumber = :SIRENNumber";
-            Query query = em.createQuery(strQuery);
-            query.setParameter("SIRENNumber", SIRENNumber);
-            Restaurant r = (Restaurant) query.getSingleResult();
-            return r;
-        }catch (NoResultException e){
-            System.out.println("Aucun restaurant trouvé");
-            return null;
-        }
-
-    }
-
-    public void modifRestaurant(String champNom,String champAddresse,String champTVA,
-                                      String champTel,String champSIREN){
+    public Restaurant saveRestaurant(Restaurant restaurant){
         EntityManager em = emf.createEntityManager();
         EntityTransaction et = em.getTransaction();
 
         try {
             et.begin();
-            Restaurant r = Commons.mainGetRestaurant();
-            r.setName(champNom);
-            r.setAddress(champAddresse);
-            r.setTVANumber(champTVA);
-            r.setPhoneNumber(champTel);
-            r.setSIRENNumber(champSIREN);
-
-            em.merge(r);
-
+            em.merge(restaurant);
             et.commit();
+        }
+        catch(Exception ex) {
+            et.rollback();
+            PageManager.getInstance().showErrorMessage("Un problème a eu lieu lors de la sauvegarde des informations du restaurant");
         }
         finally {
             if (em != null && em.isOpen()) {
                 em.close();
             }
         }
+
+        return restaurant;
     }
 
     public List<Commandable> getCommandables(TypeAffichage type) {
@@ -524,11 +530,7 @@ public class RequeteRestaurant {
 
     public static void main(String[] args) {
         RequeteRestaurant rr = new RequeteRestaurant();
-        Restaurant r = rr.getRestaurant("12345678910");
+        Restaurant r = rr.getRestaurant();
         System.out.println(r);
-
-        Restaurant r2 = rr.getRestaurant("123456710");
-        System.out.println(r2);
-
     }
 }
