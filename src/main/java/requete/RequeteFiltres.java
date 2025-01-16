@@ -175,7 +175,7 @@ public class RequeteFiltres {
 
     public static void main(String[] args) {
         RequeteFiltres rr = new RequeteFiltres();
-        LocalDate d1 = LocalDate.of(2025,1,1);
+        /*LocalDate d1 = LocalDate.of(2025,1,1);
         LocalDate d2 = LocalDate.of(2024,10,18);
 
         List<String> l = new ArrayList<>();
@@ -183,7 +183,7 @@ public class RequeteFiltres {
         l.add("Plat");
         Object[][] y = rr.getQuantiteVenteCategorie(d1,LocalDate.now(),l);
         System.out.println(Arrays.deepToString(y));
-        /*List<Object[]> x = rr.getQuantiteVenteProduit(d2,LocalDate.now(),l,3);
+        List<Object[]> x = rr.getQuantiteVenteProduit(d2,LocalDate.now(),l,3);
         if(x == null){
             System.out.println("Rien a signaler");
         }else{

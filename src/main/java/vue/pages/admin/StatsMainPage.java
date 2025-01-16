@@ -163,8 +163,8 @@ public class StatsMainPage implements PageContent {
         if (autre) selectedCategories.add("Autre");
 
         System.out.println(dateOption+" "+date);
-        Object[][] data = rf.getQuantiteVenteCategorie(d1, LocalDate.now(), selectedCategories);
-        System.out.println(Arrays.deepToString(data));
+        //Object[][] data = rf.getQuantiteVenteCategorie(d1, LocalDate.now(), selectedCategories);
+        //System.out.println(Arrays.deepToString(data));
     }
 
     public boolean isPlatIsActive() {

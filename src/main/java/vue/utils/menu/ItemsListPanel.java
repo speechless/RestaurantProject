@@ -1,10 +1,10 @@
 package vue.utils.menu;
 
 import modele.Commandable;
-import modele.Item;
 import requete.RequeteRestaurant;
 import vue.pages.TypeAffichage;
 import vue.utils.Templates;
+import vue.utils.order.CommandableRenderer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +25,7 @@ public class ItemsListPanel extends JPanel {
 
         // JList avec un renderer personnalisé
         listContent = new JList<>(model);
-        //listContent.setCellRenderer(new CommandableRenderer());
+        listContent.setCellRenderer(new CommandableRenderer());
 
 
         JScrollPane sp = Templates.setupCommandableScrollPane(listContent);
