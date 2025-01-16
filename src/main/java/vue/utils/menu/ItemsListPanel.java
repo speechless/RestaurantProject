@@ -21,7 +21,7 @@ public class ItemsListPanel extends JPanel {
 
         // Modèle de liste
         DefaultListModel<Commandable> model = new DefaultListModel<>();
-        model.addAll(rq.getCommandables(TypeAffichage.ITEM));
+        model.addAll(rq.getCommandables(TypeAffichage.ITEM, false));
 
         // JList avec un renderer personnalisé
         listContent = new JList<>(model);

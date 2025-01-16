@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import java.awt.*;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 public class ModifItem implements PageContent {
     private Item item;
@@ -56,7 +57,8 @@ public class ModifItem implements PageContent {
         this.champNom = new JTextField(this.item.getNom());
         this.champNom.setColumns(30);
 
-        NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.ENGLISH);
+        numberFormat.setMinimumFractionDigits(2);
 
         this.champPrixHT = new JFormattedTextField(numberFormat);
         this.champPrixHT.setColumns(10);
@@ -84,12 +86,13 @@ public class ModifItem implements PageContent {
 
         this.boutonValider = ButtonTemplates.setupClassicButton ("Valider les modifications",() -> {
             item.setNom(champNom.getText());
-            item.setPrixHT((Double)champPrixHT.getValue());
-            item.setTauxTVA((Double)champTauxTVA.getValue());
+            item.setPrixHT(((Number)champPrixHT.getValue()).doubleValue());
+            item.setTauxTVA(((Number)champTauxTVA.getValue()).doubleValue());
             item.setCategorie((CategorieItem) champCategorie.getSelectedItem());
             item.setVisibiliteCarte(champVisibilite.isSelected());
 
             item = RequeteRestaurant.getInstance().saveItem(item);
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH));
         });
 
         this.boutonSupprimer = ButtonTemplates.setupClassicButton("Supprimer le produit", () -> {

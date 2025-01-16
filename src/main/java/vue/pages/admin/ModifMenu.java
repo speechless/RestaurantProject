@@ -68,6 +68,7 @@ public class ModifMenu implements PageContent {
             menu.setVisibiliteCarte(champVisibilite.isSelected());
 
             menu = RequeteRestaurant.getInstance().saveMenu(menu);
+            PageManager.getInstance().showPage(new ModifMenuPage(TypeAffichage.BOTH));
         });
     }
 

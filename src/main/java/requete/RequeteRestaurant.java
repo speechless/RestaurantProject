@@ -75,27 +75,32 @@ public class RequeteRestaurant {
         return restaurant;
     }
 
-    public List<Commandable> getCommandables(TypeAffichage type) {
+    public List<Commandable> getCommandables(TypeAffichage type, boolean onlyVisible) {
         EntityManager em = emf.createEntityManager();
 
         String strQuery;
         if (type == TypeAffichage.ITEM) {
-            strQuery = "SELECT i FROM Item i ORDER BY i.nom";
+            strQuery = "SELECT c FROM Item c";
         }
         else if (type == TypeAffichage.MENU) {
-            strQuery = "SELECT m FROM Menu m ORDER BY m.nom";
+            strQuery = "SELECT c FROM Menu c";
         }
         else {
-            strQuery = "SELECT c FROM Commandable c ORDER BY c.nom";
+            strQuery = "SELECT c FROM Commandable c";
         }
+        if (onlyVisible) {
+            strQuery += " WHERE c.visibiliteCarte = true";
+        }
+        strQuery += " ORDER BY c.nom";
+
         Query query = em.createQuery(strQuery);
         List<Commandable> commandables = query.getResultList();
         return commandables;
     }
 
-    public JList<MenuListItem> parseListCommandables(TypeAffichage type) {
+    public JList<MenuListItem> parseListCommandables(TypeAffichage type, boolean onlyVisible) {
         Commons commons = new Commons();
-        List<Commandable> items = getCommandables(type);
+        List<Commandable> items = getCommandables(type, onlyVisible);
         DefaultListModel<MenuListItem> listModel = new DefaultListModel<>();
 
         for (Commandable i : items) {
