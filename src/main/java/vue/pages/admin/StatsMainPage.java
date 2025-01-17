@@ -250,7 +250,6 @@ public class StatsMainPage implements PageContent {
         Object[][] data = rf.getQuantiteVenteCategorie(date, dateOption, selectedCategories);
         mainContentPanel.remove(diagram); // Supprime l'ancien diagramme
         diagram = createChartPanel(data);
-        System.out.println(Arrays.deepToString(data));
 
         mainContentPanel.add(diagram); // Ajoute le nouveau diagramme
         mainContentPanel.revalidate();

@@ -127,10 +127,6 @@ public class RequeteFiltres {
                 {"Aucune", 0}
         };
 
-        for (Object[] x : RqList) {
-            System.out.println(Arrays.toString(x));
-        }
-
 
         //BARRIERE POUR EVITER LES ERREURS DE TYPE
         for (Object[] result : RqList) {

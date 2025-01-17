@@ -75,7 +75,7 @@ public class RestaurantInfoPage implements PageContent {
         champSIREN.setPreferredSize(new Dimension(200, 30));
 
         //Empecher la modification de l'ID du restaurant
-        if (this.restaurant != null) {
+        if (Commons.mainGetRestaurant() != null) {
             champSIREN.setEnabled(false);
         }
 
