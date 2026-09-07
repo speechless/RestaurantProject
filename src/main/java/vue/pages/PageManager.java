@@ -1,0 +1,69 @@
+package vue.pages;
+import vue.pages.admin.RestaurantInfoPage;
+import vue.utils.Commons;
+import vue.utils.Templates;
+
+import javax.swing.*;
+import java.awt.*;
+
+/**
+ * Classe permettant de gérer la gestion de l'instance de la page, sa création
+ * ainsi que l'affichage d'une page sur cette dernière
+ */
+public class PageManager {
+    private static PageManager instance;
+    private final JFrame frame;
+
+    private PageManager() {
+        frame = new JFrame("Restaurant App");
+        Commons c = new Commons();
+        frame.setIconImage(c.loadImage("img/icone.jpg").getImage());
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setMinimumSize(new Dimension(1200, 800));
+        frame.setMaximumSize(new Dimension(1920, 1080));
+        frame.setLayout(new BorderLayout());
+    }
+
+    public static PageManager getInstance() {
+        if (instance == null) {
+            instance = new PageManager();
+        }
+        return instance;
+    }
+
+    public JFrame getFrame(){
+        return frame;
+    }
+
+    public void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(frame, message, "Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showPage(PageContent page) {
+        frame.getContentPane().removeAll();
+        String className =  page.getClass().getName();
+
+        frame.getContentPane().setLayout(new BorderLayout());
+
+        // Si c'est une autre page que celle de création du restaurant
+        if (!(page instanceof RestaurantInfoPage && Commons.mainGetRestaurant() == null)) {
+            if(className.startsWith("vue.pages.admin.")) {
+                frame.getContentPane().add(Templates.createTopBar(false), BorderLayout.NORTH);
+            }else{
+                frame.getContentPane().add(Templates.createTopBar(true), BorderLayout.NORTH);
+            }
+        }
+
+
+        frame.getContentPane().add(page.getContentPanel(), BorderLayout.CENTER);
+
+        frame.revalidate();
+        frame.repaint();
+    }
+
+
+
+    public void start() {
+        frame.setVisible(true);
+    }
+}

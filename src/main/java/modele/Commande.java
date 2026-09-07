@@ -1,7 +1,13 @@
 package modele;
 
 import jakarta.persistence.*;
-
+/*
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;*/
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Entity
@@ -15,29 +21,43 @@ public class Commande {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.PERSIST)
-    private Set<QuantiteCommande> compositionCommande;
+    @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuantiteCommande> compositionCommande;
 
-    @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "commandeSource", cascade = CascadeType.ALL)
     private List<Recu> listeRecus;
 
     private int numTable;
-    private final Date dateDebut;
-
+    private final String dateDebut;
+    @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA5_5;
+    @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA10;
+
+    public void setNumTable(int numTable) {
+        this.numTable = numTable;
+    }
+
+    @Column(columnDefinition = "NUMERIC(5,2)")
     private double montantTVA20;
+    @Column(columnDefinition = "NUMERIC(10,2)")
     private double totalHT;
+    @Column(columnDefinition = "NUMERIC(10,2)")
     private double totalTTC;
 
-    private int hashcode;
     private boolean finalise;
 
     public Commande() {
-        this.compositionCommande = new HashSet<>();
+        this.compositionCommande = new ArrayList<>();
         this.listeRecus = new ArrayList<>();
-        this.dateDebut = new Date();
+
+        LocalDateTime now = LocalDateTime.now();
+        // Format spécifique (jusqu'aux minutes)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // Formater la date
+        this.dateDebut = now.format(formatter);
         this.numTable = 0;
+        this.finalise = false;
     }
 
     public Commande(int numTable) {
@@ -45,38 +65,91 @@ public class Commande {
         this.numTable = numTable;
     }
 
-    public void ajoutCommande(Commandable commandable) {
-        boolean flag = false;
+    public Commande(int numTable, LocalDateTime date) {
+        this.compositionCommande = new ArrayList<>();
+        this.listeRecus = new ArrayList<>();
+
+        // Format spécifique (jusqu'aux minutes)
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        // Formater la date
+        this.dateDebut = date.format(formatter);
+        this.numTable = numTable;
+        this.finalise = false;
+    }
+
+    public List<Recu> getListeRecus() {
+        return listeRecus;
+    }
+
+    public int getNumTable() {
+        return numTable;
+    }
+
+    public String getDateDebut() {
+        return dateDebut;
+    }
+
+    public boolean isFinalise() {
+        return finalise;
+    }
+
+    public QuantiteCommande ajoutCommande(Commandable commandable) {
+        boolean found = false;
+        QuantiteCommande quantiteAffectee = null;
 
         for (QuantiteCommande quantiteCommande : this.compositionCommande) {
-            if (quantiteCommande.getProduit() == commandable) {
+            if (quantiteCommande.getProduit().equals(commandable)) {
                 quantiteCommande.add();
-                return;
+                quantiteAffectee = quantiteCommande;
+                found = true;
             }
         }
 
-        this.compositionCommande.add(new QuantiteCommande(this, commandable, 1));
+        if (!found) {
+            quantiteAffectee = new QuantiteCommande(this, commandable, 1);
+            this.compositionCommande.add(quantiteAffectee);
+        }
+
+        //TODO changer pour pas tout recaculer
+        recalculerPrixEtTVA();
+
+        return quantiteAffectee;
     }
 
     public void retraitCommande(Commandable commandable) {
         for (QuantiteCommande quantiteCommande : this.compositionCommande) {
-            if (quantiteCommande.getProduit() == commandable) {
-                if (quantiteCommande.getQuantite() == 1) {
+            if (quantiteCommande.getProduit().equals(commandable)) {
+
+                quantiteCommande.subtract();
+                if (quantiteCommande.getQuantite() == 0) {
+                    System.out.println("supprimé : " + commandable.getNom());
                     this.compositionCommande.remove(quantiteCommande);
+                    recalculerPrixEtTVA();
                     return;
-                }
-                else {
-                    quantiteCommande.subtract();
                 }
             }
         }
+        //TODO: changer pour pas tout recalculer
+        recalculerPrixEtTVA();
     }
 
-    public Set<QuantiteCommande> getCompositionCommande() {
+    public List<QuantiteCommande> getCompositionCommande() {
         return compositionCommande;
     }
 
     public void finaliserCommande() {
+        recalculerPrixEtTVA();
+        //this.hashcode = hashCode();
+        this.finalise = true;
+    }
+
+    public void recalculerPrixEtTVA() {
+        this.totalHT = 0;
+        this.totalTTC = 0;
+        this.montantTVA5_5 = 0;
+        this.montantTVA10 = 0;
+        this.montantTVA20 = 0;
+
         for (QuantiteCommande quantiteCommande : compositionCommande) {
             Commandable produit = quantiteCommande.getProduit();
             int quantite = quantiteCommande.getQuantite();
@@ -95,9 +168,6 @@ public class Commande {
                 montantTVA20 += prixTVA;
             }
         }
-
-        this.hashcode = hashCode();
-        this.finalise = true;
     }
 
     public Ticket creerTicket() {
@@ -110,7 +180,7 @@ public class Commande {
         return ticket;
     }
 
-    public Facture creerFacture(String nomClient, String prenomClient, String telephoneClient, String mailClient, int numeroTVAClient) {
+    public Facture creerFacture(String nomClient, String prenomClient, String telephoneClient, String mailClient, String numeroTVAClient) {
         if (!finalise) {
             finaliserCommande();
         }
@@ -140,6 +210,35 @@ public class Commande {
         return totalTTC;
     }
 
+    public int getId() {
+        return id;
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Commande commande = (Commande) o;
+        return numTable == commande.numTable && Objects.equals(dateDebut, commande.dateDebut);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(numTable, dateDebut);
+    }
+
+    @Override
+    public String toString() {
+        String compCmd = "[";
+        for (QuantiteCommande c : compositionCommande) {
+            compCmd+=c.getProduit();
+            compCmd+=";";
+        }
+        compCmd+=numTable;
+        compCmd+=";";
+        compCmd+=dateDebut;
+        compCmd+=";";
+        compCmd+=totalTTC;
+        return compCmd;
+    }
 }

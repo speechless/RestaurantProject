@@ -1,0 +1,162 @@
+package vue.pages.admin;
+import requete.RequeteRestaurant;
+import vue.pages.*;
+import vue.utils.*;
+import vue.utils.menu.MenuListItem;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+
+/**
+ * Page permettant d'afficher la carte d'un point de vue admin
+ * et de choisir entre modifier / créer un item ou un menu, si besoin
+ */
+public class ModifMenuPage implements PageContent {
+
+    TypeAffichage type;
+
+    public ModifMenuPage(TypeAffichage typeAffichage) {
+        this.type = typeAffichage;
+    }
+
+    @Override
+    public JPanel getContentPanel() {
+        // Panneau principal avec GridBagLayout
+        JPanel mainPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        RequeteRestaurant rr = RequeteRestaurant.getInstance();
+
+        // Panneau secondaire avec BorderLayout
+        JPanel borderPanel = new JPanel(new BorderLayout());
+
+        // Titre de la section
+        JButton topButton = ButtonTemplates.setupClassicButton("Retour",
+                () -> PageManager.getInstance().showPage(new AdminMainPage()));
+        topButton.setFont(new Font("Arial", Font.PLAIN, 12));
+        topButton.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
+        topButton.setPreferredSize(new Dimension(150, 30));
+
+        // Ajouter le bouton au panneau BorderLayout
+        borderPanel.add(topButton, BorderLayout.WEST);
+
+        // Ajouter borderPanel au mainPanel avec GridBagConstraints
+        gbc.gridx = 0; // Colonne
+        gbc.gridy = 0; // Ligne
+        gbc.gridwidth = 2; // Étend sur deux colonnes
+        gbc.weightx = 1.0; // S'étend horizontalement
+        gbc.weighty = 0.0; // Pas de poids vertical
+        gbc.fill = GridBagConstraints.HORIZONTAL; // Remplir horizontalement
+        gbc.insets = new Insets(5, 5, 5, 5); // Marges autour
+        mainPanel.add(borderPanel, gbc);
+
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Carte des menus
+        JPanel leftMenuSection = new JPanel(new BorderLayout());
+        leftMenuSection.setBorder(new EmptyBorder(20, 20, 20, 10)); // Marges autour de la section
+
+        // Titre de la section
+        JLabel st = new JLabel("Carte du restaurant", JLabel.CENTER);
+        st.setFont(new Font("Arial", Font.BOLD, 16));
+        st.setBorder(new EmptyBorder(10, 0, 10, 0)); // Marges autour du titre
+        leftMenuSection.add(st, BorderLayout.NORTH);
+
+        // Liste
+        JList<MenuListItem> l = rr.parseListCommandables(this.type, false);
+        l.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    MenuListItem menuListItem = l.getSelectedValue();
+                    if (type == TypeAffichage.MENU) {
+                        PageManager.getInstance().showPage(new ModifMenu(menuListItem.getId()));
+                    }
+                    else if (type == TypeAffichage.ITEM) {
+                        PageManager.getInstance().showPage(new ModifItem(menuListItem.getId()));
+                    }
+                    else {
+                        if (menuListItem.isItem()) {
+                            PageManager.getInstance().showPage(new ModifItem(menuListItem.getId()));
+                        } else {
+                            PageManager.getInstance().showPage(new ModifMenu(menuListItem.getId()));
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
+
+        JScrollPane sp = Templates.setupMenuScrollPane(l);
+        leftMenuSection.add(sp, BorderLayout.CENTER);
+
+
+        JButton boutonNouveauMenu = ButtonTemplates.setupClassicButton("Créer un menu",
+                () -> PageManager.getInstance().showPage(new ModifMenu()));
+        boutonNouveauMenu.setFont(new Font("Arial", Font.PLAIN, 12));
+        boutonNouveauMenu.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
+        boutonNouveauMenu.setPreferredSize(new Dimension(150, 30));
+
+        JButton boutonNouvelItem;
+        boutonNouvelItem = ButtonTemplates.setupClassicButton("Créer un produit",
+                () -> PageManager.getInstance().showPage(new ModifItem()));
+        boutonNouvelItem.setFont(new Font("Arial", Font.PLAIN, 12));
+        boutonNouvelItem.setMargin(new Insets(0, 0, 0, 0)); // Supprime les marges internes
+        boutonNouvelItem.setPreferredSize(new Dimension(150, 30));
+
+        if (type == TypeAffichage.BOTH) {
+            gbc.gridx = 0; // Colonne
+            gbc.gridy = 1; // Ligne
+            gbc.gridwidth = 1; // Étend sur une colonne
+            gbc.weightx = 1.0; // S'étend horizontalement
+            gbc.weighty = 1.0; // Prend tout l'espace vertical
+            mainPanel.add(boutonNouveauMenu, gbc);
+
+            gbc.gridx = 1; // Colonne
+            gbc.gridy = 1; // Ligne
+            gbc.gridwidth = 1; // Étend sur deux colonnes
+            gbc.weightx = 1.0; // S'étend horizontalement
+            gbc.weighty = 1.0; // Prend tout l'espace vertical
+            mainPanel.add(boutonNouvelItem, gbc);
+        }
+        else if (type == TypeAffichage.MENU) {
+            gbc.gridx = 0; // Colonne
+            gbc.gridy = 1; // Ligne
+            gbc.gridwidth = 1; // Étend sur une colonne
+            gbc.weightx = 1.0; // S'étend horizontalement
+            gbc.weighty = 1.0; // Prend tout l'espace vertical
+            mainPanel.add(boutonNouveauMenu, gbc);
+        }
+        else if (type == TypeAffichage.ITEM) {
+            gbc.gridx = 0; // Colonne
+            gbc.gridy = 1; // Ligne
+            gbc.gridwidth = 1; // Étend sur deux colonnes
+            gbc.weightx = 1.0; // S'étend horizontalement
+            gbc.weighty = 1.0; // Prend tout l'espace vertical
+            mainPanel.add(boutonNouvelItem, gbc);
+        }
+
+
+        // Ajouter la section au mainPanel
+        gbc.gridx = 0; // Colonne
+        gbc.gridy = 2; // Ligne
+        gbc.gridwidth = 2; // Étend sur deux colonnes
+        gbc.weightx = 1.0; // S'étend horizontalement
+        gbc.weighty = 1.0; // Prend tout l'espace vertical
+        gbc.fill = GridBagConstraints.BOTH; // Remplit horizontalement et verticalement
+        gbc.insets = new Insets(5, 5, 5, 5); // Marges autour
+        mainPanel.add(leftMenuSection, gbc);
+
+        return mainPanel;
+    }
+
+}

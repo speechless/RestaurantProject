@@ -2,7 +2,6 @@ package modele;
 
 import jakarta.persistence.*;
 
-import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Observable;
 
@@ -42,6 +41,14 @@ public abstract class Commandable extends Observable {
         this.nom = nom;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public boolean isVisibiliteCarte() {
+        return visibiliteCarte;
+    }
+
     public boolean getVisibiliteCarte() {
         return visibiliteCarte;
     }
@@ -79,12 +86,7 @@ public abstract class Commandable extends Observable {
         Commandable that = (Commandable) o;
         return Objects.equals(nom, that.nom);
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(nom);
-    }
-
+    
     @Override
     public String toString() {
         return "Commandable : " + nom +

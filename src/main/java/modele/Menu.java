@@ -23,7 +23,7 @@ public class Menu extends Commandable implements Observer {
 
     public void ajouterItem(Item item) {
         this.listeItems.add(item);
-        this.setPrixHT(this.getPrixHT() + item.getPrixHT());;
+        this.setPrixHT(this.getPrixHT() + item.getPrixHT());
 
         if (item.getTauxTVA() > this.getTauxTVA()) {
             this.setTauxTVA(item.getTauxTVA());
@@ -45,7 +45,7 @@ public class Menu extends Commandable implements Observer {
         return false;
     }
 
-    private void recalculerTVA() {
+    public void recalculerTVA() {
         this.setTauxTVA(0);
 
         for (Item item : this.listeItems) {
@@ -55,13 +55,14 @@ public class Menu extends Commandable implements Observer {
         }
     }
 
-    private void recalculerprixHT() {
+    public void recalculerprixHT() {
         this.setPrixHT(0);
 
         for (Item item : this.listeItems) {
             this.setPrixHT(this.getPrixHT() + item.getPrixHT());
         }
     }
+
 
     public List<Item> getListeItems() {
         return listeItems;
